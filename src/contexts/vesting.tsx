@@ -138,14 +138,14 @@ export const VestingProvider = ({ children = null as any }) => {
         setVestingList(
           res.map(
             (item, vestingId) =>
-              ({
-                typeId: Number(item[0]),
-                vestingId,
-                recipient: String(item[1]).toLowerCase(),
-                amount: bnToDec(new BigNumber(item[2])),
-                claimedAmount: bnToDec(new BigNumber(item[3])),
-                lastClaim: Number(item[4]),
-              } as VestingInfo)
+            ({
+              typeId: Number(item[0]),
+              vestingId,
+              recipient: String(item[1]).toLowerCase(),
+              amount: bnToDec(new BigNumber(item[2])),
+              claimedAmount: bnToDec(new BigNumber(item[3])),
+              lastClaim: Number(item[4]),
+            } as VestingInfo)
           )
         );
       } catch (e) {
@@ -284,19 +284,17 @@ export const VestingProvider = ({ children = null as any }) => {
 
     try {
       const res = await fetch(
-        `${
-          process.env.REACT_APP_ETHERSCAN_URL
-        }?module=logs&action=getLogs&fromBlock=${10389525}&toBlock=latest&address=${
-          vestingContract.address
+        `${process.env.REACT_APP_ETHERSCAN_URL
+        }?module=logs&action=getLogs&fromBlock=${10389525}&toBlock=latest&address=${vestingContract.address
         }&topic1=${vestingIdHex}&apikey=${process.env.REACT_APP_ETHERSCAN_API}`
       ).then((res) => res.json());
       if (res && res.status === '1') {
         events = res.result.map(
           (item: any) =>
-            ({
-              timestamp: web3.utils.hexToNumber(item.timeStamp),
-              topic: item.topics[0],
-            } as VestingEvent)
+          ({
+            timestamp: web3.utils.hexToNumber(item.timeStamp),
+            topic: item.topics[0],
+          } as VestingEvent)
         );
       }
     } catch (err) {
