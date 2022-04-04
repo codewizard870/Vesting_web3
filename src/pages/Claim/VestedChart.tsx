@@ -107,7 +107,8 @@ const options = {
 
 const useStyles = makeStyles(() => ({
     root: {
-        maxWidth: '1000px',
+        width: '100%',
+        padding: '30px',
         boxSizing: 'border-box',
         display: 'flex',
         justifyContent: 'center'
@@ -121,9 +122,9 @@ const useStyles = makeStyles(() => ({
 export const VestedChart = () => {
     const classes = useStyles();
     const { account } = useWallet();
-    const { vestingList, vestingTypes, getClaimAvailable } = useVesting();
-    const [plots, setPlots] = useState<{ x: Number, y: number }[]>([])
+    const { vestingList, vestingTypes, getClaimAvailable } = useVesting();    
     const [chartOptions, setChartOptions] = useState({ ...options })
+
     useEffect(() => {
         const fetch = async () => {
             if (vestingList && vestingTypes) {
