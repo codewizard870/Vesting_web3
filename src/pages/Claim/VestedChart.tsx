@@ -8,7 +8,7 @@ import { bnToDec, decToBn } from 'utils';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 
-const seriesColor = ['#65a30d', '#0284c7', '#ea580c','#2563eb', '#4f46e5', '#7c3aed', '#db2777', '#e11d48', '#57534e', '#ca8a04']
+const seriesColor = ['#65a30d', '#0284c7', '#ea580c', '#2563eb', '#4f46e5', '#7c3aed', '#db2777', '#e11d48', '#57534e', '#ca8a04']
 const options = {
     title: {
         text: ''
@@ -53,8 +53,8 @@ const options = {
     },
     chart: {
         backgroundColor: 'transparent',
-        height: '45%',
-        // width: 450,
+        height: '30%',
+        // width: '100%',
         spacingBottom: 0,
         spacingLeft: 20,
         spacingRight: 60,
@@ -70,7 +70,6 @@ const options = {
         lineColor: 'transparent',
         minorGridLineColor: 'transparent',
         tickColor: 'transparent',
-        // type: 'datetime',
         labels: {
             style: {
                 color: 'transparent',
@@ -80,9 +79,6 @@ const options = {
         }
     },
     yAxis: {
-        // visible: false,
-        // min: 0,
-        // max: 10,
         tickAmount: 5,
         lineColor: 'transparent',
         minorGridLineColor: 'transparent',
@@ -110,19 +106,14 @@ const useStyles = makeStyles(() => ({
         width: '100%',
         padding: '30px',
         boxSizing: 'border-box',
-        display: 'flex',
-        justifyContent: 'center'
-    },
-    table: {
-        width: '100%',
-        minWidth: 700,
-    },
+
+    }
 }));
 
 export const VestedChart = () => {
     const classes = useStyles();
     const { account } = useWallet();
-    const { vestingList, vestingTypes, getClaimAvailable } = useVesting();    
+    const { vestingList, vestingTypes, getClaimAvailable } = useVesting();
     const [chartOptions, setChartOptions] = useState({ ...options })
 
     useEffect(() => {
@@ -139,21 +130,23 @@ export const VestedChart = () => {
                     chartPoints.push({ x: 0, y: 0 })
                     let y2 = item.claimedAmount
                     if (res) {
-                        y2 += Number(res)                        
-                    }                                        
+                        y2 += Number(res)
+                    }
                     chartPoints.push({ x: new Date(), y: y2 })
                     chartSeries.push({ name: vestingTypes[item.typeId].name, type: 'area', data: chartPoints, color: seriesColor[index] })
                 }))
 
-                setChartOptions({ ...options, series: chartSeries })                
+                setChartOptions({ ...options, series: chartSeries })
             }
         }
         fetch()
     }, [vestingList, vestingTypes])
 
     return (
-        <div className={classes.root}>
-            <HighchartsReact highcharts={Highcharts} options={chartOptions} />
+        <div style={{ maxWidth: '1400px', width: '100%' }}>
+            <div className={classes.root}>
+                <HighchartsReact highcharts={Highcharts} options={chartOptions} />
+            </div>
         </div>
     );
 };
