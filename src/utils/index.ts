@@ -5,8 +5,9 @@ export const getShortWalletAddress = (account: string) => {
   return `${account.slice(0, 6)}...${account.slice(-4)}`;
 };
 
-export const bnToDec = (bn: BigNumber, decimals: number = 18) => {
-  return bn.dividedBy(new BigNumber(10).pow(decimals)).toNumber();
+export const bnToDec = (bn: BigNumber, decimals: number = 18, fixed: number = 0) => {
+  let res:BigNumber = bn.dividedBy(new BigNumber(10).pow(decimals));  
+  return Math.round(res.toNumber()*(10**fixed))/(10**fixed)
 };
 
 export const decToBn = (dec: number, decimals: number = 18) => {

@@ -30,6 +30,7 @@ export interface VestingType {
   lockupDuration: number;
   maxAmount: number;
   vestedAmount: number;
+  vestingFrequencyId: number;
 }
 
 export interface VestingInfo {
@@ -50,3 +51,12 @@ export interface VestingEvent {
   timestamp: number;
   topic: string;
 }
+
+export const VF_LIST = [
+  { value: 0, label: "Continuous" },
+  { value: 1, label: "Daily" },
+  { value: 2, label: "Weekly" },
+  { value: 3, label: "Monthly" },
+  { value: 4, label: "Quarterly" },
+  { value: 5, label: "Yearly" },
+]

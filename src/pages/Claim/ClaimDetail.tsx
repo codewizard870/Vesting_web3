@@ -8,7 +8,7 @@ import { VestingInfo, VestingType } from 'types';
 
 const useStyles = makeStyles(() => ({
   root: {
-    width: 600,
+    minWidth: 450,
     borderRadius: 5,
     border: '1px solid black',
     margin: '1rem',
@@ -21,13 +21,13 @@ const useStyles = makeStyles(() => ({
     alignItems: 'center',
   },
   title: {
-    width: '40%',
-    fontSize: 20,
+    width: '45%',
+    fontSize: 16,
   },
   value: {
-    width: '40%',
+    width: '35%',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 16,
   },
 }));
 
@@ -74,20 +74,20 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
     }
   }, [info, getAvailableAmount]);
 
-  const getVestedAmount = () => {
-    if (info) {
-      if (Math.round(availableAmount) === 0) {
-        return Math.round(info.claimedAmount);
-      }
-      const type = vestingTypes[info.typeId];
-      if (type) {
-        const duration = type.endTime - type.startTime;
-        const current = new Date().getTime() / 1000 - type.startTime;
-        return Math.round((info.amount * current) / duration);
-      }
-    }
-    return 0;
-  };
+  // const getVestedAmount = () => {
+  //   if (info) {
+  //     if (Math.round(availableAmount) === 0) {
+  //       return Math.round(info.claimedAmount);
+  //     }
+  //     const type = vestingTypes[info.typeId];
+  //     if (type) {
+  //       const duration = type.endTime - type.startTime;
+  //       const current = new Date().getTime() / 1000 - type.startTime;
+  //       return Math.round((info.amount * current) / duration);
+  //     }
+  //   }
+  //   return 0;
+  // };
 
   const handleClaim = async () => {
     setLoading(true);
@@ -135,12 +135,12 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
         </Typography>
       </Box>
 
-      <Box className={classes.row}>
+      {/* <Box className={classes.row}>
         <Typography className={classes.title}>Tokens vested</Typography>
         <Typography className={classes.value}>
           {getVestedAmount().toLocaleString()} FLD
         </Typography>
-      </Box>
+      </Box> */}
 
       <Box className={classes.row}>
         <Typography className={classes.title}>Available to claim</Typography>

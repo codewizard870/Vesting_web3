@@ -35,8 +35,7 @@ export const walletconnect = new WalletConnectConnector({
     4: 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
   },
   bridge: 'https://bridge.walletconnect.org',
-  qrcode: true,
-  pollingInterval: 12000,
+  qrcode: true
 });
 
 const WalletContext = React.createContext<Maybe<IWalletContext>>(null);

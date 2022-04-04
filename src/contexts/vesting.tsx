@@ -18,7 +18,8 @@ export interface IVestingContext {
     start: number,
     end: number,
     lockupDuration: number,
-    maxAmount: number
+    maxAmount: number,
+    vestingFrequencyId: number
   ) => Promise<boolean>;
   updateVestingType: (
     typeId: number,
@@ -26,7 +27,8 @@ export interface IVestingContext {
     start: number,
     end: number,
     lockupDuration: number,
-    maxAmount: number
+    maxAmount: number,
+    vestingFrequencyId: number
   ) => Promise<boolean>;
   addVesting: (
     typeId: number,
@@ -69,8 +71,9 @@ export const VestingProvider = ({ children = null as any }) => {
     if (account) {
       try {
         const res = await vestingContract.contract.methods
-          .admin(account)
+          .isAdmin(account)
           .call();
+          console.log(res)
         setVestingAdmin(res);
       } catch (err) {
         console.error(err);
@@ -106,6 +109,7 @@ export const VestingProvider = ({ children = null as any }) => {
               lockupDuration: Number(item[3]),
               maxAmount: bnToDec(new BigNumber(item[4])),
               vestedAmount: bnToDec(new BigNumber(item[5])),
+              vestingFrequencyId: Number(item[6])
             }))
           );
         });
@@ -187,7 +191,8 @@ export const VestingProvider = ({ children = null as any }) => {
     start: number,
     end: number,
     lockupDuration: number,
-    maxAmount: number
+    maxAmount: number,
+    vestingFrequencyId: number
   ) => {
     try {
       await vestingContract.contract.methods
@@ -196,7 +201,8 @@ export const VestingProvider = ({ children = null as any }) => {
           start,
           end,
           lockupDuration,
-          decToBn(maxAmount).toString(10)
+          decToBn(maxAmount).toString(10),
+          vestingFrequencyId
         )
         .send({ from: account });
       toast.success('Added successfully');
@@ -215,7 +221,8 @@ export const VestingProvider = ({ children = null as any }) => {
     start: number,
     end: number,
     lockupDuration: number,
-    maxAmount: number
+    maxAmount: number,
+    vestingFrequencyId: number
   ) => {
     try {
       await vestingContract.contract.methods
@@ -225,7 +232,8 @@ export const VestingProvider = ({ children = null as any }) => {
           start,
           end,
           lockupDuration,
-          decToBn(maxAmount).toString(10)
+          decToBn(maxAmount).toString(10),
+          vestingFrequencyId
         )
         .send({ from: account });
       toast.success('Updated successfully');
@@ -248,6 +256,7 @@ export const VestingProvider = ({ children = null as any }) => {
         .addVesting(typeId, recipient, decToBn(amount).toString(10))
         .send({ from: account });
       toast.success('Added successfully');
+      updateVestingTypes();
       updateVestingList();
       return true;
     } catch (err) {
@@ -267,6 +276,7 @@ export const VestingProvider = ({ children = null as any }) => {
         .updateVesting(vestingId, recipient, decToBn(amount).toString(10))
         .send({ from: account });
       toast.success('Updated successfully');
+      updateVestingTypes();
       updateVestingList();
       return true;
     } catch (err) {

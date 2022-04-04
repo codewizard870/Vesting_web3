@@ -93,10 +93,10 @@ export const VestingTable = () => {
   const { vestingTypes, vestingList } = useVesting();
 
   const [typeId, setTypeId] = useState(-1);
-  const [showHistory, setShowHistory] = useState(false);
-  const [showAdd, setShowAdd] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);  
   const [isEdit, setEdit] = useState(false);
   const [activeInfo, setActiveInfo] = useState<Maybe<VestingInfo>>(null);
+  const [isOpenAddVesting, setIsOpenAddVesting] = useState(false)
 
   useEffect(() => {
     if (typeId >= vestingTypes.length) {
@@ -104,10 +104,18 @@ export const VestingTable = () => {
     }
   }, [vestingTypes]);
 
+  const handleOpenAddVesting = () => {
+    setIsOpenAddVesting(true)
+  }
+
+  const handleCloseAddVesting = () => {
+    setIsOpenAddVesting(false)
+  }
+
   const handleAdd = (edit: boolean, info: Maybe<VestingInfo>) => {
     setEdit(edit);
     setActiveInfo(info);
-    setShowAdd(true);
+    handleOpenAddVesting()
   };
 
   const handleHistory = (info: Maybe<VestingInfo>) => {
@@ -115,13 +123,7 @@ export const VestingTable = () => {
     setShowHistory(true);
   };
 
-  return showAdd ? (
-    <AddVesting
-      edit={isEdit}
-      info={activeInfo}
-      onBack={() => setShowAdd(false)}
-    />
-  ) : showHistory ? (
+  return showHistory ? (
     <VestingHistory
       typeId={typeId}
       vestingId={activeInfo?.vestingId || 0}
@@ -129,6 +131,12 @@ export const VestingTable = () => {
     />
   ) : (
     <Card className={classes.root}>
+      <AddVesting
+        isOpen={isOpenAddVesting}
+        handleClose={handleCloseAddVesting}
+        edit={isEdit}
+        info={activeInfo}
+      />
       <Box className={classes.flex}>
         <h3>Client List</h3>
 

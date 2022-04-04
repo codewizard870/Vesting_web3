@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -13,8 +13,9 @@ import {
 } from '@material-ui/core';
 import { useVesting } from 'contexts';
 import { useHistory } from 'react-router-dom';
-import { VestingType } from 'types';
+import { VestingType, VF_LIST } from 'types';
 import { formatTime } from 'utils';
+import { AddVestingType } from './AddVestingType';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -34,15 +35,12 @@ const useStyles = makeStyles(() => ({
 
 interface ITypeItem {
   info: VestingType;
+  handleEdit: () => void
 }
 
-const TypeItem: React.FC<ITypeItem> = ({ info }) => {
+const TypeItem: React.FC<ITypeItem> = ({ info, handleEdit }) => {
   const classes = useStyles();
   const history = useHistory();
-
-  const handleEdit = async () => {
-    history.push(`/admin/vesting_type/edit/${info.typeId}`);
-  };
 
   return (
     <TableRow key={info.typeId}>
@@ -51,6 +49,7 @@ const TypeItem: React.FC<ITypeItem> = ({ info }) => {
       <TableCell>{new Date(info.startTime * 1000).toLocaleString()}</TableCell>
       <TableCell>{new Date(info.endTime * 1000).toLocaleString()}</TableCell>
       <TableCell>{formatTime(info.lockupDuration)}</TableCell>
+      <TableCell>{VF_LIST[info.vestingFrequencyId].label}</TableCell>
       <TableCell>{info.maxAmount.toLocaleString()} FLD</TableCell>
       <TableCell>{info.vestedAmount.toLocaleString()} FLD</TableCell>
       <TableCell
@@ -74,6 +73,23 @@ export const VestingTypeTable = () => {
   const classes = useStyles();
   const history = useHistory();
   const { vestingTypes } = useVesting();
+  const [isOpenAddType, setIsOpenAddType] = useState(false)
+  const [isEditType, setIsEditType] = useState(false)
+  const [editTypeId, setEditTypeId] = useState(0)
+
+  const handleOpenAddType = () => {
+    setIsOpenAddType(true)
+  }
+
+  const handleCloseAddType = () => {
+    setIsOpenAddType(false)
+  }
+
+  const handleEdit = (id: number) => {
+    setEditTypeId(id)
+    setIsEditType(true)
+    handleOpenAddType()
+  }
 
   return (
     <Card className={classes.root}>
@@ -84,12 +100,15 @@ export const VestingTypeTable = () => {
           variant="contained"
           className={classes.button}
           onClick={() => {
-            history.push('/admin/vesting_type/add');
+            setIsEditType(false)
+            handleOpenAddType()
           }}
         >
           Add Vesting Type
         </Button>
       </Box>
+
+      <AddVestingType handleClose={handleCloseAddType} isOpen={isOpenAddType} edit={isEditType} id={editTypeId} />
 
       <Table>
         <TableHead>
@@ -110,6 +129,9 @@ export const VestingTypeTable = () => {
               <b>Lockup Period</b>
             </TableCell>
             <TableCell>
+              <b>Vesting Frequency</b>
+            </TableCell>
+            <TableCell>
               <b>Total</b>
             </TableCell>
             <TableCell>
@@ -123,7 +145,7 @@ export const VestingTypeTable = () => {
 
         <TableBody>
           {vestingTypes.map((info, index) => (
-            <TypeItem info={info} key={index} />
+            <TypeItem info={info} key={index} handleEdit={() => handleEdit(info.typeId)} />
           ))}
         </TableBody>
       </Table>

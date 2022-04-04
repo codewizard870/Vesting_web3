@@ -7,11 +7,18 @@ import {
   makeStyles,
   TextField,
   Typography,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Dialog,
+  DialogContent
 } from '@material-ui/core';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { useVesting } from 'contexts';
 import { useHistory, useParams } from 'react-router-dom';
+import { VF_LIST } from 'types';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -40,17 +47,19 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface IAddVestingType {
-  edit?: boolean;
+  isOpen: boolean
+  handleClose: () => void
+  edit?: boolean
+  id: number
 }
 
 interface IParam {
   id?: string;
 }
 
-export const AddVestingType: React.FC<IAddVestingType> = ({ edit }) => {
+export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose, edit, id }) => {
   const classes = useStyles();
   const history = useHistory();
-  const { id } = useParams<IParam>();
   const { addVestingType, updateVestingType, vestingTypes } = useVesting();
 
   const [name, setName] = useState('');
@@ -59,19 +68,35 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ edit }) => {
   const [lockupDuration, setLockupDuration] = useState('');
   const [maxAmount, setMaxAmount] = useState('');
   const [loading, setLoading] = useState(false);
+  const [vestingFrequency, setVestingFrequency] = useState(0)
 
-  useEffect(() => {
+  useEffect(() => {    
     if (edit && vestingTypes.length > Number(id)) {
       const info = vestingTypes[Number(id)];
       setName(info.name);
-      setStartTime(new Date(info.startTime * 1000));
+      setStartTime(new Date(info.startTime * 1000));      
       setEndTime(new Date(info.endTime * 1000));
       setLockupDuration(
         Math.abs(info.lockupDuration / 60 / 60 / 24).toString()
       );
       setMaxAmount(info.maxAmount.toString());
+      setVestingFrequency(info.vestingFrequencyId)
     }
-  }, [vestingTypes]);
+  }, [vestingTypes, edit, id, isOpen]);
+
+  useEffect(() => {
+    if (isOpen && !edit){       
+      setStartTime(new Date());
+      setEndTime(new Date());      
+    }
+    if (!isOpen){
+      setName('')
+      setLockupDuration('');
+      setMaxAmount('');
+      setLoading(false);
+      setVestingFrequency(0);
+    }
+  }, [isOpen])
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -84,7 +109,8 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ edit }) => {
           Math.floor(startTime.getTime() / 1000),
           Math.floor(endTime.getTime() / 1000),
           Math.floor(Number(lockupDuration)) * 24 * 60 * 60,
-          Number(maxAmount)
+          Number(maxAmount),
+          vestingFrequency
         );
       }
     } else {
@@ -93,91 +119,120 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ edit }) => {
         Math.floor(startTime.getTime() / 1000),
         Math.floor(endTime.getTime() / 1000),
         Math.floor(Number(lockupDuration)) * 24 * 60 * 60,
-        Number(maxAmount)
+        Number(maxAmount),
+        vestingFrequency
       );
     }
     setLoading(false);
 
     if (res) {
-      history.push('/admin/vesting_type');
+      handleClose()
     }
   };
 
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <Box className={clsx(classes.root, classes.flex)}>
-        <Typography variant="h5">
-          {edit ? 'Edit' : 'Add'} vesting type
-        </Typography>
-        <br />
+    <div>
+      <Dialog
+        onClose={() => loading ? () => { } : handleClose()}
+        aria-labelledby="customized-dialog-title"
+        open={isOpen}
+      >
+        <DialogContent>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <Box className={clsx(classes.root, classes.flex)}>
+              <Typography variant="h5">
+                {edit ? 'Edit' : 'Add'} vesting type
+              </Typography>
+              <br />
 
-        <Box className={classes.row}>
-          <TextField
-            variant="outlined"
-            label="Type Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            disabled={loading}
-            className={classes.input}
-          />
-        </Box>
+              <Box className={classes.row}>
+                <TextField
+                  variant="outlined"
+                  label="Type Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  disabled={loading}
+                  className={classes.input}
+                />
+              </Box>
 
-        <Box className={classes.row}>
-          <DateTimePicker
-            label="Start Time"
-            value={startTime}
-            onChange={(_date) => setStartTime(_date as Date)}
-            className={classes.input}
-            disabled={loading}
-          />
-        </Box>
+              <Box className={classes.row}>
+                <DateTimePicker
+                  label="Start Time"
+                  value={startTime}
+                  onChange={(_date) => setStartTime(_date as Date)}
+                  className={classes.input}
+                  disabled={loading}
+                />
+              </Box>
 
-        <Box className={classes.row}>
-          <DateTimePicker
-            label="End Time"
-            value={endTime}
-            onChange={(_date) => setEndTime(_date as Date)}
-            className={classes.input}
-            disabled={loading}
-          />
-        </Box>
+              <Box className={classes.row}>
+                <DateTimePicker
+                  label="End Time"
+                  value={endTime}
+                  onChange={(_date) => setEndTime(_date as Date)}
+                  className={classes.input}
+                  disabled={loading}
+                />
+              </Box>
 
-        <Box className={classes.row}>
-          <TextField
-            variant="outlined"
-            type="number"
-            label="Lockup Duration (days)"
-            value={lockupDuration}
-            onChange={(e) => setLockupDuration(e.target.value)}
-            disabled={loading}
-            className={classes.input}
-          />
-        </Box>
+              <Box className={classes.row}>
+                <TextField
+                  variant="outlined"
+                  type="number"
+                  label="Lockup Duration (days)"
+                  value={lockupDuration}
+                  onChange={(e) => setLockupDuration(e.target.value)}
+                  disabled={loading}
+                  className={classes.input}
+                />
+              </Box>
 
-        <Box className={classes.row}>
-          <TextField
-            variant="outlined"
-            type="number"
-            label="Total Amount"
-            value={maxAmount}
-            onChange={(e) => setMaxAmount(e.target.value)}
-            disabled={loading}
-            className={classes.input}
-          />
-        </Box>
+              <Box className={classes.row}>
+                <FormControl style={{ width: '100%' }} disabled={loading}>
+                  <InputLabel id="vesting-type-label">Vesting Frequency</InputLabel>
+                  <Select
+                    labelId="vesting-type-label"
+                    value={vestingFrequency}
+                    label="Vesting Type"
+                    onChange={(e) => setVestingFrequency(Number(e.target.value))}
+                  >
+                    {VF_LIST.map((info) => (
+                      <MenuItem value={info.value} key={info.value}>
+                        {info.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
 
-        <Box className={classes.row}>
-          <Button
-            color="primary"
-            variant="contained"
-            disabled={loading || !(Number(maxAmount) > 0)}
-            className={classes.input}
-            onClick={handleSubmit}
-          >
-            {loading ? 'Confirming' : 'Confirm'}
-          </Button>
-        </Box>
-      </Box>
-    </MuiPickersUtilsProvider>
+              <Box className={classes.row}>
+                <TextField
+                  variant="outlined"
+                  type="number"
+                  label="Total Amount"
+                  value={maxAmount}
+                  onChange={(e) => setMaxAmount(e.target.value)}
+                  disabled={loading}
+                  className={classes.input}
+                />
+              </Box>
+
+              <Box className={classes.row}>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  disabled={loading || !(Number(maxAmount) > 0)}
+                  className={classes.input}
+                  onClick={handleSubmit}
+                >
+                  {loading ? 'Confirming' : 'Confirm'}
+                </Button>
+              </Box>
+            </Box>
+          </MuiPickersUtilsProvider>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };

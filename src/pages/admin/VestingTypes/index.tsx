@@ -20,10 +20,6 @@ export const VestingTypes = () => {
   return (
     <Box className={clsx(classes.root)}>
       <Switch>
-        <Route path="/admin/vesting_type/add" component={AddVestingType} />
-        <Route path="/admin/vesting_type/edit/:id">
-          <AddVestingType edit />
-        </Route>
         <Route path="/admin/vesting_type" component={VestingTypeTable} />
         <Redirect to="/admin/vesting_type" />
       </Switch>

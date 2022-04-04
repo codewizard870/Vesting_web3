@@ -11,6 +11,8 @@ import {
   Select,
   TextField,
   Typography,
+  Dialog,
+  DialogContent
 } from '@material-ui/core';
 import { useVesting } from 'contexts';
 import { VestingInfo } from 'types';
@@ -42,12 +44,13 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface IAddVesting {
+  isOpen: boolean
+  handleClose: () => void
   edit: boolean;
   info: Maybe<VestingInfo>;
-  onBack: () => void;
 }
 
-export const AddVesting: React.FC<IAddVesting> = ({ edit, info, onBack }) => {
+export const AddVesting: React.FC<IAddVesting> = ({ isOpen, handleClose, edit, info }) => {
   const classes = useStyles();
   const { addVesting, updateVesting, vestingTypes } = useVesting();
 
@@ -61,7 +64,16 @@ export const AddVesting: React.FC<IAddVesting> = ({ edit, info, onBack }) => {
       setRecipient(info.recipient);
       setValue(info.amount.toString());
     }
-  }, [edit, info]);
+  }, [edit, info, isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setTypeId(0);
+      setRecipient('');
+      setValue('');
+      setLoading(false);
+    }
+  }, [isOpen])
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -76,7 +88,7 @@ export const AddVesting: React.FC<IAddVesting> = ({ edit, info, onBack }) => {
     setLoading(false);
 
     if (res) {
-      onBack();
+      handleClose()
     }
   };
 
@@ -91,81 +103,82 @@ export const AddVesting: React.FC<IAddVesting> = ({ edit, info, onBack }) => {
   };
 
   return (
-    <Box className={clsx(classes.root, classes.flex)}>
-      <Typography variant="h5">{edit ? 'Edit' : 'Add'} User Vesting</Typography>
-      <br />
+    <div>
+      <Dialog
+        onClose={() => loading ? () => { } : handleClose()}
+        aria-labelledby="customized-dialog-title"
+        open={isOpen}
+      >
+        <DialogContent>
+          <Box className={clsx(classes.root, classes.flex)}>
+            <Typography variant="h5">{edit ? 'Edit' : 'Add'} User Vesting</Typography>
+            <br />
 
-      {edit && info ? (
-        <Box className={classes.row}>
-          <Typography>
-            Type:{' '}
-            <b>
-              {vestingTypes.length > typeId ? vestingTypes[typeId].name : ''}
-            </b>
-          </Typography>
-        </Box>
-      ) : (
-        <FormControl className={classes.row}>
-          <InputLabel id="vesting-type-label1">Type</InputLabel>
-          <Select
-            labelId="vesting-type-label1"
-            value={typeId}
-            label="Vesting Type"
-            style={{ width: '100%' }}
-            onChange={(e) => setTypeId(Number(e.target.value))}
-          >
-            {vestingTypes.map((type) => (
-              <MenuItem value={type.typeId} key={type.typeId}>
-                {type.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      )}
+            {edit && info ? (
+              <Box className={classes.row}>
+                <Typography>
+                  Type:{' '}
+                  <b>
+                    {vestingTypes.length > typeId ? vestingTypes[typeId].name : ''}
+                  </b>
+                </Typography>
+              </Box>
+            ) : (
+              <FormControl className={classes.row}>
+                <InputLabel id="vesting-type-label1">Type</InputLabel>
+                <Select
+                  labelId="vesting-type-label1"
+                  value={typeId}
+                  label="Vesting Type"
+                  style={{ width: '100%' }}
+                  onChange={(e) => setTypeId(Number(e.target.value))}
+                >
+                  {vestingTypes.map((type) => (
+                    <MenuItem value={type.typeId} key={type.typeId}>
+                      {type.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
 
-      <Box className={classes.row}>
-        <TextField
-          variant="outlined"
-          label="User Wallet"
-          value={recipient}
-          onChange={(e) => setRecipient(e.target.value)}
-          disabled={loading}
-          className={classes.input}
-        />
-      </Box>
+            <Box className={classes.row}>
+              <TextField
+                variant="outlined"
+                label="User Wallet"
+                value={recipient}
+                onChange={(e) => setRecipient(e.target.value)}
+                disabled={loading}
+                className={classes.input}
+              />
+            </Box>
 
-      <Box className={classes.row}>
-        <TextField
-          variant="outlined"
-          type="number"
-          label="Amount"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          disabled={loading}
-          className={classes.input}
-        />
-      </Box>
+            <Box className={classes.row}>
+              <TextField
+                variant="outlined"
+                type="number"
+                label="Amount"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                disabled={loading}
+                className={classes.input}
+              />
+            </Box>
 
-      <Box className={classes.row}>
-        <Button
-          color="primary"
-          variant="contained"
-          disabled={loading || !validAmount()}
-          className={classes.input}
-          onClick={handleSubmit}
-        >
-          {loading ? 'Confirming' : 'Confirm'}
-        </Button>
-        <Button
-          color="primary"
-          variant="outlined"
-          disabled={loading}
-          className={classes.input}
-          onClick={onBack}
-        >
-          Back
-        </Button>
-      </Box>
-    </Box>
+            <Box className={classes.row}>
+              <Button
+                color="primary"
+                variant="contained"
+                disabled={loading || !validAmount()}
+                className={classes.input}
+                onClick={handleSubmit}
+              >
+                {loading ? 'Confirming' : 'Confirm'}
+              </Button>
+            </Box>
+          </Box>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
