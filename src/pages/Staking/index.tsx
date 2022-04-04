@@ -9,6 +9,9 @@ const useStyles = makeStyles(() => ({
     width: '100%',
     padding: '2rem',
     boxSizing: 'border-box',
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column'
   },
   flex: {
     display: 'flex',

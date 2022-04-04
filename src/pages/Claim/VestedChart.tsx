@@ -109,6 +109,8 @@ const useStyles = makeStyles(() => ({
     root: {
         maxWidth: '1000px',
         boxSizing: 'border-box',
+        display: 'flex',
+        justifyContent: 'center'
     },
     table: {
         width: '100%',

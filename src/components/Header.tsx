@@ -18,23 +18,38 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
+  menu: {
+    display: 'flex',
+    gap: '30px'
+  },
   link: {
     textDecoration: 'none',
     color: theme.palette.text.primary,
     padding: '10px',
     fontWeight: 600,
   },
+  signout: {
+    color: theme.palette.text.primary,
+    padding: '10px',
+    fontWeight: 600,
+    cursor: 'pointer'
+  }
 }));
 
 export const Header = () => {
   const classes = useStyles();
-  const { connected, account, connect } = useWallet();
-  const { getUsername } = useSession();
+  const { connected, account, connect, disconnect } = useWallet();
+  const { getUsername, requestUserSignout } = useSession();
   const { isVestingAdmin } = useVesting();
+
+  const userSignOut = () => {
+    requestUserSignout()
+    window.location.reload()
+  }
 
   return (
     <Box className={clsx(classes.root, classes.flex)}>
-      <Box mr="2rem">
+      <Box mr="2rem" className={classes.menu}>
         <Link className={classes.link} to="/claiming">
           Claiming
         </Link>
@@ -51,6 +66,11 @@ export const Header = () => {
             Sign in
           </Link>
         )}
+        {checkAuthentication() && (
+          <div className={classes.signout} onClick={userSignOut}>
+            Sign out
+          </div>
+        )}
       </Box>
       <Box className={classes.flex}>
         {checkAuthentication() && (
@@ -60,9 +80,20 @@ export const Header = () => {
         )}
 
         {connected ? (
-          <Typography variant="h6">
-            <b>{getShortWalletAddress(account || '')}</b>
-          </Typography>
+          <div>
+            <div>
+              <b>{getShortWalletAddress(account || '')}</b>
+            </div>
+            <Button
+              size="small"
+              color="inherit"
+              variant="outlined"
+              style={{ height: 30 }}
+              onClick={() => disconnect()}
+            >
+              Disconnect
+            </Button>
+          </div>
         ) : (
           <Button
             color="primary"

@@ -15,13 +15,14 @@ export const decToBn = (dec: number, decimals: number = 18) => {
 };
 
 export const checkAuthentication = () => {
-  const authorizationToken = localStorage.getItem('jwtToken');
+  const authorizationToken = localStorage.getItem('jwtToken');  
   if (authorizationToken == null) {
     return false;
   }
   try {
-    jwt.decode(authorizationToken);
-    return true;
+    let token=jwt.decode(authorizationToken);
+    if (token) return true;
+    else return false;
   } catch (err) {
     return false;
   }

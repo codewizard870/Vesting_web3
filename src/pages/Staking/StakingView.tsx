@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import { useStaking } from 'contexts';
 import { StakingPool } from './StakingPool';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -16,21 +17,36 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     justifyContent: 'space-between',
   },
+  progress: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center'
+  }
 }));
 
 export const StakingView = () => {
   const classes = useStyles();
   const { poolList, updatePoolList } = useStaking();
-
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    updatePoolList();
+    const fetch = async () =>{
+      await updatePoolList();
+      setIsLoading(false)
+    }
+    fetch()
   }, []);
-
+  
   return (
-    <Box className={clsx(classes.root, classes.flex)}>
-      {poolList.map((poolInfo, pid) => (
-        <StakingPool poolInfo={poolInfo} pid={pid} />
-      ))}
-    </Box>
+    <div>
+      {!isLoading ?
+        <Box className={clsx(classes.root, classes.flex)}>
+          {poolList.map((poolInfo, pid) => (
+            <StakingPool poolInfo={poolInfo} pid={pid} />
+          ))}
+        </Box> :
+        <div className={classes.progress}>
+          <CircularProgress />
+        </div>}
+    </div>
   );
 };

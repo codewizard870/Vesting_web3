@@ -10,6 +10,7 @@ export interface ISessionContext {
     password: string,
     name: string
   ) => Promise<any>;
+  requestUserSignout: () => void
 }
 
 const SessionContext = React.createContext<Maybe<ISessionContext>>(null);
@@ -54,9 +55,15 @@ export const SessionProvider = ({ children = null as any }) => {
     ).then((res) => res.json());
   };
 
+  const requestUserSignout = () => {
+    localStorage.setItem('jwtToken', '');
+    localStorage.setItem('username', '');
+    localStorage.setItem('role', '');
+  };
+
   return (
     <SessionContext.Provider
-      value={{ getUsername, requestUserSignin, requestUserSignup }}
+      value={{ getUsername, requestUserSignin, requestUserSignup, requestUserSignout }}
     >
       {children}
     </SessionContext.Provider>

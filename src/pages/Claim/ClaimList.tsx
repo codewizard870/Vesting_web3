@@ -10,6 +10,7 @@ const useStyles = makeStyles(() => ({
     boxSizing: 'border-box',
     display: 'flex',
     flexWrap: 'wrap',
+    justifyContent: 'space-around'
   },
 }));
 
