@@ -2,7 +2,7 @@
 import React from 'react';
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import { ClaimList } from './ClaimList';
-import { VestedChart } from './VestedChart';
+
 const useStyles = makeStyles(() => ({
   root: {
     width: '100%',
@@ -26,8 +26,7 @@ export const Claim = () => {
         connect and claim the tokens, vesting mechanics explained, plus risk and
         warnings (be aware of the phishing sties etc)
       </Typography>
-      <br />
-      <VestedChart />
+      <br />      
       <ClaimList />
     </Box>
   );
