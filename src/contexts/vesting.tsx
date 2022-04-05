@@ -13,6 +13,7 @@ export interface IVestingContext {
   vestingList: VestingInfo[];
   claim: (vestingId: number) => void;
   getClaimAvailable: (vestingId: number) => Promise<number>;
+  getVestingFrequency: (vfId: number) => Promise<number>;
   addVestingType: (
     name: string,
     start: number,
@@ -73,7 +74,6 @@ export const VestingProvider = ({ children = null as any }) => {
         const res = await vestingContract.contract.methods
           .isAdmin(account)
           .call();
-          console.log(res)
         setVestingAdmin(res);
       } catch (err) {
         console.error(err);
@@ -180,6 +180,18 @@ export const VestingProvider = ({ children = null as any }) => {
         .claimAvailable(vestingId)
         .call();
       return bnToDec(new BigNumber(res));
+    } catch (err) {
+      console.error(err);
+    }
+    return 0;
+  };
+
+  const getVestingFrequency = async (vfId: number) => {
+    try {
+      const res = await vestingContract.contract.methods
+        .vestingFrequencyList(vfId)
+        .call();
+      return Number(res);
     } catch (err) {
       console.error(err);
     }
@@ -323,6 +335,7 @@ export const VestingProvider = ({ children = null as any }) => {
         vestingList,
         claim,
         getClaimAvailable,
+        getVestingFrequency,
         addVestingType,
         updateVestingType,
         addVesting,

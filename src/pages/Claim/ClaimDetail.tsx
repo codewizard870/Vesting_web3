@@ -5,15 +5,35 @@ import { useVesting, useWallet } from 'contexts';
 import { useHistory } from 'react-router-dom';
 import { formatTime } from 'utils';
 import { VestingInfo, VestingType } from 'types';
+import { VestedChart } from './VestedChart';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    minWidth: 450,
-    borderRadius: 5,
-    border: '1px solid black',
+    display: 'flex',    
+    gap: '30px',
+    width: '100%',
     margin: '1rem',
     padding: '1rem',
-    boxSizing: 'border-box',
+    borderRadius: 5,
+    border: '1px solid black',
+    boxSizing: 'border-box',    
+    [theme.breakpoints.down('lg')]: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexWrap: 'wrap'
+    },
+    [theme.breakpoints.up('lg')]: {
+      alignItems: 'center',    
+      flexWrap: 'nowrap'  
+    }
+  },
+  card: {       
+    [theme.breakpoints.down('lg')]: {
+      minWidth: 750
+    },
+    [theme.breakpoints.up('lg')]: {
+      minWidth: 450
+    }    
   },
   row: {
     padding: '1rem',
@@ -47,8 +67,8 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
 
   const nextClaim = Math.max(
     (info?.lastClaim || 0) +
-      (type?.lockupDuration || 0) -
-      Math.floor(new Date().getTime() / 1000),
+    (type?.lockupDuration || 0) -
+    Math.floor(new Date().getTime() / 1000),
     0
   );
 
@@ -74,21 +94,6 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
     }
   }, [info, getAvailableAmount]);
 
-  // const getVestedAmount = () => {
-  //   if (info) {
-  //     if (Math.round(availableAmount) === 0) {
-  //       return Math.round(info.claimedAmount);
-  //     }
-  //     const type = vestingTypes[info.typeId];
-  //     if (type) {
-  //       const duration = type.endTime - type.startTime;
-  //       const current = new Date().getTime() / 1000 - type.startTime;
-  //       return Math.round((info.amount * current) / duration);
-  //     }
-  //   }
-  //   return 0;
-  // };
-
   const handleClaim = async () => {
     setLoading(true);
     if (info) {
@@ -98,88 +103,91 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
   };
 
   return (
-    <Box className={classes.root}>
-      <Box className={classes.row}>
-        <Typography className={classes.title}>Vesting Type</Typography>
-        <Typography className={classes.value}>{type?.name || ''}</Typography>
+    <Box className={classes.root}>      
+      <Box className={classes.card}>        
+        <Box className={classes.row}>
+          <Typography className={classes.title}>Vesting Type</Typography>
+          <Typography className={classes.value}>{type?.name || ''}</Typography>
+        </Box>
+
+        <Box className={classes.row}>
+          <Typography className={classes.title}>Total Amount</Typography>
+          <Typography className={classes.value}>
+            {info?.amount.toLocaleString() || 0} FLD
+          </Typography>
+        </Box>
+
+        <Box className={classes.row}>
+          <Typography className={classes.title}>Next unlock in</Typography>
+          <Typography className={classes.value}>
+            {info ? (nextClaim > 0 ? formatTime(nextClaim) : 'Available') : ''}
+          </Typography>
+        </Box>
+
+        <Box className={classes.row}>
+          <Typography className={classes.title}>Tokens pending</Typography>
+          <Typography className={classes.value}>
+            {Math.round(
+              (info?.amount || 0) - (info?.claimedAmount || 0)
+            ).toLocaleString()}{' '}
+            FLD
+          </Typography>
+        </Box>
+
+        <Box className={classes.row}>
+          <Typography className={classes.title}>Tokens claimed</Typography>
+          <Typography className={classes.value}>
+            {Math.round(info?.claimedAmount || 0).toLocaleString()} FLD
+          </Typography>
+        </Box>
+
+        <Box className={classes.row}>
+          <Typography className={classes.title}>Tokens vested</Typography>
+          <Typography className={classes.value}>
+            {Math.round((info?.claimedAmount || 0) + availableAmount).toLocaleString()} FLD
+          </Typography>
+        </Box>
+
+        <Box className={classes.row}>
+          <Typography className={classes.title}>Available to claim</Typography>
+          <Typography className={classes.value}>
+            {Math.round(availableAmount).toLocaleString()} FLD
+          </Typography>
+
+          <Button
+            color="primary"
+            variant="contained"
+            style={{ height: 50 }}
+            disabled={
+              loading ||
+              Math.round(availableAmount) <= 0 ||
+              nextClaim > 0 ||
+              !info
+            }
+            onClick={handleClaim}
+          >
+            {loading ? 'Claiming' : 'Claim'}
+          </Button>
+        </Box>
+
+        <Box className={classes.row}>
+          <Typography className={classes.title}>Your token balance</Typography>
+          <Typography className={classes.value}>
+            {tokenBalance.toLocaleString()} FLD
+          </Typography>
+          <Button
+            color="primary"
+            variant="contained"
+            style={{ height: 50 }}
+            onClick={() => {
+              history.push('/staking');
+            }}
+          >
+            Stake
+          </Button>
+        </Box>
       </Box>
-
-      <Box className={classes.row}>
-        <Typography className={classes.title}>Total Amount</Typography>
-        <Typography className={classes.value}>
-          {info?.amount.toLocaleString() || 0} FLD
-        </Typography>
-      </Box>
-
-      <Box className={classes.row}>
-        <Typography className={classes.title}>Next unlock in</Typography>
-        <Typography className={classes.value}>
-          {info ? (nextClaim > 0 ? formatTime(nextClaim) : 'Available') : ''}
-        </Typography>
-      </Box>
-
-      <Box className={classes.row}>
-        <Typography className={classes.title}>Tokens pending</Typography>
-        <Typography className={classes.value}>
-          {Math.round(
-            (info?.amount || 0) - (info?.claimedAmount || 0)
-          ).toLocaleString()}{' '}
-          FLD
-        </Typography>
-      </Box>
-
-      <Box className={classes.row}>
-        <Typography className={classes.title}>Tokens claimed</Typography>
-        <Typography className={classes.value}>
-          {Math.round(info?.claimedAmount || 0).toLocaleString()} FLD
-        </Typography>
-      </Box>
-
-      {/* <Box className={classes.row}>
-        <Typography className={classes.title}>Tokens vested</Typography>
-        <Typography className={classes.value}>
-          {getVestedAmount().toLocaleString()} FLD
-        </Typography>
-      </Box> */}
-
-      <Box className={classes.row}>
-        <Typography className={classes.title}>Available to claim</Typography>
-        <Typography className={classes.value}>
-          {Math.round(availableAmount).toLocaleString()} FLD
-        </Typography>
-
-        <Button
-          color="primary"
-          variant="contained"
-          style={{ height: 50 }}
-          disabled={
-            loading ||
-            Math.round(availableAmount) <= 0 ||
-            nextClaim > 0 ||
-            !info
-          }
-          onClick={handleClaim}
-        >
-          {loading ? 'Claiming' : 'Claim'}
-        </Button>
-      </Box>
-
-      <Box className={classes.row}>
-        <Typography className={classes.title}>Your token balance</Typography>
-        <Typography className={classes.value}>
-          {tokenBalance.toLocaleString()} FLD
-        </Typography>
-        <Button
-          color="primary"
-          variant="contained"
-          style={{ height: 50 }}
-          onClick={() => {
-            history.push('/staking');
-          }}
-        >
-          Stake
-        </Button>
-      </Box>
+      <VestedChart info={info} />
     </Box>
   );
 };

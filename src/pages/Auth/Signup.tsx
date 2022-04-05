@@ -82,7 +82,7 @@ export const Signup = () => {
         if (res.errors) {
           setErrors(res.errors);
         } else {
-          history.push('/signin');
+          history.push('/signin');          
         }
       } catch (err) {
         console.log(err);

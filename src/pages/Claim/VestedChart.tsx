@@ -7,6 +7,7 @@ import HighchartsReact from "highcharts-react-official"
 import { bnToDec, decToBn } from 'utils';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
+import { VestingInfo, VestingType } from 'types';
 
 const seriesColor = ['#65a30d', '#0284c7', '#ea580c', '#2563eb', '#4f46e5', '#7c3aed', '#db2777', '#e11d48', '#57534e', '#ca8a04']
 const options = {
@@ -18,14 +19,14 @@ const options = {
             name: 'Vesting',
             type: 'area',
             data: [],
+            color: seriesColor[0]
         }
     ],
     tooltip: {
         enabled: true,
         formatter: function () {
             let t: any = this
-            if (t.x === 0) return ''
-            else return moment(t.x).format("MMMM Do YYYY, h:mm:ss") + '<br /><b>' + t.series.name + ': ' + t.y + '</b>'
+            return moment(t.x).format("MMMM Do YYYY, h:mm:ss") + '<br /><b>' + t.series.name + ': ' + t.y + '</b>'
         }
     },
     plotOptions: {
@@ -56,8 +57,8 @@ const options = {
         height: '30%',
         // width: '100%',
         spacingBottom: 0,
-        spacingLeft: 20,
-        spacingRight: 60,
+        spacingLeft: 0,
+        spacingRight: 30,
         animation: {
             duration: 1000
         }
@@ -70,6 +71,7 @@ const options = {
         lineColor: 'transparent',
         minorGridLineColor: 'transparent',
         tickColor: 'transparent',
+        // type: 'datetime',
         labels: {
             style: {
                 color: 'transparent',
@@ -110,43 +112,55 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-export const VestedChart = () => {
+export const VestedChart = ({ info }: { info: VestingInfo }) => {
     const classes = useStyles();
     const { account } = useWallet();
-    const { vestingList, vestingTypes, getClaimAvailable } = useVesting();
+    const { vestingList, vestingTypes, getClaimAvailable, getVestingFrequency } = useVesting();
     const [chartOptions, setChartOptions] = useState({ ...options })
 
     useEffect(() => {
         const fetch = async () => {
-            if (vestingList && vestingTypes) {
-                const userVestingList = vestingList.filter(
-                    (item) =>
-                        item.recipient.toLowerCase() === account?.toLowerCase() && item.amount > 0
-                );
-                let chartSeries: any = []
-                await Promise.all(userVestingList.map(async (item, index) => {
-                    const res = await getClaimAvailable(item.vestingId);
-                    let chartPoints: any = []
-                    chartPoints.push({ x: 0, y: 0 })
-                    let y2 = item.claimedAmount
-                    if (res) {
-                        y2 += Number(res)
+            if (vestingList.length > 0 && vestingTypes.length > 0 && info) {
+                let chartPoints: any = []
+                let startTime = vestingTypes[info.typeId].startTime
+                let endTime = vestingTypes[info.typeId].endTime
+                let curTime = Date.parse((new Date).toString())
+                let vfId = vestingTypes[info.typeId].vestingFrequencyId
+                let userAllocation = info.amount
+                let vf = await getVestingFrequency(vfId)
+                console.log(vf)
+                if (curTime < startTime) chartPoints.push({ x: curTime, y: 0 })
+                if (vf > 0) {
+                    if (vf <= 1) {
+                        chartPoints.push({ x: startTime, y: 0 })
+                        chartPoints.push({ x: endTime, y: userAllocation })
+                    } else {
+                        let preVested = 0
+                        for (let i = startTime; i < endTime; i += vf) {
+                            let cVfs = Math.floor(i - startTime) / vf
+                            let vested = userAllocation * cVfs * vf / (endTime - startTime)
+                            if (preVested !== vested) {
+                                chartPoints.push({ x: i, y: preVested })
+                            }
+                            chartPoints.push({ x: i, y: vested })
+                            preVested = vested
+                        }
+                        if (preVested !== userAllocation) {
+                            chartPoints.push({ x: endTime, y: preVested })
+                        }
+                        chartPoints.push({ x: endTime, y: userAllocation })
                     }
-                    chartPoints.push({ x: new Date(), y: y2 })
-                    chartSeries.push({ name: vestingTypes[item.typeId].name, type: 'area', data: chartPoints, color: seriesColor[index] })
-                }))
-
-                setChartOptions({ ...options, series: chartSeries })
+                }
+                let chartSeries: any = []
+                setChartOptions({ ...options, series: [{ name: vestingTypes[info.typeId].name, type: 'area', data: chartPoints, color: seriesColor[info.typeId] }] })
             }
         }
         fetch()
-    }, [vestingList, vestingTypes])
+    }, [vestingList, vestingTypes, info])
 
     return (
-        <div style={{ maxWidth: '1400px', width: '100%' }}>
-            <div className={classes.root}>
-                <HighchartsReact highcharts={Highcharts} options={chartOptions} />
-            </div>
+        <div style={{ minWidth: '500px', width: '100%' }}>
+            <HighchartsReact highcharts={Highcharts} options={chartOptions} />
         </div>
     );
 };
