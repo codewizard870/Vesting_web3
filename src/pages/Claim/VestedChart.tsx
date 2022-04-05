@@ -26,7 +26,7 @@ const options = {
         enabled: true,
         formatter: function () {
             let t: any = this
-            return moment(t.x).format("MMMM Do YYYY, h:mm:ss") + '<br /><b>' + t.series.name + ': ' + t.y + '</b>'
+            return moment(t.x * 1000).format("MMMM Do YYYY, h:mm:ss") + '<br /><b>' + t.series.name + ': ' + t.y + '</b>'
         }
     },
     plotOptions: {
@@ -45,9 +45,9 @@ const options = {
                 ]
             },
             marker: {
-                fillColor: '#001926',
-                lineColor: '#867EE8',
-                lineWidth: 2,
+                fillColor: 'transparent',
+                lineColor: 'transparent',
+                lineWidth: 1,
                 enabled: true
             }
         }
@@ -124,32 +124,55 @@ export const VestedChart = ({ info }: { info: VestingInfo }) => {
                 let chartPoints: any = []
                 let startTime = vestingTypes[info.typeId].startTime
                 let endTime = vestingTypes[info.typeId].endTime
-                let curTime = Date.parse((new Date).toString())
+                let curTime = Math.floor(Date.parse((new Date).toString()) / 1000)
                 let vfId = vestingTypes[info.typeId].vestingFrequencyId
                 let userAllocation = info.amount
                 let vf = await getVestingFrequency(vfId)
-                console.log(vf)
-                if (curTime < startTime) chartPoints.push({ x: curTime, y: 0 })
                 if (vf > 0) {
+                    if (curTime < startTime) chartPoints.push({ x: curTime, y: 0 })
                     if (vf <= 1) {
                         chartPoints.push({ x: startTime, y: 0 })
+                        if (curTime >= startTime && curTime < endTime) {
+                            let cVfs = Math.floor((curTime - startTime) / vf)
+                            let vested = Math.round(userAllocation * cVfs * vf / (endTime - startTime))
+                            chartPoints.push({ x: curTime, y: vested })
+                        }
                         chartPoints.push({ x: endTime, y: userAllocation })
+                        if (curTime >= endTime) {
+                            chartPoints.push({ x: curTime, y: userAllocation })
+                        }
                     } else {
                         let preVested = 0
+                        let passedNow = false
+                        let preTimepoint = startTime
                         for (let i = startTime; i < endTime; i += vf) {
-                            let cVfs = Math.floor(i - startTime) / vf
-                            let vested = userAllocation * cVfs * vf / (endTime - startTime)
+                            let cVfs = Math.floor((i - startTime) / vf)
+                            let vested = Math.round(userAllocation * cVfs * vf / (endTime - startTime))
+                            if (curTime >= preTimepoint && curTime < i && passedNow === false) {
+                                passedNow = true
+                                chartPoints.push({ x: curTime, y: preVested, marker:{enabled:true, fillColor: '#00ff00', lineWidth: 2, lineColor: '#ca8a04'} })
+                            }
                             if (preVested !== vested) {
                                 chartPoints.push({ x: i, y: preVested })
                             }
                             chartPoints.push({ x: i, y: vested })
+                            preTimepoint = i
                             preVested = vested
+                        }
+                        if (passedNow === false && curTime >= preTimepoint && curTime < endTime) {
+                            passedNow = true
+                            chartPoints.push({ x: curTime, y: preVested })
                         }
                         if (preVested !== userAllocation) {
                             chartPoints.push({ x: endTime, y: preVested })
                         }
                         chartPoints.push({ x: endTime, y: userAllocation })
+                        if (passedNow === false && curTime >= endTime) {
+                            passedNow = true
+                            chartPoints.push({ x: curTime, y: userAllocation })
+                        }
                     }
+                    if (curTime >= endTime) chartPoints.push({ x: curTime, y: userAllocation })
                 }
                 let chartSeries: any = []
                 setChartOptions({ ...options, series: [{ name: vestingTypes[info.typeId].name, type: 'area', data: chartPoints, color: seriesColor[info.typeId] }] })
