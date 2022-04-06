@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import BigNumber from 'bignumber.js';
-import config from 'config';
+import { config, ABI } from 'config';
 import React, { useEffect, useContext, useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 import { PoolInfo, UserInfo } from 'types';
@@ -112,7 +112,7 @@ export const StakingProvider = ({ children = null as any }) => {
   const getAllowance = async (token: string) => {
     try {
       const tokenContract = new web3.eth.Contract(
-        config.tokenAbi as any,
+        ABI.tokenAbi as any,
         token
       );
       const res = await tokenContract.methods
@@ -128,7 +128,7 @@ export const StakingProvider = ({ children = null as any }) => {
   };
 
   const approve = async (token: string) => {
-    const tokenContract = new web3.eth.Contract(config.tokenAbi as any, token);
+    const tokenContract = new web3.eth.Contract(ABI.tokenAbi as any, token);
 
     try {
       await tokenContract.methods

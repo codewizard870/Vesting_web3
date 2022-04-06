@@ -4,7 +4,7 @@ import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { useWeb3React } from '@web3-react/core';
 import { toast } from 'react-toastify';
-import config from '../config';
+import { config, NetworkName, ABI, TokenAddress, ChainId, ProviderUrl } from '../config';
 import { WalletType } from 'types';
 import { useLocalStorageState } from 'hooks';
 import { useContracts } from './contracts';
@@ -30,9 +30,9 @@ export const metamaskInjected = new InjectedConnector({
 });
 
 export const walletconnect = new WalletConnectConnector({
-  supportedChainIds: [5],
   rpc: {
-    4: 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+    1: ProviderUrl[ChainId.Mainnet] ?? '',
+    4: ProviderUrl[ChainId.Rinkeby] ?? ''
   },
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true
@@ -87,7 +87,29 @@ export const WalletProvider = ({ children = null as any }) => {
           setConnected(true);
         } else {
           deactivate();
-          toast.error(`Please connect ${config.networkName}!`);
+          let win:any=window
+          let ethereum = win.ethereum
+          if (ethereum) {
+            const hexChainId = '0x' + Number(config.networkId).toString(16)
+            const tx =
+              ethereum && ethereum.request
+                ? ethereum['request']({ method: 'wallet_switchEthereumChain', params: [{ chainId: hexChainId }] }).catch()
+                : ''
+                console.log(tx)
+            if (tx !== '') {
+              tx
+                .then((t:any) => {  
+                  setConnected(true);                           
+                  setTimeout(() => {
+                    window.location.reload()
+                  }, 100);
+                })
+
+            }else{
+              toast.error(`Please connect ${NetworkName[config.networkId]}!`);
+            }
+          }
+          
         }
       }
     } else {
@@ -107,8 +129,8 @@ export const WalletProvider = ({ children = null as any }) => {
   const updateTokenBalance = useCallback(async () => {
     if (account) {
       const tokenContract = new web3.eth.Contract(
-        config.tokenAbi as any,
-        config.tokenAddress
+        ABI.tokenAbi as any,
+        TokenAddress[config.networkId]
       );
 
       try {
@@ -129,8 +151,8 @@ export const WalletProvider = ({ children = null as any }) => {
 
   const getTokenBalance = async (userAddress: string, tokenAddress: string) => {
     const tokenContract = new web3.eth.Contract(
-      config.tokenAbi as any,
-      tokenAddress
+      ABI.tokenAbi as any,
+      TokenAddress[config.networkId]
     );
 
     try {

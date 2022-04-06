@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom';
 import { Vesting } from './Vesting';
 import { VestingTypes } from './VestingTypes';
+import { UserList } from './UserList';
 import { Box, makeStyles, Tab, Tabs } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -49,8 +50,10 @@ export const Admin = () => {
   const handleTabChange = (_: any, value: string) => {
     if (value === '0') {
       history.push('/admin/vesting');
-    } else {
+    } else if (value === '1') {
       history.push('/admin/vesting_type');
+    } else {
+      history.push('/admin/user');
     }
   };
 
@@ -59,12 +62,14 @@ export const Admin = () => {
       <Tabs value={tabValue} onChange={handleTabChange}>
         <Tab value="0" label="Wallet List" />
         <Tab value="1" label="Vesting Types" />
+        <Tab value="2" label="User List" />
       </Tabs>
 
       <Box className={classes.content}>
         <Switch>
           <Route path="/admin/vesting_type" component={VestingTypes} />
           <Route path="/admin/vesting" component={Vesting} />
+          <Route path="/admin/user" component={UserList} />
           <Redirect to="/admin/vesting" />
         </Switch>
       </Box>

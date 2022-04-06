@@ -48,13 +48,13 @@ const options = {
                 fillColor: 'transparent',
                 lineColor: 'transparent',
                 lineWidth: 1,
-                enabled: true
+                enabled: false
             }
         }
     },
     chart: {
         backgroundColor: 'transparent',
-        height: '30%',
+        height: '35%',
         // width: '100%',
         spacingBottom: 0,
         spacingLeft: 0,
@@ -113,6 +113,24 @@ const useStyles = makeStyles(() => ({
 }));
 
 const curPointMarker = { enabled: true, fillColor: '#00ff00', lineWidth: 2, lineColor: '#ca8a04' }
+const dotLine = {
+    zoneAxis: 'x',
+    lineWidth: 1,
+    zones: [{
+        value: 8
+    }, {
+        dashStyle: 'Dash',
+    }],
+    dataLabels: {
+        enabled: true,
+        formatter: function (): any {
+            let t: any = this
+            if (t.y > 0) return t.y
+            else return moment(t.x * 1000).format("MMMM Do YYYY, h:mm:ss")
+        }
+    }
+}
+
 
 export const VestedChart = ({ info }: { info: VestingInfo }) => {
     const classes = useStyles();
@@ -127,6 +145,7 @@ export const VestedChart = ({ info }: { info: VestingInfo }) => {
                 let chartPoints_afterStart: any = []
                 let chartPoints_beforeEnd: any = []
                 let chartPoints_afterEnd: any = []
+                let chartPoints_dotLine: any = []
                 let startTime = vestingTypes[info.typeId].startTime
                 let endTime = vestingTypes[info.typeId].endTime
                 let curTime = Math.floor(Date.parse((new Date).toString()) / 1000)
@@ -146,6 +165,8 @@ export const VestedChart = ({ info }: { info: VestingInfo }) => {
                             let cVfs = Math.floor((curTime - startTime) / vf)
                             let vested = Math.round(userAllocation * cVfs * vf / (endTime - startTime))
                             isBetween = true
+                            chartPoints_dotLine.push({ x: curTime, y: 0 })
+                            chartPoints_dotLine.push({ x: curTime, y: vested })
                             chartPoints_afterStart.push({ x: curTime, y: vested, marker: curPointMarker })
                             chartPoints_beforeEnd.push({ x: curTime, y: vested })
                         }
@@ -159,12 +180,15 @@ export const VestedChart = ({ info }: { info: VestingInfo }) => {
                             if (curTime >= preTimepoint && curTime < i && passedNow === false) {
                                 passedNow = true
                                 isBetween = true
+                                chartPoints_dotLine.push({ x: curTime, y: 0 })
+                                chartPoints_dotLine.push({ x: curTime, y: preVested })
                                 chartPoints_afterStart.push({ x: curTime, y: preVested, marker: curPointMarker })
                                 chartPoints_beforeEnd.push({ x: curTime, y: preVested })
                             }
                             if (preVested !== vested) {
                                 if (isBetween) chartPoints_beforeEnd.push({ x: i, y: preVested })
                                 else chartPoints_afterStart.push({ x: i, y: preVested })
+
                             }
                             if (isBetween) chartPoints_beforeEnd.push({ x: i, y: vested })
                             else chartPoints_afterStart.push({ x: i, y: vested })
@@ -179,7 +203,7 @@ export const VestedChart = ({ info }: { info: VestingInfo }) => {
                         if (preVested !== userAllocation) {
                             if (isBetween) chartPoints_beforeEnd.push({ x: endTime, y: preVested })
                             else chartPoints_afterStart.push({ x: endTime, y: preVested })
-                        }                
+                        }
                     }
                     if (isBetween) chartPoints_beforeEnd.push({ x: endTime, y: userAllocation })
                     else chartPoints_afterStart.push({ x: endTime, y: userAllocation })
@@ -189,16 +213,26 @@ export const VestedChart = ({ info }: { info: VestingInfo }) => {
                     }
                 }
                 let chartSeries: any = []
-                if (chartPoints_beforeStart.length>0){
+                 
+                chartSeries.push({ name: vestingTypes[info.typeId].name, type: 'area', data: [{ x: startTime, y: 0 }], color: "#555", ...dotLine })
+                let points: any = []               
+                points.push({ x: endTime, y: 0 })
+                points.push({ x: endTime, y: userAllocation })
+                chartSeries.push({ name: vestingTypes[info.typeId].name, type: 'area', data: points, color: "#555", ...dotLine })
+
+                if (chartPoints_dotLine.length > 0) {
+                    chartSeries.push({ name: vestingTypes[info.typeId].name, type: 'area', data: chartPoints_dotLine, color: "#555", ...dotLine })
+                }
+                if (chartPoints_beforeStart.length > 0) {
                     chartSeries.push({ name: vestingTypes[info.typeId].name, type: 'area', data: chartPoints_beforeStart, color: seriesColor[0] })
                 }
-                if (isBetween){
+                if (isBetween) {
                     chartSeries.push({ name: vestingTypes[info.typeId].name, type: 'area', data: chartPoints_afterStart, color: seriesColor[2] })
                     chartSeries.push({ name: vestingTypes[info.typeId].name, type: 'area', data: chartPoints_beforeEnd, color: seriesColor[1] })
-                }else{
+                } else {
                     chartSeries.push({ name: vestingTypes[info.typeId].name, type: 'area', data: chartPoints_afterStart, color: seriesColor[1] })
                 }
-                if (chartPoints_afterEnd.length>0){
+                if (chartPoints_afterEnd.length > 0) {
                     chartSeries.push({ name: vestingTypes[info.typeId].name, type: 'area', data: chartPoints_afterEnd, color: seriesColor[3] })
                 }
                 setChartOptions({ ...options, series: chartSeries })

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import Web3 from 'web3';
-import config from 'config';
+import { config, ABI, TokenAddress, VestingAddress, StakingAddress, ProviderUrl } from 'config';
 import { IContract } from 'types';
 import { Contract } from 'web3-eth-contract';
 
@@ -14,39 +14,39 @@ export interface IContractContext {
 
 const ContractContext = React.createContext<Maybe<IContractContext>>(null);
 
-const defaultWeb3 = new Web3((window as any).ethereum || config.providerUrl);
+const defaultWeb3 = new Web3((window as any).ethereum || ProviderUrl[config.networkId]);
 
 export const ContractProvider = ({ children = null as any }) => {
   const { library } = useWeb3React();
 
   const [web3, setWeb3] = useState<Web3>(defaultWeb3);
   const [tokenContract, setTokenContract] = useState<Contract>(
-    new defaultWeb3.eth.Contract(config.tokenAbi as any, config.tokenAddress)
+    new defaultWeb3.eth.Contract(ABI.tokenAbi as any, TokenAddress[config.networkId])
   );
   const [vestingContract, setVestingContract] = useState<Contract>(
     new defaultWeb3.eth.Contract(
-      config.vestingAbi as any,
-      config.vestingAddress
+      ABI.vestingAbi as any,
+      VestingAddress[config.networkId]
     )
   );
   const [stakingContract, setStakingContract] = useState<Contract>(
     new defaultWeb3.eth.Contract(
-      config.stakingAbi as any,
-      config.stakingAddress
+      ABI.stakingAbi as any,
+      StakingAddress[config.networkId]
     )
   );
 
   useEffect(() => {
-    const web3Obj = new Web3(library?.provider || config.providerUrl);
+    const web3Obj = new Web3(library?.provider || ProviderUrl[config.networkId]);
     setWeb3(web3Obj);
     setTokenContract(
-      new web3Obj.eth.Contract(config.tokenAbi as any, config.tokenAddress)
+      new web3Obj.eth.Contract(ABI.tokenAbi as any, TokenAddress[config.networkId])
     );
     setVestingContract(
-      new web3Obj.eth.Contract(config.vestingAbi as any, config.vestingAddress)
+      new web3Obj.eth.Contract(ABI.vestingAbi as any, VestingAddress[config.networkId])
     );
     setStakingContract(
-      new web3Obj.eth.Contract(config.stakingAbi as any, config.stakingAddress)
+      new web3Obj.eth.Contract(ABI.stakingAbi as any, StakingAddress[config.networkId])
     );
   }, [library]);
 
@@ -56,15 +56,15 @@ export const ContractProvider = ({ children = null as any }) => {
         web3,
         tokenContract: {
           contract: tokenContract,
-          address: config.tokenAddress,
+          address: TokenAddress[config.networkId] ?? '',
         },
         vestingContract: {
           contract: vestingContract,
-          address: config.vestingAddress,
+          address: VestingAddress[config.networkId] ?? '',
         },
         stakingContract: {
           contract: stakingContract,
-          address: config.stakingAddress,
+          address: StakingAddress[config.networkId] ?? '',
         },
       }}
     >
