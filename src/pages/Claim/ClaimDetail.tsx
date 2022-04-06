@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     }    
   },
   row: {
-    padding: '1rem',
+    padding: '0.4rem 1rem',
     display: 'flex',
     alignItems: 'center',
   },
@@ -157,7 +157,7 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
           <Button
             color="primary"
             variant="contained"
-            style={{ height: 50 }}
+            style={{ height: 35 }}
             disabled={
               loading ||
               Math.round(availableAmount) <= 0 ||
@@ -178,7 +178,7 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
           <Button
             color="primary"
             variant="contained"
-            style={{ height: 50 }}
+            style={{ height: 35 }}
             onClick={() => {
               history.push('/staking');
             }}

@@ -57,7 +57,7 @@ export const Admin = () => {
   return (
     <Box className={classes.root}>
       <Tabs value={tabValue} onChange={handleTabChange}>
-        <Tab value="0" label="Client List" />
+        <Tab value="0" label="Wallet List" />
         <Tab value="1" label="Vesting Types" />
       </Tabs>
 

@@ -53,7 +53,7 @@ export interface VestingEvent {
 }
 
 export const VF_LIST = [
-  { value: 0, label: "Continuous" },
+  // { value: 0, label: "Continuous" },
   { value: 1, label: "Daily" },
   { value: 2, label: "Weekly" },
   { value: 3, label: "Monthly" },
