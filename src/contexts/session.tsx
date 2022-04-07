@@ -11,6 +11,8 @@ export interface ISessionContext {
     name: string
   ) => Promise<any>;
   requestUserSignout: () => void
+  requestUserList: () => any
+  requestUpdatePermit: (id: string, permit: number) => any
 }
 
 const SessionContext = React.createContext<Maybe<ISessionContext>>(null);
@@ -30,6 +32,10 @@ export const SessionProvider = ({ children = null as any }) => {
     return checkAuthentication() ? localStorage.getItem('username') : '';
   };
 
+  const getUserToken = () => {
+    return checkAuthentication() ? localStorage.getItem('jwtToken') : '';
+  };
+
   const requestUserSignin = (email: string, password: string) => {
     const data = { email, password };
     return fetch(
@@ -47,6 +53,45 @@ export const SessionProvider = ({ children = null as any }) => {
       });
   };
 
+  const requestUserList = () => {
+    const requestOptions = {
+      method: 'post',
+      headers: new Headers({
+        'Authorization': 'Bearer ' + getUserToken()
+      })
+    }
+    return fetch(
+      process.env.REACT_APP_REST_SERVER + '/userlist', requestOptions
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        return res;
+      });
+  };
+
+  const requestUpdatePermit = (id: string, permit: number) => {
+    const data = { id, permit };
+    const requestOptions = {
+      method: 'post',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + getUserToken()
+      }),
+      body: JSON.stringify(data)
+    }
+    return fetch(
+      process.env.REACT_APP_REST_SERVER + '/updatepermit',
+      requestOptions
+    ).then((res) => res.json())
+      .then((res) => {
+        return {status: true, msg: ''}
+      })
+      .catch(error => {
+        return {status: false, msg: error.message}
+      })
+  };
+
+
   const requestUserSignup = (email: string, password: string, name: string) => {
     const data = { email, password, name };
     return fetch(
@@ -63,7 +108,7 @@ export const SessionProvider = ({ children = null as any }) => {
 
   return (
     <SessionContext.Provider
-      value={{ getUsername, requestUserSignin, requestUserSignup, requestUserSignout }}
+      value={{ getUsername, requestUserSignin, requestUserSignup, requestUserSignout, requestUserList, requestUpdatePermit }}
     >
       {children}
     </SessionContext.Provider>

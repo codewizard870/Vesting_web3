@@ -42,8 +42,10 @@ export const Admin = () => {
   useEffect(() => {
     if (location.pathname === '/admin/vesting') {
       setTabValue('0');
-    } else {
+    } else if (location.pathname === '/admin/vesting_type'){
       setTabValue('1');
+    } else {
+      setTabValue('2');
     }
   }, [location.pathname]);
 

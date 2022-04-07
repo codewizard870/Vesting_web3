@@ -52,11 +52,12 @@ export const Signin = () => {
       setPassword(value);
     }
 
-    const error = { ...errors, ...handleValidation(field, value) };
-    if (errors.invalidCredentials) {
-      delete errors.invalidCredentials;
-    }
-    setErrors(error);
+    // const error = { ...errors, ...handleValidation(field, value) };
+    // if (errors.invalidCredentials) {
+    //   delete errors.invalidCredentials;
+    // }
+    // setErrors(error);
+    setErrors({})
   };
 
   const handleSubmit = async (e: any) => {
