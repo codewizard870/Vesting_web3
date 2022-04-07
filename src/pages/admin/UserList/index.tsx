@@ -168,7 +168,7 @@ export const UserList = () => {
                 </TableHead>
 
                 <TableBody>
-                    {userList
+                    {userList && userList
                         .filter(
                             (item: any) =>
                                 permitId === -1 || item.permit === permitId
