@@ -135,6 +135,7 @@ export const WalletProvider = ({ children = null as any }) => {
 
       try {
         const res = await tokenContract.methods.balanceOf(account).call();
+        console.log(res)
         setTokenBalance(Math.floor(Number(web3.utils.fromWei(res))));
       } catch (err: any) {
         console.error(err);

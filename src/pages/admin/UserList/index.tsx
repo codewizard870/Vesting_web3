@@ -19,7 +19,7 @@ import {
 } from '@material-ui/core';
 import { toast } from 'react-toastify';
 import { useSession } from 'contexts';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -39,6 +39,11 @@ const useStyles = makeStyles(() => ({
     checkbox: {
         marginLeft: "30px"
     },
+    progress: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center'
+    }
 }));
 
 interface IUserInfo {
@@ -60,18 +65,18 @@ const UserInfo: React.FC<IUserInfo> = ({
         let permit = event.target.checked ? 1 : 0
         try {
             setSendingPermit(true)
-            const res = await requestUpdatePermit(id, permit)            
+            const res = await requestUpdatePermit(id, permit)
             if (res.status) {
                 setChecked(!event.target.checked)
-                toast.success(permit===1?"Approve!":"Unapprove!");
+                toast.success(permit === 1 ? "Approve!" : "Unapprove!");
             } else {
                 setChecked(event.target.checked)
                 toast.error(res.msg);
             }
             setSendingPermit(false)
-        } catch (err) {            
+        } catch (err) {
             setChecked(event.target.checked)
-            let error:any=err
+            let error: any = err
             toast.error(error.message);
             setSendingPermit(false)
         }
@@ -80,7 +85,7 @@ const UserInfo: React.FC<IUserInfo> = ({
 
     return (
         <TableRow key={info.vestingId}>
-            <TableCell>{index}</TableCell>
+            <TableCell>{(index+1)}</TableCell>
             <TableCell>{info.name}</TableCell>
             <TableCell>{info.email}</TableCell>
             <TableCell>{info.createdAt}</TableCell>
@@ -109,10 +114,11 @@ export const UserList = () => {
     const classes = useStyles();
     const { requestUserList } = useSession()
     const [permitId, setPermitId] = useState(-1);
-    const [userList, setUserList] = useState([])    
-
+    const [userList, setUserList] = useState([])
+    const [isLoading, setIsLoading] = useState(false)
     useEffect(() => {
         const fetch = async () => {
+            setIsLoading(true)
             try {
                 const res = await requestUserList()
                 console.log(res)
@@ -121,7 +127,9 @@ export const UserList = () => {
                 } else {
                     setUserList([])
                 }
+                setIsLoading(false)
             } catch (err) {
+                setIsLoading(false)
                 console.log(err);
             }
         }
@@ -166,21 +174,25 @@ export const UserList = () => {
                         </TableCell>
                     </TableRow>
                 </TableHead>
-
-                <TableBody>
-                    {userList && userList
-                        .filter(
-                            (item: any) =>
-                                permitId === -1 || item.permit === permitId
-                        )
-                        .map((info, index) => (
-                            <UserInfo
-                                index={index}
-                                info={info}
-                                key={index}
-                            />
-                        ))}
-                </TableBody>
+                {!isLoading ?
+                    <TableBody>
+                        {userList && userList
+                            .filter(
+                                (item: any) =>
+                                    permitId === -1 || item.permit === permitId
+                            )
+                            .map((info, index) => (
+                                <UserInfo
+                                    index={index}
+                                    info={info}
+                                    key={index}
+                                />
+                            ))}
+                    </TableBody> :
+                    <div className={classes.progress}>
+                        <CircularProgress />
+                    </div>
+                }
             </Table>
         </Card>
     );
