@@ -57,6 +57,20 @@ interface IParam {
   id?: string;
 }
 
+const VF_DEFAULT = 1
+
+const getLocal2UTC_timestamp = (timevalue: number): number => {
+  let timezoneOffset = (new Date()).getTimezoneOffset() //mins
+  timezoneOffset = timezoneOffset * 60 //seconds
+  return (timevalue - timezoneOffset)
+}
+
+const getUTC2Local_timestamp = (timevalue: number): number => {
+  let timezoneOffset = (new Date()).getTimezoneOffset() //mins
+  timezoneOffset = timezoneOffset * 60 //seconds
+  return (timevalue + timezoneOffset)
+}
+
 export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose, edit, id }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -68,14 +82,15 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
   const [lockupDuration, setLockupDuration] = useState('');
   const [maxAmount, setMaxAmount] = useState('');
   const [loading, setLoading] = useState(false);
-  const [vestingFrequency, setVestingFrequency] = useState(0)
+  const [vestingFrequency, setVestingFrequency] = useState(VF_DEFAULT)
 
-  useEffect(() => {    
+  useEffect(() => {
     if (edit && vestingTypes.length > Number(id)) {
       const info = vestingTypes[Number(id)];
       setName(info.name);
-      setStartTime(new Date(info.startTime * 1000));      
-      setEndTime(new Date(info.endTime * 1000));
+
+      setStartTime(new Date(getUTC2Local_timestamp(info.startTime) * 1000));
+      setEndTime(new Date(getUTC2Local_timestamp(info.endTime) * 1000));
       setLockupDuration(
         Math.abs(info.lockupDuration / 60 / 60 / 24).toString()
       );
@@ -85,29 +100,31 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
   }, [vestingTypes, edit, id, isOpen]);
 
   useEffect(() => {
-    if (isOpen && !edit){       
+    if (isOpen && !edit) {
       setStartTime(new Date());
-      setEndTime(new Date());      
+      setEndTime(new Date());
     }
-    if (!isOpen){
+    if (!isOpen) {
       setName('')
       setLockupDuration('');
       setMaxAmount('');
       setLoading(false);
-      setVestingFrequency(0);
+      setVestingFrequency(VF_DEFAULT);
     }
   }, [isOpen])
 
   const handleSubmit = async () => {
     setLoading(true);
     let res = false;
+    let timezoneOffset = startTime.getTimezoneOffset() //mins
+    timezoneOffset = timezoneOffset * 60 //seconds
     if (edit) {
       if (Number(id) >= 0) {
         res = await updateVestingType(
           Number(id),
           name,
-          Math.floor(startTime.getTime() / 1000),
-          Math.floor(endTime.getTime() / 1000),
+          getLocal2UTC_timestamp(Math.floor(startTime.getTime() / 1000)),
+          getLocal2UTC_timestamp(Math.floor(endTime.getTime() / 1000)),
           Math.floor(Number(lockupDuration)) * 24 * 60 * 60,
           Number(maxAmount),
           vestingFrequency
@@ -116,8 +133,8 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
     } else {
       res = await addVestingType(
         name,
-        Math.floor(startTime.getTime() / 1000),
-        Math.floor(endTime.getTime() / 1000),
+        getLocal2UTC_timestamp(Math.floor(startTime.getTime() / 1000)),
+        getLocal2UTC_timestamp(Math.floor(endTime.getTime() / 1000)),
         Math.floor(Number(lockupDuration)) * 24 * 60 * 60,
         Number(maxAmount),
         vestingFrequency
@@ -158,7 +175,7 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
 
               <Box className={classes.row}>
                 <DateTimePicker
-                  label="Start Time"
+                  label="Start Time (UTC)"
                   value={startTime}
                   onChange={(_date) => setStartTime(_date as Date)}
                   className={classes.input}
@@ -168,7 +185,7 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
 
               <Box className={classes.row}>
                 <DateTimePicker
-                  label="End Time"
+                  label="End Time (UTC)"
                   value={endTime}
                   onChange={(_date) => setEndTime(_date as Date)}
                   className={classes.input}

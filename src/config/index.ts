@@ -15,12 +15,12 @@ export const ABI = {
 
 export const TokenAddress: { [chainId in ChainId]?: string } = {
   [ChainId.Mainnet]: "",
-  [ChainId.Rinkeby]: "0x646bB72fD150af0Feb3C0BeB3548BC7e6f3d5fFC"
+  [ChainId.Rinkeby]: "0xaf5269eDca7021483e901E49D510b36630749B37"
 }
 
 export const VestingAddress: { [chainId in ChainId]?: string } = {
   [ChainId.Mainnet]: "",
-  [ChainId.Rinkeby]: "0xC1a9B70935Ab0C0E9133c737840851c10149315c"
+  [ChainId.Rinkeby]: "0x18e1a6BD3922b5aa0A0297936bdb95abbb0D5764"
 }
 
 export const StakingAddress: { [chainId in ChainId]?: string } = {

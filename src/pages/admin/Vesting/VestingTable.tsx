@@ -138,8 +138,6 @@ export const VestingTable = () => {
         info={activeInfo}
       />
       <Box className={classes.flex}>
-        <h3>Client List</h3>
-
         <FormControl style={{ width: 200 }}>
           <InputLabel id="vesting-type-label">Vesting Type</InputLabel>
           <Select

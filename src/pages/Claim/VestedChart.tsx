@@ -153,6 +153,7 @@ export const VestedChart = ({ info }: { info: VestingInfo }) => {
                 let userAllocation = info.amount
                 let vf = await getVestingFrequency(vfId)
                 let isBetween = false
+                let startDayVested = 0
                 if (vf > 0) {
                     if (curTime < startTime) {
                         chartPoints_beforeStart.push({ x: curTime, y: 0, marker: curPointMarker })
@@ -175,8 +176,10 @@ export const VestedChart = ({ info }: { info: VestingInfo }) => {
                         let passedNow = false
                         let preTimepoint = startTime
                         for (let i = startTime; i < endTime; i += vf) {
-                            let cVfs = Math.floor((i - startTime) / vf)
-                            let vested = Math.round(userAllocation * cVfs * vf / (endTime - startTime))
+                            let cVfs = Math.floor((i - startTime) / vf) + 1
+                            let vested = Math.round(userAllocation * cVfs * vf / (endTime - startTime))                            
+                            if (vested>userAllocation) vested = userAllocation
+                            if (i===startTime) startDayVested = vested
                             if (curTime >= preTimepoint && curTime < i && passedNow === false) {
                                 passedNow = true
                                 isBetween = true
@@ -213,9 +216,11 @@ export const VestedChart = ({ info }: { info: VestingInfo }) => {
                     }
                 }
                 let chartSeries: any = []
-                 
-                chartSeries.push({ name: vestingTypes[info.typeId].name, type: 'area', data: [{ x: startTime, y: 0 }], color: "#555", ...dotLine })
-                let points: any = []               
+                let points: any = [] 
+                points.push({ x: startTime, y: 0 })
+                if (startDayVested>0) points.push({ x: startTime, y: startDayVested })
+                chartSeries.push({ name: vestingTypes[info.typeId].name, type: 'area', data: points, color: "#555", ...dotLine })
+                points = []                             
                 points.push({ x: endTime, y: 0 })
                 points.push({ x: endTime, y: userAllocation })
                 chartSeries.push({ name: vestingTypes[info.typeId].name, type: 'area', data: points, color: "#555", ...dotLine })

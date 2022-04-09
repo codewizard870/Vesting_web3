@@ -94,7 +94,6 @@ export const VestingTypeTable = () => {
   return (
     <Card className={classes.root}>
       <Box className={classes.flex}>
-        <h3>Vesting Types</h3>
         <Button
           color="primary"
           variant="contained"

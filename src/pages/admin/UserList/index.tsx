@@ -40,9 +40,11 @@ const useStyles = makeStyles(() => ({
         marginLeft: "30px"
     },
     progress: {
+        margin: '20px',
         width: '100%',
         display: 'flex',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 }));
 
@@ -85,7 +87,7 @@ const UserInfo: React.FC<IUserInfo> = ({
 
     return (
         <TableRow key={info.vestingId}>
-            <TableCell>{(index+1)}</TableCell>
+            <TableCell>{(index + 1)}</TableCell>
             <TableCell>{info.name}</TableCell>
             <TableCell>{info.email}</TableCell>
             <TableCell>{info.createdAt}</TableCell>
@@ -121,7 +123,6 @@ export const UserList = () => {
             setIsLoading(true)
             try {
                 const res = await requestUserList()
-                console.log(res)
                 if (res) {
                     setUserList(res.userlist)
                 } else {
@@ -174,7 +175,7 @@ export const UserList = () => {
                         </TableCell>
                     </TableRow>
                 </TableHead>
-                {!isLoading ?
+                {!isLoading &&
                     <TableBody>
                         {userList && userList
                             .filter(
@@ -188,12 +189,14 @@ export const UserList = () => {
                                     key={index}
                                 />
                             ))}
-                    </TableBody> :
-                    <div className={classes.progress}>
-                        <CircularProgress />
-                    </div>
+                    </TableBody>
                 }
             </Table>
+            {isLoading &&
+                <div className={classes.progress}>
+                    <CircularProgress />
+                </div>
+            }
         </Card>
     );
 };
