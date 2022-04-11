@@ -159,7 +159,7 @@ export const UserList = () => {
                 <TableHead>
                     <TableRow>
                         <TableCell>
-                            <b>ID</b>
+                            <b>No</b>
                         </TableCell>
                         <TableCell>
                             <b>Name</b>

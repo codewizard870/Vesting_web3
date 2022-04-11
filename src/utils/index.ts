@@ -7,7 +7,7 @@ export const getShortWalletAddress = (account: string) => {
 
 export const bnToDec = (bn: BigNumber, decimals: number = 18, fixed: number = 0) => {
   let res:BigNumber = bn.dividedBy(new BigNumber(10).pow(decimals));  
-  return Math.round(res.toNumber()*(10**fixed))/(10**fixed)
+  return Math.floor(res.toNumber()*(10**fixed))/(10**fixed)
 };
 
 export const decToBn = (dec: number, decimals: number = 18) => {
