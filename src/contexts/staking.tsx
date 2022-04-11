@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'ethers';
 import { config, ABI } from 'config';
 import React, { useEffect, useContext, useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 import { PoolInfo, UserInfo } from 'types';
-import { bnToDec, decToBn } from 'utils';
+import { parseEther } from 'utils';
 import { useContracts } from './contracts';
 import { useWallet } from './wallets';
 
@@ -12,7 +12,7 @@ export interface IStakingContext {
   poolList: PoolInfo[];
   updatePoolList: () => void;
   getUserInfo: (pid: number) => Promise<Maybe<UserInfo>>;
-  rewards: number[];
+  rewards: BigNumber[];
   deposit: (pid: number, amount: number) => Promise<boolean>;
   withdraw: (pid: number, amount: number) => Promise<boolean>;
   claim: (pid: number) => Promise<boolean>;
@@ -25,7 +25,7 @@ export const StakingProvider = ({ children = null as any }) => {
   const { account } = useWallet();
 
   const [poolList, setPoolList] = useState<PoolInfo[]>([]);
-  const [rewards, setRewards] = useState<number[]>([]);
+  const [rewards, setRewards] = useState<BigNumber[]>([]);
 
   const rewardTimer = useRef<NodeJS.Timeout | null>(null);
 
@@ -46,8 +46,8 @@ export const StakingProvider = ({ children = null as any }) => {
           setPoolList(
             res.map((item) => ({
               stakeToken: String(item[0]).toLowerCase(),
-              rewardPerBlock: bnToDec(new BigNumber(item[1])),
-              depositedAmount: bnToDec(new BigNumber(item[4])),
+              rewardPerBlock: BigNumber.from(item[1]),
+              depositedAmount: BigNumber.from(item[4]),
             }))
           );
         });
@@ -66,9 +66,9 @@ export const StakingProvider = ({ children = null as any }) => {
         .call();
 
       return {
-        amount: bnToDec(new BigNumber(res[0])),
-        rewardDebt: bnToDec(new BigNumber(res[1])),
-        pendingRewards: bnToDec(new BigNumber(res[2])),
+        amount: BigNumber.from(res[0]),
+        rewardDebt: BigNumber.from(res[1]),
+        pendingRewards: BigNumber.from(res[2]),
       } as UserInfo;
     } catch (e) {
       console.error('get user info error:', e);
@@ -83,12 +83,12 @@ export const StakingProvider = ({ children = null as any }) => {
         .pendingRewards(pid, account)
         .call();
 
-      return bnToDec(new BigNumber(res));
+      return BigNumber.from(res);
     } catch (e) {
       console.error('get user info error:', e);
     }
 
-    return 0;
+    return BigNumber.from(0);
   };
 
   const updatePendingRewards = async () => {
@@ -118,13 +118,13 @@ export const StakingProvider = ({ children = null as any }) => {
       const res = await tokenContract.methods
         .allowance(account, stakingContract.address)
         .call();
-      return new BigNumber(res);
+      return BigNumber.from(res);
     } catch (err: any) {
       toast.error(err.message);
       console.error(err);
     }
 
-    return new BigNumber(0);
+    return BigNumber.from(0);
   };
 
   const approve = async (token: string) => {
@@ -144,15 +144,15 @@ export const StakingProvider = ({ children = null as any }) => {
   };
 
   const deposit = async (pid: number, amount: number) => {
-    const value = decToBn(amount);
+    const value = parseEther(amount.toString(), undefined);
     const allowance = await getAllowance(poolList[pid].stakeToken);
-    if (allowance.comparedTo(value) < 0) {
+    if (allowance.lt(value)) {
       await approve(poolList[pid].stakeToken);
     }
 
     try {
       await stakingContract.contract.methods
-        .deposit(pid, value.toString(10))
+        .deposit(pid, 10)
         .send({ from: account });
 
       updatePoolList();
@@ -167,11 +167,11 @@ export const StakingProvider = ({ children = null as any }) => {
   };
 
   const withdraw = async (pid: number, amount: number) => {
-    const value = decToBn(amount);
+    const value = parseEther(amount.toString(), undefined);
 
     try {
       await stakingContract.contract.methods
-        .withdraw(pid, value.toString(10))
+        .withdraw(pid, value)
         .send({ from: account });
 
       updatePoolList();

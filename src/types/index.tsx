@@ -1,4 +1,5 @@
 import { Contract } from 'web3-eth-contract';
+import { BigNumber } from 'ethers';
 
 export interface IContract {
   contract: Contract;
@@ -12,14 +13,14 @@ export enum WalletType {
 
 export interface PoolInfo {
   stakeToken: string;
-  rewardPerBlock: number;
-  depositedAmount: number;
+  rewardPerBlock: BigNumber;
+  depositedAmount: BigNumber;
 }
 
 export interface UserInfo {
-  amount: number;
-  rewardDebt: number;
-  pendingRewards: number;
+  amount: BigNumber;
+  rewardDebt: BigNumber;
+  pendingRewards: BigNumber;
 }
 
 export interface VestingType {
@@ -28,8 +29,8 @@ export interface VestingType {
   startTime: number;
   endTime: number;
   lockupDuration: number;
-  maxAmount: number;
-  vestedAmount: number;
+  maxAmount: BigNumber;
+  vestedAmount: BigNumber;
   vestingFrequencyId: number;
 }
 
@@ -37,8 +38,8 @@ export interface VestingInfo {
   typeId: number;
   vestingId: number;
   recipient: string;
-  amount: number;
-  claimedAmount: number;
+  amount: BigNumber;
+  claimedAmount: BigNumber;
   lastClaim: number;
 }
 

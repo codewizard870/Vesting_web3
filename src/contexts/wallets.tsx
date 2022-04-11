@@ -8,12 +8,13 @@ import { config, NetworkName, ABI, TokenAddress, ChainId, ProviderUrl } from '..
 import { WalletType } from 'types';
 import { useLocalStorageState } from 'hooks';
 import { useContracts } from './contracts';
+import { BigNumber } from 'ethers';
 
 export interface IWalletContext {
   connected: boolean;
   account: Maybe<string>;
-  balance: number;
-  tokenBalance: number;
+  balance: BigNumber;
+  tokenBalance: BigNumber;
   chainId: Maybe<number>;
   connect: (type: WalletType) => void;
   disconnect: () => void;
@@ -22,7 +23,7 @@ export interface IWalletContext {
   getTokenBalance: (
     userAddress: string,
     tokenAddress: string
-  ) => Promise<number>;
+  ) => Promise<BigNumber>;
 }
 
 export const metamaskInjected = new InjectedConnector({
@@ -46,8 +47,8 @@ export const WalletProvider = ({ children = null as any }) => {
 
   const [walletType, setWalletType] = useLocalStorageState('wallet_type', '');
   const [connected, setConnected] = useState<boolean>(false);
-  const [balance, setBalance] = useState<number>(0);
-  const [tokenBalance, setTokenBalance] = useState<number>(0);
+  const [balance, setBalance] = useState<BigNumber>(BigNumber.from(0));
+  const [tokenBalance, setTokenBalance] = useState<BigNumber>(BigNumber.from(0));
 
   const connect = useCallback(
     async (type: WalletType = WalletType.MetaMask) => {
@@ -120,9 +121,9 @@ export const WalletProvider = ({ children = null as any }) => {
   const updateBalance = useCallback(async () => {
     if (account) {
       const res = await web3.eth.getBalance(account);
-      setBalance(Number(web3.utils.fromWei(res)));
+      setBalance(BigNumber.from(res));
     } else {
-      setBalance(0);
+      setBalance(BigNumber.from(0));
     }
   }, [account]);
 
@@ -135,13 +136,12 @@ export const WalletProvider = ({ children = null as any }) => {
 
       try {
         const res = await tokenContract.methods.balanceOf(account).call();
-        console.log(res)
-        setTokenBalance(Math.floor(Number(web3.utils.fromWei(res))));
+        setTokenBalance(BigNumber.from(res));
       } catch (err: any) {
         console.error(err);
       }
     } else {
-      setTokenBalance(0);
+      setTokenBalance(BigNumber.from(0));
     }
   }, [account]);
 
@@ -158,11 +158,11 @@ export const WalletProvider = ({ children = null as any }) => {
 
     try {
       const res = await tokenContract.methods.balanceOf(userAddress).call();
-      return Math.floor(Number(web3.utils.fromWei(res)));
+      return BigNumber.from(res);
     } catch (err: any) {
       console.error(err);
     }
-    return 0;
+    return BigNumber.from(0);
   };
 
   return (

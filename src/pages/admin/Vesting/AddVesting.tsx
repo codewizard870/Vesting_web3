@@ -16,6 +16,8 @@ import {
 } from '@material-ui/core';
 import { useVesting } from 'contexts';
 import { VestingInfo } from 'types';
+import { BigNumber } from 'ethers';
+import {formatEther} from 'utils'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -62,7 +64,7 @@ export const AddVesting: React.FC<IAddVesting> = ({ isOpen, handleClose, edit, i
   useEffect(() => {
     if (edit && info) {
       setRecipient(info.recipient);
-      setValue(info.amount.toString());
+      setValue(formatEther(info.amount, undefined, 0, false));
     }
   }, [edit, info, isOpen]);
 
@@ -95,8 +97,7 @@ export const AddVesting: React.FC<IAddVesting> = ({ isOpen, handleClose, edit, i
   const validAmount = () => {
     if (vestingTypes.length > 0 && !isNaN(Number(value))) {
       return (
-        Number(value) <=
-        vestingTypes[typeId].maxAmount - vestingTypes[typeId].vestedAmount
+        BigNumber.from(Number(value)).lte(vestingTypes[typeId].maxAmount.sub(vestingTypes[typeId].vestedAmount))
       );
     }
     return false;

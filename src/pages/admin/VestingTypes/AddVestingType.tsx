@@ -19,6 +19,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { useVesting } from 'contexts';
 import { useHistory, useParams } from 'react-router-dom';
 import { VF_LIST } from 'types';
+import {formatEther} from 'utils'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -94,7 +95,7 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
       setLockupDuration(
         Math.abs(info.lockupDuration / 60 / 60 / 24).toString()
       );
-      setMaxAmount(info.maxAmount.toString());
+      setMaxAmount(formatEther(info.maxAmount, undefined, 0, false));
       setVestingFrequency(info.vestingFrequencyId)
     }
   }, [vestingTypes, edit, id, isOpen]);

@@ -14,7 +14,7 @@ import {
 import { useVesting } from 'contexts';
 import { useHistory } from 'react-router-dom';
 import { VestingType, VF_LIST } from 'types';
-import { formatTime } from 'utils';
+import { formatTime, formatEther } from 'utils';
 import { AddVestingType } from './AddVestingType';
 
 const useStyles = makeStyles(() => ({
@@ -50,8 +50,8 @@ const TypeItem: React.FC<ITypeItem> = ({ info, handleEdit }) => {
       <TableCell>{new Date(info.endTime * 1000).toLocaleString()}</TableCell>
       <TableCell>{formatTime(info.lockupDuration)}</TableCell>
       <TableCell>{VF_LIST[info.vestingFrequencyId].label}</TableCell>
-      <TableCell>{info.maxAmount.toLocaleString()} FLD</TableCell>
-      <TableCell>{info.vestedAmount.toLocaleString()} FLD</TableCell>
+      <TableCell>{formatEther(info.maxAmount, undefined, 0, true)} FLD</TableCell>
+      <TableCell>{formatEther(info.vestedAmount, undefined, 0, true)} FLD</TableCell>
       <TableCell
         className={classes.flex}
         style={{ justifyContent: 'flex-start' }}

@@ -4,8 +4,8 @@ import { Box, makeStyles, Button } from '@material-ui/core';
 import { useVesting, useWallet } from 'contexts';
 import Highcharts from "highcharts"
 import HighchartsReact from "highcharts-react-official"
-import { bnToDec, decToBn } from 'utils';
-import BigNumber from 'bignumber.js';
+import { formatEther } from 'utils';
+import { BigNumber } from 'ethers';
 import moment from 'moment';
 import { VestingInfo, VestingType } from 'types';
 
@@ -135,8 +135,12 @@ const dotLine = {
 export const VestedChart = ({ info }: { info: VestingInfo }) => {
     const classes = useStyles();
     const { account } = useWallet();
-    const { vestingList, vestingTypes, getClaimAvailable, getVestingFrequency } = useVesting();
+    const { vestingList, vestingTypes, getVestingFrequency } = useVesting();
     const [chartOptions, setChartOptions] = useState({ ...options })
+
+    const getYaxis = (val:BigNumber) => {
+        return Number(formatEther(val, undefined, 0, false))
+    }
 
     useEffect(() => {
         const fetch = async () => {
@@ -150,7 +154,7 @@ export const VestedChart = ({ info }: { info: VestingInfo }) => {
                 let endTime = vestingTypes[info.typeId].endTime
                 let curTime = Math.floor(Date.parse((new Date).toString()) / 1000)
                 let vfId = vestingTypes[info.typeId].vestingFrequencyId
-                let userAllocation = info.amount
+                let userAllocation = getYaxis(info.amount)
                 let vf = await getVestingFrequency(vfId)
                 let isBetween = false
                 let startDayVested = 0

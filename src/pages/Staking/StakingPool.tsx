@@ -10,6 +10,8 @@ import {
 import clsx from 'clsx';
 import { PoolInfo, UserInfo } from 'types';
 import { useStaking, useWallet } from 'contexts';
+import { BigNumber } from 'ethers'
+import { formatEther } from 'utils'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -42,13 +44,12 @@ interface IStakingPool {
 export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
   const classes = useStyles();
   const { getUserInfo, rewards, deposit, withdraw, claim } = useStaking();
-  const { getTokenBalance, account } = useWallet();
-
+  const { getTokenBalance, account } = useWallet();  
   const stakeToken = pid === 0 ? 'FLD-ETH' : 'FLD';
 
   const [userInfo, setUserInfo] = useState<Maybe<UserInfo>>(null);
   const [value, setValue] = useState('');
-  const [tokenBalance, setTokenBalance] = useState<number>(0);
+  const [tokenBalance, setTokenBalance] = useState<BigNumber>(BigNumber.from(0));
   const [loading, setLoading] = useState(false);
 
   const updateUserInfo = async () => {
@@ -61,7 +62,7 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
       const res = await getTokenBalance(account, poolInfo.stakeToken);
       setTokenBalance(res);
     } else {
-      setTokenBalance(0);
+      setTokenBalance(BigNumber.from(0));
     }
   };
 
@@ -117,7 +118,7 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
           variant="contained"
           onClick={handleDeposit}
           disabled={
-            loading || !isValueCorrect() || Number(value) > tokenBalance
+            loading || !isValueCorrect() || BigNumber.from(Number(value)).gt(tokenBalance)
           }
         >
           Deposit
@@ -130,7 +131,7 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
           disabled={
             loading ||
             !isValueCorrect() ||
-            Number(value) > (userInfo?.amount || 0)
+            BigNumber.from(Number(value)).gt(userInfo?.amount || BigNumber.from(0))
           }
         >
           Withdraw
@@ -141,7 +142,7 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
         <Typography>
           Your Balance:{' '}
           <b>
-            {tokenBalance.toLocaleString() || 0} {stakeToken}
+            {formatEther(tokenBalance || BigNumber.from(0), undefined, 0, true)} {stakeToken}
           </b>
         </Typography>
       </Box>
@@ -150,21 +151,21 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
         <Typography>
           Your Staked Amount:{' '}
           <b>
-            {userInfo?.amount.toLocaleString() || 0} {stakeToken}
+            {formatEther(userInfo?.amount || BigNumber.from(0), undefined, 0, true)} {stakeToken}
           </b>
         </Typography>
       </Box>
 
       <Box className={classes.row}>
         <Typography>
-          Reward Amount: <b>{rewards[pid]?.toLocaleString() || 0} FLD</b>
+          Reward Amount: <b>{formatEther(rewards[pid] || BigNumber.from(0), undefined, 0, true)} FLD</b>
         </Typography>
 
         <Button
           color="primary"
           variant="contained"
           onClick={handleHarvest}
-          disabled={loading || rewards[pid] <= 0}
+          disabled={loading || rewards.length>0 && rewards[pid].gte(0)}
         >
           Harvest
         </Button>

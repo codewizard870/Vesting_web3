@@ -1,18 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'ethers';
 import React, { useEffect, useContext, useState } from 'react';
 import { toast } from 'react-toastify';
 import { VestingEvent, VestingInfo, VestingType } from 'types';
-import { bnToDec, decToBn } from 'utils';
 import { useContracts } from './contracts';
 import { useWallet } from './wallets';
-
+import { parseEther } from 'utils'
 export interface IVestingContext {
   isVestingAdmin: boolean;
   vestingTypes: VestingType[];
   vestingList: VestingInfo[];
   claim: (vestingId: number) => void;
-  getClaimAvailable: (vestingId: number) => Promise<number>;
+  getClaimAvailable: (vestingId: number) => Promise<BigNumber>;
   getVestingFrequency: (vfId: number) => Promise<number>;
   addVestingType: (
     name: string,
@@ -107,8 +106,8 @@ export const VestingProvider = ({ children = null as any }) => {
               startTime: Number(item[1]),
               endTime: Number(item[2]),
               lockupDuration: Number(item[3]),
-              maxAmount: bnToDec(new BigNumber(item[4])),
-              vestedAmount: bnToDec(new BigNumber(item[5])),
+              maxAmount: BigNumber.from(item[4]),
+              vestedAmount: BigNumber.from(item[5]),
               vestingFrequencyId: Number(item[6])
             }))
           );
@@ -146,8 +145,8 @@ export const VestingProvider = ({ children = null as any }) => {
               typeId: Number(item[0]),
               vestingId,
               recipient: String(item[1]).toLowerCase(),
-              amount: bnToDec(new BigNumber(item[2])),
-              claimedAmount: bnToDec(new BigNumber(item[3])),
+              amount: BigNumber.from(item[2]),
+              claimedAmount: BigNumber.from(item[3]),
               lastClaim: Number(item[4]),
             } as VestingInfo)
           )
@@ -179,11 +178,11 @@ export const VestingProvider = ({ children = null as any }) => {
       const res = await vestingContract.contract.methods
         .claimAvailable(vestingId)
         .call();
-      return bnToDec(new BigNumber(res));
+      return BigNumber.from(res);
     } catch (err) {
       console.error(err);
     }
-    return 0;
+    return BigNumber.from(0);
   };
 
   const getVestingFrequency = async (vfId: number) => {
@@ -213,7 +212,7 @@ export const VestingProvider = ({ children = null as any }) => {
           start,
           end,
           lockupDuration,
-          decToBn(maxAmount).toString(10),
+          parseEther(maxAmount.toString(), undefined),
           vestingFrequencyId
         )
         .send({ from: account });
@@ -244,7 +243,7 @@ export const VestingProvider = ({ children = null as any }) => {
           start,
           end,
           lockupDuration,
-          decToBn(maxAmount).toString(10),
+          parseEther(maxAmount.toString(), undefined),
           vestingFrequencyId
         )
         .send({ from: account });
@@ -265,7 +264,7 @@ export const VestingProvider = ({ children = null as any }) => {
   ) => {
     try {
       await vestingContract.contract.methods
-        .addVesting(typeId, recipient, decToBn(amount).toString(10))
+        .addVesting(typeId, recipient, parseEther(amount.toString(), undefined),)
         .send({ from: account });
       toast.success('Added successfully');
       updateVestingTypes();
@@ -285,7 +284,7 @@ export const VestingProvider = ({ children = null as any }) => {
   ) => {
     try {
       await vestingContract.contract.methods
-        .updateVesting(vestingId, recipient, decToBn(amount).toString(10))
+        .updateVesting(vestingId, recipient, parseEther(amount.toString(), undefined))
         .send({ from: account });
       toast.success('Updated successfully');
       updateVestingTypes();

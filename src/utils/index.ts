@@ -1,18 +1,30 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber, ethers, utils } from 'ethers'
 import jwt from 'jsonwebtoken';
 
 export const getShortWalletAddress = (account: string) => {
   return `${account.slice(0, 6)}...${account.slice(-4)}`;
 };
 
-export const bnToDec = (bn: BigNumber, decimals: number = 18, fixed: number = 0) => {
-  let res:BigNumber = bn.dividedBy(new BigNumber(10).pow(decimals));  
-  return Math.floor(res.toNumber()*(10**fixed))/(10**fixed)
-};
+export const formatEther = (amount: BigNumber, decimals: number = 18, toFixed: number, groupSeparator: boolean): string => {    
+  let res
+  if (toFixed>=decimals){
+      res = ethers.FixedNumber.fromString(utils.formatUnits(amount, decimals)).toString()
+  }else{
+      let fixed=ethers.FixedNumber.fromString(utils.formatUnits(BigNumber.from(10).pow(toFixed),0))        
+      res = ethers.FixedNumber.fromString(utils.formatUnits(amount, decimals-toFixed)).floor().divUnsafe(fixed).toString()
+  }
+  if (res.substring(res.length-2,res.length)==='.0'){
+      res=res.substring(0,res.length-2)
+  }
+  if (groupSeparator){
+      res=utils.commify(res)
+  }
+  return res
+}
 
-export const decToBn = (dec: number, decimals: number = 18) => {
-  return new BigNumber(dec).multipliedBy(new BigNumber(10).pow(decimals));
-};
+export const parseEther = (n: string, decimals: number = 18): BigNumber => {
+  return utils.parseUnits(n, decimals)    
+}
 
 export const checkAuthentication = () => {
   const authorizationToken = localStorage.getItem('jwtToken');  

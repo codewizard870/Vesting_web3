@@ -17,11 +17,10 @@ const useStyles = makeStyles(() => ({
 export const ClaimList = () => {
   const classes = useStyles();
   const { account } = useWallet();
-  const { vestingList } = useVesting();
-
+  const { vestingList } = useVesting();  
   const userVestingList = vestingList.filter(
     (item) =>
-      item.recipient.toLowerCase() === account?.toLowerCase() && item.amount > 0
+      item.recipient.toLowerCase() === account?.toLowerCase() && item.amount.gt(0)
   );
 
   return (

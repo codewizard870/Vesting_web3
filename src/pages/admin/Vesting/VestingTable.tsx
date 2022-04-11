@@ -19,6 +19,7 @@ import { useVesting } from 'contexts';
 import { VestingInfo } from 'types';
 import { AddVesting } from './AddVesting';
 import { VestingHistory } from './VestingHistory';
+import { formatEther } from 'utils';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -58,9 +59,9 @@ const VestingItem: React.FC<IVestingItem> = ({
       <TableCell>{index}</TableCell>
       <TableCell>{vestingTypes[info.typeId].name}</TableCell>
       <TableCell>{info.recipient}</TableCell>
-      <TableCell>{info.amount.toLocaleString()} FLD</TableCell>
+      <TableCell>{formatEther(info.amount, undefined, 0, true)} FLD</TableCell>
       <TableCell>
-        {Math.round(info.claimedAmount).toLocaleString()} FLD
+        {formatEther(info.claimedAmount, undefined, 0, true)} FLD
       </TableCell>
       <TableCell
         className={classes.flex}
@@ -193,7 +194,7 @@ export const VestingTable = () => {
           {vestingList
             .filter(
               (item) =>
-                (typeId === -1 || item.typeId === typeId) && item.amount > 0
+                (typeId === -1 || item.typeId === typeId) && item.amount.gt(0)
             )
             .map((info, index) => (
               <VestingItem

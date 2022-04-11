@@ -3,37 +3,38 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Box, Button, makeStyles, Typography } from '@material-ui/core';
 import { useVesting, useWallet } from 'contexts';
 import { useHistory } from 'react-router-dom';
-import { formatTime } from 'utils';
+import { formatTime, formatEther } from 'utils';
 import { VestingInfo, VestingType } from 'types';
 import { VestedChart } from './VestedChart';
+import { BigNumber } from 'ethers'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',    
+    display: 'flex',
     gap: '30px',
     width: '100%',
     margin: '1rem',
     padding: '1rem',
     borderRadius: 5,
     border: '1px solid black',
-    boxSizing: 'border-box',    
+    boxSizing: 'border-box',
     [theme.breakpoints.down('lg')]: {
       alignItems: 'center',
       justifyContent: 'center',
       flexWrap: 'wrap'
     },
     [theme.breakpoints.up('lg')]: {
-      alignItems: 'center',    
-      flexWrap: 'nowrap'  
+      alignItems: 'center',
+      flexWrap: 'nowrap'
     }
   },
-  card: {       
+  card: {
     [theme.breakpoints.down('lg')]: {
       minWidth: 750
     },
     [theme.breakpoints.up('lg')]: {
       minWidth: 450
-    }    
+    }
   },
   row: {
     padding: '0.4rem 1rem',
@@ -62,7 +63,7 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
   const history = useHistory();
 
   const [type, setType] = useState<Maybe<VestingType>>(null);
-  const [availableAmount, setAvailableAmount] = useState(0);
+  const [availableAmount, setAvailableAmount] = useState<BigNumber>(BigNumber.from(0));
   const [loading, setLoading] = useState(false);
 
   const nextClaim = Math.max(
@@ -103,8 +104,8 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
   };
 
   return (
-    <Box className={classes.root}>      
-      <Box className={classes.card}>        
+    <Box className={classes.root}>
+      <Box className={classes.card}>
         <Box className={classes.row}>
           <Typography className={classes.title}>Vesting Type</Typography>
           <Typography className={classes.value}>{type?.name || ''}</Typography>
@@ -113,7 +114,7 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
         <Box className={classes.row}>
           <Typography className={classes.title}>Total Amount</Typography>
           <Typography className={classes.value}>
-            {info?.amount.toLocaleString() || 0} FLD
+            {formatEther(info.amount, undefined, 0, true)} FLD
           </Typography>
         </Box>
 
@@ -127,9 +128,7 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
         <Box className={classes.row}>
           <Typography className={classes.title}>Tokens pending</Typography>
           <Typography className={classes.value}>
-            {Math.round(
-              (info?.amount || 0) - (info?.claimedAmount || 0)
-            ).toLocaleString()}{' '}
+            {formatEther(info.amount.sub(info.claimedAmount), undefined, 0, true)}{' '}
             FLD
           </Typography>
         </Box>
@@ -137,21 +136,21 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
         <Box className={classes.row}>
           <Typography className={classes.title}>Tokens claimed</Typography>
           <Typography className={classes.value}>
-            {Math.round(info?.claimedAmount || 0).toLocaleString()} FLD
+            {formatEther(info?.claimedAmount, undefined, 0, true)} FLD
           </Typography>
         </Box>
 
         <Box className={classes.row}>
           <Typography className={classes.title}>Tokens vested</Typography>
           <Typography className={classes.value}>
-            {Math.round((info?.claimedAmount || 0) + availableAmount).toLocaleString()} FLD
+            {formatEther(info.claimedAmount.add(availableAmount), undefined, 0, true)} FLD
           </Typography>
         </Box>
 
         <Box className={classes.row}>
           <Typography className={classes.title}>Available to claim</Typography>
           <Typography className={classes.value}>
-            {Math.round(availableAmount).toLocaleString()} FLD
+            {formatEther(availableAmount, undefined, 0, true)} FLD
           </Typography>
 
           <Button
@@ -160,7 +159,7 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
             style={{ height: 35 }}
             disabled={
               loading ||
-              Math.round(availableAmount) <= 0 ||
+              availableAmount.lte(0) ||
               nextClaim > 0 ||
               !info
             }
@@ -173,7 +172,7 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
         <Box className={classes.row}>
           <Typography className={classes.title}>Your token balance</Typography>
           <Typography className={classes.value}>
-            {tokenBalance.toLocaleString()} FLD
+            {formatEther(tokenBalance, undefined, 0, true)} FLD
           </Typography>
           <Button
             color="primary"

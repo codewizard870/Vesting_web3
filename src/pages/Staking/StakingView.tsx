@@ -41,7 +41,7 @@ export const StakingView = () => {
       {!isLoading ?
         <Box className={clsx(classes.root, classes.flex)}>
           {poolList.map((poolInfo, pid) => (
-            <StakingPool poolInfo={poolInfo} pid={pid} />
+            <StakingPool poolInfo={poolInfo} pid={pid} key={pid} />
           ))}
         </Box> :
         <div className={classes.progress}>
