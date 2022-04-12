@@ -53,6 +53,18 @@ export interface VestingEvent {
   topic: string;
 }
 
+export interface IWalletList {
+  typeId: string;
+  recipient: string;
+  amount: BigNumber;
+}
+
+export interface IUpdateVestingList {
+  vestingId: string;
+  recipient: string;
+  amount: BigNumber;
+}
+
 export const VF_LIST = [
   // { value: 0, label: "Continuous" },
   { value: 1, label: "Daily" },

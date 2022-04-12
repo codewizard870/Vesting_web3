@@ -2,7 +2,7 @@
 import { BigNumber } from 'ethers';
 import React, { useEffect, useContext, useState } from 'react';
 import { toast } from 'react-toastify';
-import { VestingEvent, VestingInfo, VestingType } from 'types';
+import { VestingEvent, VestingInfo, VestingType, IWalletList, IUpdateVestingList } from 'types';
 import { useContracts } from './contracts';
 import { useWallet } from './wallets';
 import { parseEther } from 'utils'
@@ -39,6 +39,10 @@ export interface IVestingContext {
     vestingId: number,
     recipient: string,
     amount: number
+  ) => Promise<boolean>;
+  addUpdateMutiVesting: (
+    _addVestingList: IWalletList[],
+    _updateVestingList: IUpdateVestingList[]
   ) => Promise<boolean>;
   getEvents: (typeId: number, vestingId: number) => Promise<VestingEvent[]>;
   eventTopics: { [id: string]: string };
@@ -297,6 +301,25 @@ export const VestingProvider = ({ children = null as any }) => {
     return false;
   };
 
+  const addUpdateMutiVesting = async(
+    _addVestingList: IWalletList[],
+    _updateVestingList: IUpdateVestingList[]
+  ) => {
+    try {
+      await vestingContract.contract.methods
+        .addUpdateMutiVesting(_addVestingList, _updateVestingList)
+        .send({ from: account });
+      toast.success('Updated successfully');
+      updateVestingTypes();
+      updateVestingList();
+      return true;
+    } catch (err) {
+      console.error(err);
+      toast.error('Error happened');
+    }
+    return false;
+  }
+
   const getEvents = async (vestingId: number) => {
     let events: VestingEvent[] = [];
 
@@ -339,6 +362,7 @@ export const VestingProvider = ({ children = null as any }) => {
         updateVestingType,
         addVesting,
         updateVesting,
+        addUpdateMutiVesting,
         getEvents,
         eventTopics,
       }}
