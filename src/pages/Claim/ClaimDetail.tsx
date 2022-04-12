@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Box, Button, makeStyles, Typography } from '@material-ui/core';
 import { useVesting, useWallet } from 'contexts';
 import { useHistory } from 'react-router-dom';
-import { formatTime, formatEther } from 'utils';
+import { formatTime, formatEther, parseEther } from 'utils';
 import { VestingInfo, VestingType } from 'types';
 import { VestedChart } from './VestedChart';
 import { BigNumber } from 'ethers'
@@ -65,6 +65,13 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
   const [type, setType] = useState<Maybe<VestingType>>(null);
   const [availableAmount, setAvailableAmount] = useState<BigNumber>(BigNumber.from(0));
   const [loading, setLoading] = useState(false);
+
+  const calcAvailableAmountWithDecimals = () => {        
+    let claimed = formatEther(info?.claimedAmount, undefined, 0, false)      
+    let restbydecimals = info?.claimedAmount.sub(parseEther(claimed, undefined))      
+    let available = availableAmount.add(restbydecimals)
+    return formatEther(available, undefined, 0, true)
+  }
 
   const nextClaim = Math.max(
     (info?.lastClaim || 0) +
@@ -143,14 +150,15 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
         <Box className={classes.row}>
           <Typography className={classes.title}>Tokens vested</Typography>
           <Typography className={classes.value}>
-            {formatEther(info.claimedAmount.add(availableAmount), undefined, 0, true)} FLD
+            {formatEther(info.claimedAmount.add(availableAmount), undefined, 0, true)} FLD            
           </Typography>
         </Box>
 
         <Box className={classes.row}>
           <Typography className={classes.title}>Available to claim</Typography>
           <Typography className={classes.value}>
-            {formatEther(availableAmount, undefined, 0, true)} FLD
+            {/* {formatEther(availableAmount, undefined, 0, true)} FLD */}
+            {calcAvailableAmountWithDecimals()} FLD
           </Typography>
 
           <Button
