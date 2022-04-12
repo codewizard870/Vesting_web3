@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
+import React, { MouseEvent, ChangeEvent, useEffect, useState } from 'react';
 import {
   Box,
   Button,
   Card,
+  Grid,
   FormControl,
   InputLabel,
   makeStyles,
@@ -16,10 +17,10 @@ import {
   TableRow,
 } from '@material-ui/core';
 import { useVesting } from 'contexts';
-import { VestingInfo } from 'types';
+import { VestingInfo, IWalletList, IUpdateVestingList } from 'types';
 import { AddVesting } from './AddVesting';
 import { VestingHistory } from './VestingHistory';
-import { formatEther } from 'utils';
+import { formatEther, parseEther } from 'utils';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -36,6 +37,12 @@ const useStyles = makeStyles(() => ({
     height: 40,
     marginRight: 8,
   },
+  buttonUploadFile: {
+    marginRight: 8
+  },
+  buttonList: {
+    display: 'flex'
+  }
 }));
 
 interface IVestingItem {
@@ -98,6 +105,12 @@ export const VestingTable = () => {
   const [isEdit, setEdit] = useState(false);
   const [activeInfo, setActiveInfo] = useState<Maybe<VestingInfo>>(null);
   const [isOpenAddVesting, setIsOpenAddVesting] = useState(false)
+  const [file, setFile] = useState<FileList | null>();
+
+  const [addVestingList, setAddVestingList] = useState<IWalletList[]>([]);
+  const [updateVestingList, setUpdateVestingList] = useState<IUpdateVestingList[]>([]);
+
+  const fileReader = new FileReader()
 
   useEffect(() => {
     if (typeId >= vestingTypes.length) {
@@ -123,6 +136,62 @@ export const VestingTable = () => {
     setActiveInfo(info);
     setShowHistory(true);
   };
+
+  const csvFileToArray = (data: string) => {
+    const csvRows = data.slice(data.indexOf("\n") + 1).split("\n");
+    
+    const array = csvRows.map(i => {
+      const values = i.replaceAll('\r', '').split(",");
+      const obj: IWalletList = {
+        typeId: '',
+        recipient: '',
+        amount: parseEther('0', undefined)
+      };
+      if (values.length === 3) {
+        obj['typeId'] = values[0]
+        obj['recipient'] = values[1]
+        obj['amount'] = parseEther(values[2], undefined)
+      }
+
+      return obj;
+    });
+
+    let _addVestingList: IWalletList[] = [], _updateVestingList: IUpdateVestingList[] = []
+    array.map((d, i) => {
+      const index = vestingList.findIndex(v => v.typeId === parseInt(d.typeId) && v.recipient === d.recipient)
+      if (index < 0) {
+        if (d.recipient.length > 0)
+          _addVestingList.push(d)
+      } else {
+        _updateVestingList.push({
+          vestingId: `${vestingList[i].vestingId}`,
+          recipient: d.recipient,
+          amount: d.amount
+        })
+      }
+    })
+
+    setAddVestingList(_addVestingList)
+    setUpdateVestingList(_updateVestingList)
+  };
+
+  const handleOnUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    const target = (e.target as HTMLInputElement).files;
+    setFile(target);
+  }
+
+  const handleOnSubmit = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    if (file) {
+      fileReader.onload = function (event: any) {
+        const csvOutput = event.target.result;
+        csvFileToArray(csvOutput)
+      };
+
+      fileReader.readAsText(file[0]);
+    }
+  }
 
   return showHistory ? (
     <VestingHistory
@@ -156,14 +225,33 @@ export const VestingTable = () => {
           </Select>
         </FormControl>
 
-        <Button
-          color="primary"
-          variant="contained"
-          className={classes.button}
-          onClick={() => handleAdd(false, null)}
-        >
-          Add Client
-        </Button>
+        <Box className={classes.buttonList}>
+          <Button
+            color="primary"
+            variant="contained"
+            className={classes.button}
+            onClick={() => handleAdd(false, null)}
+          >
+            Add Client
+          </Button>
+          <div>
+            <input accept=".csv" id="file" type="file" hidden
+              onChange={handleOnUpload} />
+            <label htmlFor="file">
+              <Button variant="contained" component="span" className={classes.buttonUploadFile} onClick={(e: MouseEvent<HTMLButtonElement>) => {e.stopPropagation()}}>
+                Upload
+              </Button>
+            </label>
+          </div>
+          <div>
+            <Button
+              variant="contained"
+              onClick={handleOnSubmit}
+            >
+              Import
+            </Button>
+          </div>
+        </Box>
       </Box>
 
       <Table>
