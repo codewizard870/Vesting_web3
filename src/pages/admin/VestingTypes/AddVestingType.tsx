@@ -95,7 +95,7 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
       setLockupDuration(
         Math.abs(info.lockupDuration / 60 / 60 / 24).toString()
       );
-      setMaxAmount(formatEther(info.maxAmount, undefined, 0, false));
+      setMaxAmount(formatEther(info.maxAmount, undefined, 3, false));
       setVestingFrequency(info.vestingFrequencyId)
     }
   }, [vestingTypes, edit, id, isOpen]);

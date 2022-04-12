@@ -50,8 +50,8 @@ const TypeItem: React.FC<ITypeItem> = ({ info, handleEdit }) => {
       <TableCell>{new Date(info.endTime * 1000).toLocaleString()}</TableCell>
       <TableCell>{formatTime(info.lockupDuration)}</TableCell>
       <TableCell>{VF_LIST[info.vestingFrequencyId].label}</TableCell>
-      <TableCell>{formatEther(info.maxAmount, undefined, 0, true)} FLD</TableCell>
-      <TableCell>{formatEther(info.vestedAmount, undefined, 0, true)} FLD</TableCell>
+      <TableCell>{formatEther(info.maxAmount, undefined, 3, true)} FLD</TableCell>
+      <TableCell>{formatEther(info.vestedAmount, undefined, 3, true)} FLD</TableCell>
       <TableCell
         className={classes.flex}
         style={{ justifyContent: 'flex-start' }}

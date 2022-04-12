@@ -138,8 +138,8 @@ export const VestedChart = ({ info }: { info: VestingInfo }) => {
     const { vestingList, vestingTypes, getVestingFrequency } = useVesting();
     const [chartOptions, setChartOptions] = useState({ ...options })
 
-    const getYaxis = (val:BigNumber) => {
-        return Number(formatEther(val, undefined, 0, false))
+    const getYaxis = (val: BigNumber) => {
+        return Number(formatEther(val, undefined, 3, false))
     }
 
     useEffect(() => {
@@ -168,7 +168,7 @@ export const VestedChart = ({ info }: { info: VestingInfo }) => {
                         else chartPoints_afterStart.push({ x: startTime, y: 0 })
                         if (curTime >= startTime && curTime < endTime) {
                             let cVfs = Math.floor((curTime - startTime) / vf)
-                            let vested = Math.round(userAllocation * cVfs * vf / (endTime - startTime))
+                            let vested = Math.round(userAllocation * cVfs * vf / (endTime - startTime) * 1000) / 1000
                             isBetween = true
                             chartPoints_dotLine.push({ x: curTime, y: 0 })
                             chartPoints_dotLine.push({ x: curTime, y: vested })
@@ -181,9 +181,9 @@ export const VestedChart = ({ info }: { info: VestingInfo }) => {
                         let preTimepoint = startTime
                         for (let i = startTime; i < endTime; i += vf) {
                             let cVfs = Math.floor((i - startTime) / vf) + 1
-                            let vested = Math.round(userAllocation * cVfs * vf / (endTime - startTime))                            
-                            if (vested>userAllocation) vested = userAllocation
-                            if (i===startTime) startDayVested = vested
+                            let vested = Math.round(userAllocation * cVfs * vf / (endTime - startTime) * 1000) / 1000
+                            if (vested > userAllocation) vested = userAllocation
+                            if (i === startTime) startDayVested = vested
                             if (curTime >= preTimepoint && curTime < i && passedNow === false) {
                                 passedNow = true
                                 isBetween = true
@@ -220,11 +220,11 @@ export const VestedChart = ({ info }: { info: VestingInfo }) => {
                     }
                 }
                 let chartSeries: any = []
-                let points: any = [] 
+                let points: any = []
                 points.push({ x: startTime, y: 0 })
-                if (startDayVested>0) points.push({ x: startTime, y: startDayVested })
+                if (startDayVested > 0) points.push({ x: startTime, y: startDayVested })
                 chartSeries.push({ name: vestingTypes[info.typeId].name, type: 'area', data: points, color: "#555", ...dotLine })
-                points = []                             
+                points = []
                 points.push({ x: endTime, y: 0 })
                 points.push({ x: endTime, y: userAllocation })
                 chartSeries.push({ name: vestingTypes[info.typeId].name, type: 'area', data: points, color: "#555", ...dotLine })

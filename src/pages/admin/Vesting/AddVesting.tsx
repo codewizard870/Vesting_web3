@@ -64,7 +64,7 @@ export const AddVesting: React.FC<IAddVesting> = ({ isOpen, handleClose, edit, i
   useEffect(() => {
     if (edit && info) {
       setRecipient(info.recipient);
-      setValue(formatEther(info.amount, undefined, 0, false));
+      setValue(formatEther(info.amount, undefined, 3, false));
     }
   }, [edit, info, isOpen]);
 

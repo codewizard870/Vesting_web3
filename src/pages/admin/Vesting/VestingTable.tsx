@@ -59,9 +59,9 @@ const VestingItem: React.FC<IVestingItem> = ({
       <TableCell>{index}</TableCell>
       <TableCell>{vestingTypes[info.typeId].name}</TableCell>
       <TableCell>{info.recipient}</TableCell>
-      <TableCell>{formatEther(info.amount, undefined, 0, true)} FLD</TableCell>
+      <TableCell>{formatEther(info.amount, undefined, 3, true)} FLD</TableCell>
       <TableCell>
-        {formatEther(info.claimedAmount, undefined, 0, true)} FLD
+        {formatEther(info.claimedAmount, undefined, 3, true)} FLD
       </TableCell>
       <TableCell
         className={classes.flex}
