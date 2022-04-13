@@ -66,13 +66,6 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
   const [availableAmount, setAvailableAmount] = useState<BigNumber>(BigNumber.from(0));
   const [loading, setLoading] = useState(false);
 
-  const calcAvailableAmountWithDecimals = () => {        
-    let claimed = formatEther(info?.claimedAmount, undefined, 0, false)      
-    let restbydecimals = info?.claimedAmount.sub(parseEther(claimed, undefined))      
-    let available = availableAmount.add(restbydecimals)
-    return formatEther(available, undefined, 0, true)
-  }
-
   const nextClaim = Math.max(
     (info?.lastClaim || 0) +
     (type?.lockupDuration || 0) -
@@ -121,7 +114,7 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
         <Box className={classes.row}>
           <Typography className={classes.title}>Total Amount</Typography>
           <Typography className={classes.value}>
-            {formatEther(info.amount, undefined, 0, true)} FLD
+            {formatEther(info.amount, undefined, 3, true)} FLD
           </Typography>
         </Box>
 
@@ -135,7 +128,7 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
         <Box className={classes.row}>
           <Typography className={classes.title}>Tokens pending</Typography>
           <Typography className={classes.value}>
-            {formatEther(info.amount.sub(info.claimedAmount), undefined, 0, true)}{' '}
+            {formatEther(info.amount.sub(info.claimedAmount), undefined, 3, true)}{' '}
             FLD
           </Typography>
         </Box>
@@ -143,22 +136,21 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
         <Box className={classes.row}>
           <Typography className={classes.title}>Tokens claimed</Typography>
           <Typography className={classes.value}>
-            {formatEther(info?.claimedAmount, undefined, 0, true)} FLD
+            {formatEther(info?.claimedAmount, undefined, 3, true)} FLD
           </Typography>
         </Box>
 
         <Box className={classes.row}>
           <Typography className={classes.title}>Tokens vested</Typography>
           <Typography className={classes.value}>
-            {formatEther(info.claimedAmount.add(availableAmount), undefined, 0, true)} FLD            
+            {formatEther(info.claimedAmount.add(availableAmount), undefined, 3, true)} FLD            
           </Typography>
         </Box>
 
         <Box className={classes.row}>
           <Typography className={classes.title}>Available to claim</Typography>
           <Typography className={classes.value}>
-            {/* {formatEther(availableAmount, undefined, 0, true)} FLD */}
-            {calcAvailableAmountWithDecimals()} FLD
+            {formatEther(availableAmount, undefined, 3, true)} FLD            
           </Typography>
 
           <Button
@@ -180,7 +172,7 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
         <Box className={classes.row}>
           <Typography className={classes.title}>Your token balance</Typography>
           <Typography className={classes.value}>
-            {formatEther(tokenBalance, undefined, 0, true)} FLD
+            {formatEther(tokenBalance, undefined, 3, true)} FLD
           </Typography>
           <Button
             color="primary"

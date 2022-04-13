@@ -68,12 +68,12 @@ const VestingItem: React.FC<IVestingItem> = ({
 
   return (
     <TableRow key={info.vestingId}>
-      <TableCell>{index}</TableCell>
+      <TableCell>{(index + 1)}</TableCell>
       <TableCell>{vestingTypes[info.typeId].name}</TableCell>
       <TableCell>{info.recipient}</TableCell>
-      <TableCell>{formatEther(info.amount, undefined, 0, true)} FLD</TableCell>
+      <TableCell>{formatEther(info.amount, undefined, 3, true)} FLD</TableCell>
       <TableCell>
-        {formatEther(info.claimedAmount, undefined, 0, true)} FLD
+        {formatEther(info.claimedAmount, undefined, 3, true)} FLD
       </TableCell>
       <TableCell
         className={classes.flex}
@@ -106,7 +106,7 @@ export const VestingTable = () => {
   const { vestingTypes, vestingList, addUpdateMutiVesting } = useVesting();
 
   const [typeId, setTypeId] = useState(-1);
-  const [showHistory, setShowHistory] = useState(false);  
+  const [showHistory, setShowHistory] = useState(false);
   const [isEdit, setEdit] = useState(false);
   const [activeInfo, setActiveInfo] = useState<Maybe<VestingInfo>>(null);
   const [isOpenAddVesting, setIsOpenAddVesting] = useState(false)
@@ -141,7 +141,7 @@ export const VestingTable = () => {
 
   const csvFileToArray = (data: string) => {
     const csvRows = data.slice(data.indexOf("\n") + 1).split("\n");
-    
+
     const array = csvRows.map(i => {
       const values = i.replaceAll('\r', '').split(",");
       const obj: IWalletList = {
@@ -275,7 +275,7 @@ export const VestingTable = () => {
         <TableHead>
           <TableRow>
             <TableCell>
-              <b>ID</b>
+              <b>No</b>
             </TableCell>
             <TableCell>
               <b>Type</b>

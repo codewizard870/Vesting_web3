@@ -17,14 +17,14 @@ const useStyles = makeStyles(() => ({
 export const ClaimList = () => {
   const classes = useStyles();
   const { account } = useWallet();
-  const { vestingList } = useVesting();  
+  const { vestingList } = useVesting();
   const userVestingList = vestingList.filter(
     (item) =>
       item.recipient.toLowerCase() === account?.toLowerCase() && item.amount.gt(0)
   );
 
   return (
-    <Box className={classes.root}>
+    <Box className={classes.root}>      
       {userVestingList.map((info, index) => (
         <ClaimDetail info={info} key={index} />
       ))}

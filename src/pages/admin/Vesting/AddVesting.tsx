@@ -12,8 +12,10 @@ import {
   TextField,
   Typography,
   Dialog,
+  DialogTitle,
   DialogContent
 } from '@material-ui/core';
+import PaperComponent from 'components/DraggableModalPaper';
 import { useVesting } from 'contexts';
 import { VestingInfo } from 'types';
 import { BigNumber } from 'ethers';
@@ -64,7 +66,7 @@ export const AddVesting: React.FC<IAddVesting> = ({ isOpen, handleClose, edit, i
   useEffect(() => {
     if (edit && info) {
       setRecipient(info.recipient);
-      setValue(formatEther(info.amount, undefined, 0, false));
+      setValue(formatEther(info.amount, undefined, 3, false));
     }
   }, [edit, info, isOpen]);
 
@@ -109,7 +111,11 @@ export const AddVesting: React.FC<IAddVesting> = ({ isOpen, handleClose, edit, i
         onClose={() => loading ? () => { } : handleClose()}
         aria-labelledby="customized-dialog-title"
         open={isOpen}
+        PaperComponent={PaperComponent}
       >
+        <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
+        <Typography variant="h5">{edit ? 'Edit' : 'Add'} User Vesting</Typography>
+        </DialogTitle>
         <DialogContent>
           <Box className={clsx(classes.root, classes.flex)}>
             <Typography variant="h5">{edit ? 'Edit' : 'Add'} User Vesting</Typography>

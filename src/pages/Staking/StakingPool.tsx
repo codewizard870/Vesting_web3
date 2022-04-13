@@ -142,7 +142,7 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
         <Typography>
           Your Balance:{' '}
           <b>
-            {formatEther(tokenBalance || BigNumber.from(0), undefined, 0, true)} {stakeToken}
+            {formatEther(tokenBalance || BigNumber.from(0), undefined, 3, true)} {stakeToken}
           </b>
         </Typography>
       </Box>
@@ -151,14 +151,14 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
         <Typography>
           Your Staked Amount:{' '}
           <b>
-            {formatEther(userInfo?.amount || BigNumber.from(0), undefined, 0, true)} {stakeToken}
+            {formatEther(userInfo?.amount || BigNumber.from(0), undefined, 3, true)} {stakeToken}
           </b>
         </Typography>
       </Box>
 
       <Box className={classes.row}>
         <Typography>
-          Reward Amount: <b>{formatEther(rewards[pid] || BigNumber.from(0), undefined, 0, true)} FLD</b>
+          Reward Amount: <b>{formatEther(rewards[pid] || BigNumber.from(0), undefined, 3, true)} FLD</b>
         </Typography>
 
         <Button

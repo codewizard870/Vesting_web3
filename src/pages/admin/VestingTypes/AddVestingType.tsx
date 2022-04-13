@@ -12,14 +12,16 @@ import {
   MenuItem,
   Select,
   Dialog,
+  DialogTitle,
   DialogContent
 } from '@material-ui/core';
+import PaperComponent from 'components/DraggableModalPaper';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { useVesting } from 'contexts';
 import { useHistory, useParams } from 'react-router-dom';
 import { VF_LIST } from 'types';
-import {formatEther} from 'utils'
+import { formatEther } from 'utils'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -62,13 +64,15 @@ const VF_DEFAULT = 1
 
 const getLocal2UTC_timestamp = (timevalue: number): number => {
   let timezoneOffset = (new Date()).getTimezoneOffset() //mins
-  timezoneOffset = timezoneOffset * 60 //seconds
+  // timezoneOffset = timezoneOffset * 60 //seconds
+  timezoneOffset = 0
   return (timevalue - timezoneOffset)
 }
 
 const getUTC2Local_timestamp = (timevalue: number): number => {
   let timezoneOffset = (new Date()).getTimezoneOffset() //mins
-  timezoneOffset = timezoneOffset * 60 //seconds
+  // timezoneOffset = timezoneOffset * 60 //seconds
+  timezoneOffset = 0
   return (timevalue + timezoneOffset)
 }
 
@@ -95,8 +99,8 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
       setLockupDuration(
         Math.abs(info.lockupDuration / 60 / 60 / 24).toString()
       );
-      setMaxAmount(formatEther(info.maxAmount, undefined, 0, false));
-      setVestingFrequency(info.vestingFrequencyId)
+      setMaxAmount(formatEther(info.maxAmount, undefined, 3, false));
+      setVestingFrequency(VF_LIST[info.vestingFrequencyId].value)
     }
   }, [vestingTypes, edit, id, isOpen]);
 
@@ -154,15 +158,16 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
         onClose={() => loading ? () => { } : handleClose()}
         aria-labelledby="customized-dialog-title"
         open={isOpen}
+        PaperComponent={PaperComponent}
       >
+        <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
+          <Typography variant="h5">
+            {edit ? 'Edit' : 'Add'} vesting type
+          </Typography>
+        </DialogTitle>
         <DialogContent>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <Box className={clsx(classes.root, classes.flex)}>
-              <Typography variant="h5">
-                {edit ? 'Edit' : 'Add'} vesting type
-              </Typography>
-              <br />
-
               <Box className={classes.row}>
                 <TextField
                   variant="outlined"
@@ -176,7 +181,7 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
 
               <Box className={classes.row}>
                 <DateTimePicker
-                  label="Start Time (UTC)"
+                  label="Start Time"
                   value={startTime}
                   onChange={(_date) => setStartTime(_date as Date)}
                   className={classes.input}
@@ -186,7 +191,7 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
 
               <Box className={classes.row}>
                 <DateTimePicker
-                  label="End Time (UTC)"
+                  label="End Time"
                   value={endTime}
                   onChange={(_date) => setEndTime(_date as Date)}
                   className={classes.input}
