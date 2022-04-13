@@ -34,17 +34,18 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface ITypeItem {
+  index: number;
   info: VestingType;
   handleEdit: () => void
 }
 
-const TypeItem: React.FC<ITypeItem> = ({ info, handleEdit }) => {
+const TypeItem: React.FC<ITypeItem> = ({ index, info, handleEdit }) => {
   const classes = useStyles();
   const history = useHistory();
 
   return (
     <TableRow key={info.typeId}>
-      <TableCell>{info.typeId}</TableCell>
+      <TableCell>{(index + 1)}</TableCell>
       <TableCell>{info.name}</TableCell>
       <TableCell>{new Date(info.startTime * 1000).toLocaleString()}</TableCell>
       <TableCell>{new Date(info.endTime * 1000).toLocaleString()}</TableCell>
@@ -113,7 +114,7 @@ export const VestingTypeTable = () => {
         <TableHead>
           <TableRow>
             <TableCell>
-              <b>ID</b>
+              <b>No</b>
             </TableCell>
             <TableCell>
               <b>Name</b>
@@ -144,7 +145,7 @@ export const VestingTypeTable = () => {
 
         <TableBody>
           {vestingTypes.map((info, index) => (
-            <TypeItem info={info} key={index} handleEdit={() => handleEdit(info.typeId)} />
+            <TypeItem index={index} info={info} key={index} handleEdit={() => handleEdit(info.typeId)} />
           ))}
         </TableBody>
       </Table>
