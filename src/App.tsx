@@ -13,7 +13,6 @@ import { Claim, Staking, Signin, Signup, Admin } from 'pages';
 import { Header } from 'components';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { checkAuthentication } from 'utils';
-
 import 'react-toastify/dist/ReactToastify.css';
 
 const useStyles = makeStyles((theme) => ({
