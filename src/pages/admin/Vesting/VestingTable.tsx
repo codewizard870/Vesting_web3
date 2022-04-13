@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { MouseEvent, ChangeEvent, useEffect, useState } from 'react';
+import Web3 from 'web3';
 import {
   Box,
   Button,
@@ -42,6 +43,10 @@ const useStyles = makeStyles(() => ({
   },
   buttonList: {
     display: 'flex'
+  },
+  error: {
+    color: 'red',
+    padding: '5px 0'
   }
 }));
 
@@ -105,7 +110,7 @@ export const VestingTable = () => {
   const [isEdit, setEdit] = useState(false);
   const [activeInfo, setActiveInfo] = useState<Maybe<VestingInfo>>(null);
   const [isOpenAddVesting, setIsOpenAddVesting] = useState(false)
-  const [file, setFile] = useState<FileList | null>();
+  const [errors, setErrors] = useState<string[]>([])
 
   const fileReader = new FileReader()
 
@@ -154,38 +159,55 @@ export const VestingTable = () => {
     });
 
     let _addVestingList: IWalletList[] = [], _updateVestingList: IUpdateVestingList[] = []
+    let errors: string[] = []
     array.map((d, i) => {
-      const index = vestingList.findIndex(v => v.typeId === parseInt(d.typeId) && v.recipient === d.recipient)
-      if (index < 0) {
-        if (d.recipient.length > 0)
-          _addVestingList.push(d)
-      } else {
-        _updateVestingList.push({
-          vestingId: `${vestingList[i].vestingId}`,
-          recipient: d.recipient,
-          amount: d.amount
-        })
+      if (d.recipient || d.typeId) {
+        const inx = vestingTypes.findIndex(v => v.name === d.typeId)
+        if (inx < 0 || !Web3.utils.isAddress(d.recipient)) {
+          if (inx < 0) 
+            errors.push(`Vesting Type: ${d.typeId}`)
+          if (!Web3.utils.isAddress(d.recipient))
+            errors.push(`Wallet: ${d.recipient}`)
+        } else {
+          const index = vestingList.findIndex(v => v.typeId === vestingTypes[inx].typeId && v.recipient === d.recipient)
+          if (index < 0) {
+            if (d.recipient.length > 0)
+            _addVestingList.push({
+              typeId: `${vestingTypes[inx].typeId}`,
+              recipient: d.recipient,
+              amount: d.amount
+            })
+          } else {
+            _updateVestingList.push({
+              vestingId: `${vestingList[index].vestingId}`,
+              recipient: d.recipient,
+              amount: d.amount
+            })
+          }
+        }
       }
     })
 
-    addUpdateMutiVesting(_addVestingList, _updateVestingList)
+    if (errors.length) {
+      setErrors(errors)
+      console.error('error', errors.join(','))
+      return
+    }
+
+    if (_addVestingList.length || _updateVestingList.length)
+      addUpdateMutiVesting(_addVestingList, _updateVestingList)
   };
 
   const handleOnUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    setErrors([])
     const target = (e.target as HTMLInputElement).files;
-    setFile(target);
-  }
-
-  const handleOnSubmit = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-
-    if (file) {
+    if (target) {
       fileReader.onload = function (event: any) {
         const csvOutput = event.target.result;
         csvFileToArray(csvOutput)
       };
 
-      fileReader.readAsText(file[0]);
+      fileReader.readAsText(target[0]);
     }
   }
 
@@ -203,6 +225,13 @@ export const VestingTable = () => {
         edit={isEdit}
         info={activeInfo}
       />
+      {errors.length ?
+        <Box>
+          {errors.map(e => <div className={classes.error} key={e}>
+            {e} is invalid
+          </div>)}
+        </Box> : null
+      }
       <Box className={classes.flex}>
         <FormControl style={{ width: 200 }}>
           <InputLabel id="vesting-type-label">Vesting Type</InputLabel>
@@ -235,17 +264,9 @@ export const VestingTable = () => {
               onChange={handleOnUpload} />
             <label htmlFor="file">
               <Button variant="contained" component="span" className={classes.buttonUploadFile} onClick={(e: MouseEvent<HTMLButtonElement>) => {e.stopPropagation()}}>
-                Upload
+                Import
               </Button>
             </label>
-          </div>
-          <div>
-            <Button
-              variant="contained"
-              onClick={handleOnSubmit}
-            >
-              Import
-            </Button>
           </div>
         </Box>
       </Box>
