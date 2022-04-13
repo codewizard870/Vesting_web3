@@ -98,7 +98,7 @@ const VestingItem: React.FC<IVestingItem> = ({
 
 export const VestingTable = () => {
   const classes = useStyles();
-  const { vestingTypes, vestingList } = useVesting();
+  const { vestingTypes, vestingList, addUpdateMutiVesting } = useVesting();
 
   const [typeId, setTypeId] = useState(-1);
   const [showHistory, setShowHistory] = useState(false);  
@@ -106,9 +106,6 @@ export const VestingTable = () => {
   const [activeInfo, setActiveInfo] = useState<Maybe<VestingInfo>>(null);
   const [isOpenAddVesting, setIsOpenAddVesting] = useState(false)
   const [file, setFile] = useState<FileList | null>();
-
-  const [addVestingList, setAddVestingList] = useState<IWalletList[]>([]);
-  const [updateVestingList, setUpdateVestingList] = useState<IUpdateVestingList[]>([]);
 
   const fileReader = new FileReader()
 
@@ -171,8 +168,7 @@ export const VestingTable = () => {
       }
     })
 
-    setAddVestingList(_addVestingList)
-    setUpdateVestingList(_updateVestingList)
+    addUpdateMutiVesting(_addVestingList, _updateVestingList)
   };
 
   const handleOnUpload = (e: ChangeEvent<HTMLInputElement>) => {
