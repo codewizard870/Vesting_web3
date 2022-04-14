@@ -22,6 +22,7 @@ import { VestingInfo, IWalletList, IUpdateVestingList } from 'types';
 import { AddVesting } from './AddVesting';
 import { VestingHistory } from './VestingHistory';
 import { formatEther, parseEther } from 'utils';
+import { toast } from 'react-toastify';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -103,7 +104,7 @@ const VestingItem: React.FC<IVestingItem> = ({
 
 export const VestingTable = () => {
   const classes = useStyles();
-  const { vestingTypes, vestingList, addUpdateMutiVesting } = useVesting();
+  const { vestingTypes, vestingList, addUpdateMultiVesting } = useVesting();
 
   const [typeId, setTypeId] = useState(-1);
   const [showHistory, setShowHistory] = useState(false);
@@ -162,14 +163,14 @@ export const VestingTable = () => {
     let errors: string[] = []
     array.map((d, i) => {
       if (d.recipient || d.typeId) {
-        const inx = vestingTypes.findIndex(v => v.name === d.typeId)
+        const inx = vestingTypes.findIndex(v => v.name.toLowerCase() === d.typeId.toLowerCase())
         if (inx < 0 || !Web3.utils.isAddress(d.recipient)) {
           if (inx < 0) 
-            errors.push(`Vesting Type: ${d.typeId}`)
+            errors.push(`VestingType Name: ${d.typeId}`)
           if (!Web3.utils.isAddress(d.recipient))
             errors.push(`Wallet: ${d.recipient}`)
         } else {
-          const index = vestingList.findIndex(v => v.typeId === vestingTypes[inx].typeId && v.recipient === d.recipient)
+          const index = vestingList.findIndex(v => v.typeId === vestingTypes[inx].typeId && v.recipient.toLowerCase() === d.recipient.toLowerCase())
           if (index < 0) {
             if (d.recipient.length > 0)
             _addVestingList.push({
@@ -191,11 +192,13 @@ export const VestingTable = () => {
     if (errors.length) {
       setErrors(errors)
       console.error('error', errors.join(','))
+      toast.warning("Error: "+errors.join(','))
       return
     }
 
     if (_addVestingList.length || _updateVestingList.length)
-      addUpdateMutiVesting(_addVestingList, _updateVestingList)
+      addUpdateMultiVesting(_addVestingList, _updateVestingList)
+    else toast.warning("There is no valid data in this importing!")
   };
 
   const handleOnUpload = (e: ChangeEvent<HTMLInputElement>) => {
@@ -224,14 +227,7 @@ export const VestingTable = () => {
         handleClose={handleCloseAddVesting}
         edit={isEdit}
         info={activeInfo}
-      />
-      {errors.length ?
-        <Box>
-          {errors.map(e => <div className={classes.error} key={e}>
-            {e} is invalid
-          </div>)}
-        </Box> : null
-      }
+      />     
       <Box className={classes.flex}>
         <FormControl style={{ width: 200 }}>
           <InputLabel id="vesting-type-label">Vesting Type</InputLabel>

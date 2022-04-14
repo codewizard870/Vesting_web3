@@ -19,6 +19,7 @@ export const formatEther = (amount: BigNumber, decimals: number = 18, toFixed: n
   if (groupSeparator){
       res=utils.commify(res)
   }
+  
   return res
 }
 
