@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { MouseEvent, ChangeEvent, useEffect, useState } from 'react';
+import Web3 from 'web3';
 import {
   Box,
   Button,
@@ -21,6 +22,7 @@ import { VestingInfo, IWalletList, IUpdateVestingList } from 'types';
 import { AddVesting } from './AddVesting';
 import { VestingHistory } from './VestingHistory';
 import { formatEther, parseEther } from 'utils';
+import { toast } from 'react-toastify';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -42,6 +44,10 @@ const useStyles = makeStyles(() => ({
   },
   buttonList: {
     display: 'flex'
+  },
+  error: {
+    color: 'red',
+    padding: '5px 0'
   }
 }));
 
@@ -98,14 +104,14 @@ const VestingItem: React.FC<IVestingItem> = ({
 
 export const VestingTable = () => {
   const classes = useStyles();
-  const { vestingTypes, vestingList, addUpdateMutiVesting } = useVesting();
+  const { vestingTypes, vestingList, addUpdateMultiVesting } = useVesting();
 
   const [typeId, setTypeId] = useState(-1);
   const [showHistory, setShowHistory] = useState(false);
   const [isEdit, setEdit] = useState(false);
   const [activeInfo, setActiveInfo] = useState<Maybe<VestingInfo>>(null);
   const [isOpenAddVesting, setIsOpenAddVesting] = useState(false)
-  const [file, setFile] = useState<FileList | null>();
+  const [errors, setErrors] = useState<string[]>([])
 
   const fileReader = new FileReader()
 
@@ -154,38 +160,57 @@ export const VestingTable = () => {
     });
 
     let _addVestingList: IWalletList[] = [], _updateVestingList: IUpdateVestingList[] = []
+    let errors: string[] = []
     array.map((d, i) => {
-      const index = vestingList.findIndex(v => v.typeId === parseInt(d.typeId) && v.recipient === d.recipient)
-      if (index < 0) {
-        if (d.recipient.length > 0)
-          _addVestingList.push(d)
-      } else {
-        _updateVestingList.push({
-          vestingId: `${vestingList[i].vestingId}`,
-          recipient: d.recipient,
-          amount: d.amount
-        })
+      if (d.recipient || d.typeId) {
+        const inx = vestingTypes.findIndex(v => v.name.toLowerCase() === d.typeId.toLowerCase())
+        if (inx < 0 || !Web3.utils.isAddress(d.recipient)) {
+          if (inx < 0) 
+            errors.push(`VestingType Name: ${d.typeId}`)
+          if (!Web3.utils.isAddress(d.recipient))
+            errors.push(`Wallet: ${d.recipient}`)
+        } else {
+          const index = vestingList.findIndex(v => v.typeId === vestingTypes[inx].typeId && v.recipient.toLowerCase() === d.recipient.toLowerCase())
+          if (index < 0) {
+            if (d.recipient.length > 0)
+            _addVestingList.push({
+              typeId: `${vestingTypes[inx].typeId}`,
+              recipient: d.recipient,
+              amount: d.amount
+            })
+          } else {
+            _updateVestingList.push({
+              vestingId: `${vestingList[index].vestingId}`,
+              recipient: d.recipient,
+              amount: d.amount
+            })
+          }
+        }
       }
     })
 
-    addUpdateMutiVesting(_addVestingList, _updateVestingList)
+    if (errors.length) {
+      setErrors(errors)
+      console.error('error', errors.join(','))
+      toast.warning("Error: "+errors.join(','))
+      return
+    }
+
+    if (_addVestingList.length || _updateVestingList.length)
+      addUpdateMultiVesting(_addVestingList, _updateVestingList)
+    else toast.warning("There is no valid data in this importing!")
   };
 
   const handleOnUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    setErrors([])
     const target = (e.target as HTMLInputElement).files;
-    setFile(target);
-  }
-
-  const handleOnSubmit = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-
-    if (file) {
+    if (target) {
       fileReader.onload = function (event: any) {
         const csvOutput = event.target.result;
         csvFileToArray(csvOutput)
       };
 
-      fileReader.readAsText(file[0]);
+      fileReader.readAsText(target[0]);
     }
   }
 
@@ -202,7 +227,7 @@ export const VestingTable = () => {
         handleClose={handleCloseAddVesting}
         edit={isEdit}
         info={activeInfo}
-      />
+      />     
       <Box className={classes.flex}>
         <FormControl style={{ width: 200 }}>
           <InputLabel id="vesting-type-label">Vesting Type</InputLabel>
@@ -234,18 +259,10 @@ export const VestingTable = () => {
             <input accept=".csv" id="file" type="file" hidden
               onChange={handleOnUpload} />
             <label htmlFor="file">
-              <Button variant="contained" component="span" className={classes.buttonUploadFile} onClick={(e: MouseEvent<HTMLButtonElement>) => { e.stopPropagation() }}>
-                Upload
+              <Button variant="contained" component="span" className={classes.buttonUploadFile} onClick={(e: MouseEvent<HTMLButtonElement>) => {e.stopPropagation()}}>
+                Import
               </Button>
             </label>
-          </div>
-          <div>
-            <Button
-              variant="contained"
-              onClick={handleOnSubmit}
-            >
-              Import
-            </Button>
           </div>
         </Box>
       </Box>

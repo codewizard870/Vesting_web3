@@ -40,7 +40,7 @@ export interface IVestingContext {
     recipient: string,
     amount: number
   ) => Promise<boolean>;
-  addUpdateMutiVesting: (
+  addUpdateMultiVesting: (
     _addVestingList: IWalletList[],
     _updateVestingList: IUpdateVestingList[]
   ) => Promise<boolean>;
@@ -301,7 +301,7 @@ export const VestingProvider = ({ children = null as any }) => {
     return false;
   };
 
-  const addUpdateMutiVesting = async(
+  const addUpdateMultiVesting = async(
     _addVestingList: IWalletList[],
     _updateVestingList: IUpdateVestingList[]
   ) => {
@@ -362,7 +362,7 @@ export const VestingProvider = ({ children = null as any }) => {
         updateVestingType,
         addVesting,
         updateVesting,
-        addUpdateMutiVesting,
+        addUpdateMultiVesting,
         getEvents,
         eventTopics,
       }}
