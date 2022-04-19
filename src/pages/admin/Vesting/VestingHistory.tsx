@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
+import { BigNumber } from 'ethers';
 import {
   Box,
   Button,
@@ -13,6 +14,7 @@ import {
 } from '@material-ui/core';
 import { useVesting } from 'contexts';
 import { VestingEvent } from 'types';
+import { formatEther } from 'utils';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -41,6 +43,7 @@ const HistoryItem: React.FC<IHistoryItem> = ({ event }) => {
   return (
     <TableRow>
       <TableCell>{eventTopics[event.topic] || 'Undefined'}</TableCell>
+      <TableCell>{formatEther(BigNumber.from(event.amount), undefined, 3, true)}</TableCell>
       <TableCell>{new Date(event.timestamp * 1000).toLocaleString()}</TableCell>
     </TableRow>
   );
@@ -49,12 +52,14 @@ const HistoryItem: React.FC<IHistoryItem> = ({ event }) => {
 interface IVestingHistory {
   typeId: number;
   vestingId: number;
+  address: string;
   onBack: () => void;
 }
 
 export const VestingHistory: React.FC<IVestingHistory> = ({
   typeId,
   vestingId,
+  address,
   onBack,
 }) => {
   const classes = useStyles();
@@ -64,12 +69,12 @@ export const VestingHistory: React.FC<IVestingHistory> = ({
 
   useEffect(() => {
     const updateEventList = async () => {
-      const res = await getEvents(typeId, vestingId);
+      const res = await getEvents(typeId, vestingId, address);
       setEventList(res);
     };
 
     updateEventList();
-  }, [typeId, vestingId]);
+  }, [typeId, vestingId, address]);
 
   return (
     <Card className={classes.root}>
@@ -91,6 +96,9 @@ export const VestingHistory: React.FC<IVestingHistory> = ({
           <TableRow>
             <TableCell>
               <b>Action</b>
+            </TableCell>
+            <TableCell>
+              <b>Amount</b>
             </TableCell>
             <TableCell>
               <b>Time</b>

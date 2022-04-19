@@ -51,6 +51,7 @@ export interface VestingId {
 export interface VestingEvent {
   timestamp: number;
   topic: string;
+  amount: string;
 }
 
 export interface IWalletList {
