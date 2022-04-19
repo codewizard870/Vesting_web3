@@ -54,6 +54,12 @@ export interface VestingEvent {
   amount: string;
 }
 
+export interface VestingTypeEvent {
+  timestamp: number;
+  topic: string;
+  amount: string;
+}
+
 export interface IWalletList {
   typeId: string;
   recipient: string;
