@@ -89,14 +89,14 @@ const VestingItem: React.FC<IVestingItem> = ({
           Edit
         </Button>
 
-        {/* <Button
+        <Button
           color="primary"
           variant="outlined"
           className={classes.button}
           onClick={() => onHistory(info)}
         >
           History
-        </Button> */}
+        </Button>
       </TableCell>
     </TableRow>
   );
@@ -216,8 +216,9 @@ export const VestingTable = () => {
 
   return showHistory ? (
     <VestingHistory
-      typeId={typeId}
+      typeId={activeInfo?.typeId || 0}
       vestingId={activeInfo?.vestingId || 0}
+      address={activeInfo?.recipient || ''}
       onBack={() => setShowHistory(false)}
     />
   ) : (

@@ -49,12 +49,14 @@ const HistoryItem: React.FC<IHistoryItem> = ({ event }) => {
 interface IVestingHistory {
   typeId: number;
   vestingId: number;
+  address: string;
   onBack: () => void;
 }
 
 export const VestingHistory: React.FC<IVestingHistory> = ({
   typeId,
   vestingId,
+  address,
   onBack,
 }) => {
   const classes = useStyles();
@@ -64,12 +66,12 @@ export const VestingHistory: React.FC<IVestingHistory> = ({
 
   useEffect(() => {
     const updateEventList = async () => {
-      const res = await getEvents(typeId, vestingId);
+      const res = await getEvents(typeId, vestingId, address);
       setEventList(res);
     };
 
     updateEventList();
-  }, [typeId, vestingId]);
+  }, [typeId, vestingId, address]);
 
   return (
     <Card className={classes.root}>
