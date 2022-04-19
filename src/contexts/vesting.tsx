@@ -336,13 +336,13 @@ export const VestingProvider = ({ children = null as any }) => {
         }?module=logs&action=getLogs&fromBlock=${10389525}&toBlock=latest&address=${vestingContract.address
         }&topic0=0x41e2396a6e9c1acf60ed38dcf04ccf13d4de214df6bb8499fe002b4909865212&topic1=${typeIdHex}&topic2=${addressHex}&apikey=${process.env.REACT_APP_ETHERSCAN_API}`
       ).then((res) => res.json());
-      console.log('add events', res)
       if (res && res.status === '1') {
         addEvents = res.result.map(
           (item: any) =>
           ({
             timestamp: web3.utils.hexToNumber(item.timeStamp),
             topic: item.topics[0],
+            amount: web3.utils.hexToNumberString(item.topics[3])
           } as VestingEvent)
         );
       }
@@ -352,13 +352,13 @@ export const VestingProvider = ({ children = null as any }) => {
         }?module=logs&action=getLogs&fromBlock=${10389525}&toBlock=latest&address=${vestingContract.address
         }&topic0=0x165c12094c1f9f8266d89897df9a046ab1a4718d06238f3952ec1f367336851a&topic1=${vestingIdHex}&topic2=${addressHex}&apikey=${process.env.REACT_APP_ETHERSCAN_API}`
       ).then((res) => res.json());
-      console.log('update events', res)
       if (res && res.status === '1') {
         updateEvents = res.result.map(
           (item: any) =>
           ({
             timestamp: web3.utils.hexToNumber(item.timeStamp),
             topic: item.topics[0],
+            amount: web3.utils.hexToNumberString(item.topics[3])
           } as VestingEvent)
         );
       }

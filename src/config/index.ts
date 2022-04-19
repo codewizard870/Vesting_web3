@@ -20,7 +20,7 @@ export const TokenAddress: { [chainId in ChainId]?: string } = {
 
 export const VestingAddress: { [chainId in ChainId]?: string } = {
   [ChainId.Mainnet]: "",
-  [ChainId.Rinkeby]: "0x91E526dda1c0116B6A889EA26e206E8C4dF5CD98"
+  [ChainId.Rinkeby]: "0x289b6d1fB439376972CBF9AE6d18AA29bE2Ea042"
 }
 
 export const StakingAddress: { [chainId in ChainId]?: string } = {
