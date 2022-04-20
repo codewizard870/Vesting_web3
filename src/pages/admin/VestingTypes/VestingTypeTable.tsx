@@ -16,6 +16,7 @@ import { useHistory } from 'react-router-dom';
 import { VestingType, VF_LIST } from 'types';
 import { formatTime, formatEther } from 'utils';
 import { AddVestingType } from './AddVestingType';
+import { VestingTypeHistory } from './VestingTypeHistory';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -36,10 +37,11 @@ const useStyles = makeStyles(() => ({
 interface ITypeItem {
   index: number;
   info: VestingType;
-  handleEdit: () => void
+  handleEdit: () => void,
+  handleHistory: () => void;
 }
 
-const TypeItem: React.FC<ITypeItem> = ({ index, info, handleEdit }) => {
+const TypeItem: React.FC<ITypeItem> = ({ index, info, handleEdit, handleHistory }) => {
   const classes = useStyles();
   const history = useHistory();
 
@@ -65,6 +67,13 @@ const TypeItem: React.FC<ITypeItem> = ({ index, info, handleEdit }) => {
         >
           Edit
         </Button>
+        <Button
+          color="primary"
+          variant="outlined"
+          onClick={handleHistory}
+        >
+          History
+        </Button>
       </TableCell>
     </TableRow>
   );
@@ -77,6 +86,8 @@ export const VestingTypeTable = () => {
   const [isOpenAddType, setIsOpenAddType] = useState(false)
   const [isEditType, setIsEditType] = useState(false)
   const [editTypeId, setEditTypeId] = useState(0)
+  const [showHistory, setShowHistory] = useState(false);
+  const [activeInfo, setActiveInfo] = useState<Maybe<VestingType>>(null);
 
   const handleOpenAddType = () => {
     setIsOpenAddType(true)
@@ -92,7 +103,17 @@ export const VestingTypeTable = () => {
     handleOpenAddType()
   }
 
-  return (
+  const handleHistory = (id: number) => {
+    setEditTypeId(id)
+    setShowHistory(true);
+  };
+
+  return showHistory ? (
+    <VestingTypeHistory
+      typeId={editTypeId || 0}
+      onBack={() => setShowHistory(false)}
+    />
+  ) : (
     <Card className={classes.root}>
       <Box className={classes.flex}>
         <Button
@@ -145,7 +166,7 @@ export const VestingTypeTable = () => {
 
         <TableBody>
           {vestingTypes.map((info, index) => (
-            <TypeItem index={index} info={info} key={index} handleEdit={() => handleEdit(info.typeId)} />
+            <TypeItem index={index} info={info} key={index} handleEdit={() => handleEdit(info.typeId)} handleHistory={() => handleHistory(info.typeId)}/>
           ))}
         </TableBody>
       </Table>

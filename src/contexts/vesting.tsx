@@ -2,7 +2,7 @@
 import { BigNumber } from 'ethers';
 import React, { useEffect, useContext, useState } from 'react';
 import { toast } from 'react-toastify';
-import { VestingEvent, VestingInfo, VestingType, IWalletList, IUpdateVestingList } from 'types';
+import { VestingEvent, VestingTypeEvent, VestingInfo, VestingType, IWalletList, IUpdateVestingList } from 'types';
 import { useContracts } from './contracts';
 import { useWallet } from './wallets';
 import { parseEther } from 'utils'
@@ -45,6 +45,7 @@ export interface IVestingContext {
     _updateVestingList: IUpdateVestingList[]
   ) => Promise<boolean>;
   getEvents: (typeId: number, vestingId: number, address: string) => Promise<VestingEvent[]>;
+  getTypeEvents: (typeId: number) => Promise<VestingTypeEvent[]>;
   eventTopics: { [id: string]: string };
 }
 
@@ -60,7 +61,9 @@ export const VestingProvider = ({ children = null as any }) => {
 
   const eventTopics: { [id: string]: string } = {
     '0x41e2396a6e9c1acf60ed38dcf04ccf13d4de214df6bb8499fe002b4909865212': 'Add Vesting',
-    '0x165c12094c1f9f8266d89897df9a046ab1a4718d06238f3952ec1f367336851a': 'Update Vesting'
+    '0x165c12094c1f9f8266d89897df9a046ab1a4718d06238f3952ec1f367336851a': 'Update Vesting',
+    '0xaf27d723038cb53553cb7f48a969ed95217fa6f4fdddc612c06792fb0ea9f0ce': 'Add Vesting Type',
+    '0xaf870d609b13b8b808d0daa3d7141d2df9ff51d246b451cd03ecb6cca53df89d': 'Update Vesting Type',
   };
 
   useEffect(() => {
@@ -370,6 +373,54 @@ export const VestingProvider = ({ children = null as any }) => {
     return addEvents.concat(updateEvents);
   };
 
+  const getTypeEvents = async (typeId: number) => {
+    let addEvents: VestingTypeEvent[] = [], updateEvents: VestingTypeEvent[] = []
+
+    let typeIdHex = web3.utils.toHex(typeId)
+    typeIdHex = web3.utils.padLeft(typeIdHex, 64)
+
+    try {
+      // add vesting types
+      let res = await fetch(
+        `${process.env.REACT_APP_ETHERSCAN_URL
+        }?module=logs&action=getLogs&fromBlock=${10389525}&toBlock=latest&address=${vestingContract.address
+        }&topic0=0xaf27d723038cb53553cb7f48a969ed95217fa6f4fdddc612c06792fb0ea9f0ce&topic1=${typeIdHex}&apikey=${process.env.REACT_APP_ETHERSCAN_API}`
+      ).then((res) => res.json());
+      if (res && res.status === '1') {
+        addEvents = res.result.map(
+          (item: any) =>
+          ({
+            timestamp: web3.utils.hexToNumber(item.timeStamp),
+            topic: item.topics[0],
+            amount: web3.utils.hexToNumberString(item.topics[2])
+          } as VestingTypeEvent)
+        );
+      }
+
+      // update vesting types
+      res = await fetch(
+        `${process.env.REACT_APP_ETHERSCAN_URL
+        }?module=logs&action=getLogs&fromBlock=${10389525}&toBlock=latest&address=${vestingContract.address
+        }&topic0=0xaf870d609b13b8b808d0daa3d7141d2df9ff51d246b451cd03ecb6cca53df89d&topic1=${typeIdHex}&apikey=${process.env.REACT_APP_ETHERSCAN_API}`
+      ).then((res) => res.json());
+      if (res && res.status === '1') {
+        addEvents = res.result.map(
+          (item: any) =>
+          ({
+            timestamp: web3.utils.hexToNumber(item.timeStamp),
+            topic: item.topics[0],
+            amount: web3.utils.hexToNumberString(item.topics[2])
+          } as VestingTypeEvent)
+        );
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Get Events Error');
+    }
+
+    return addEvents.concat(updateEvents);
+  };
+
   return (
     <VestingContext.Provider
       value={{
@@ -385,6 +436,7 @@ export const VestingProvider = ({ children = null as any }) => {
         updateVesting,
         addUpdateMultiVesting,
         getEvents,
+        getTypeEvents,
         eventTopics,
       }}
     >
