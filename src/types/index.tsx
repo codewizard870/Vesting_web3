@@ -57,7 +57,14 @@ export interface VestingEvent {
 export interface VestingTypeEvent {
   timestamp: number;
   topic: string;
-  amount: string;
+  data: {
+    name: string;
+    startTime: number;
+    endTime: number;
+    lockupDuration: number;
+    maxAmount: string;
+    vestingFrequencyId: number;
+  }
 }
 
 export interface IWalletList {
