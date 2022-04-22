@@ -1,98 +1,82 @@
-import React, { useState } from 'react';
-import { Button, makeStyles, TextField } from '@material-ui/core';
-import { useSession } from 'contexts';
-import { useHistory } from 'react-router-dom';
-
-const useStyles = makeStyles(() => ({
-  root: {
-    width: '100%',
-    padding: '1rem',
-    boxSizing: 'border-box',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  input: {
-    width: 400,
-    margin: '0.5rem',
-  },
-  button: {
-    width: 400,
-    margin: '0.5rem',
-  },
-}));
+import React, { useState } from 'react'
+import { Button, TextField, Checkbox } from '@material-ui/core'
+import { useSession } from 'contexts'
+import { useHistory } from 'react-router-dom'
+import { PrimaryButton } from 'components/PrimaryButton'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 
 interface IError {
-  [field: string]: string;
+  [field: string]: string
 }
 
-export const Signin = () => {
-  const classes = useStyles();
-  const { requestUserSignin } = useSession();
-  const history = useHistory();
+export const Signin = ({ setIsSignUp, setLogined }: { setIsSignUp: (isSignUp: boolean) => void, setLogined: (logined: boolean) => void }) => {
+  const { requestUserSignin } = useSession()
+  const history = useHistory()
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState<IError>({});
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [errors, setErrors] = useState<IError>({})
+  const [loading, setLoading] = useState(false)
+  const [isRememberPassword, setIsRemember] = useState(false)
 
   const handleValidation = (field: string, value: Maybe<string>) => {
-    const error: IError = {};
-    error[field] = value ? '' : 'This field is required';
-    return error;
-  };
+    const error: IError = {}
+    error[field] = value ? '' : 'This field is required'
+    return error
+  }
 
   const handleInputChange = (e: any) => {
-    const field = e.target.id;
-    const value = e.target.value;
+    const field = e.target.id
+    const value = e.target.value
 
     if (field === 'email') {
-      setEmail(value);
+      setEmail(value)
     } else if (field === 'password') {
-      setPassword(value);
+      setPassword(value)
     }
 
-    // const error = { ...errors, ...handleValidation(field, value) };
-    // if (errors.invalidCredentials) {
-    //   delete errors.invalidCredentials;
-    // }
-    // setErrors(error);
     setErrors({})
-  };
+  }
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
+  const handleRememberChange = (event: any) => {
+    setIsRemember(event.target.checked)
+  }
+
+  const handleSubmit = async () => {
     const error = {
       ...errors,
       ...handleValidation('email', email),
       ...handleValidation('password', password),
-    };
+    }
     const userCredentialsValid =
-      Object.keys(error).filter((field) => error[field] !== '').length === 0;
+      Object.keys(error).filter((field) => error[field] !== '').length === 0
     if (!userCredentialsValid) {
-      setErrors(error);
-      return;
+      setErrors(error)
+      return
     } else {
-      setLoading(true);
+      setLoading(true)
       try {
-        const res = await requestUserSignin(email, password);
+        const res = await requestUserSignin(email, password)
         if (res.errors) {
-          setErrors(res.errors);
+          setErrors(res.errors)
         } else {
-          window.location.reload();
+          console.log(res.user?.permit)
+          if (res.user?.permit === 1){
+            window.location.reload()
+          }else{
+            setLogined(true)
+          }
         }
       } catch (err) {
-        console.log(err);
+        console.log(err)
       }
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <form className={classes.root} onSubmit={handleSubmit}>
-      <h2>Sign in</h2>
+    <div className='flex flex-col justify-center items-center gap-6 mt-6'>
       <TextField
-        variant="outlined"
         id="email"
         type="email"
         label="Email"
@@ -100,11 +84,10 @@ export const Signin = () => {
         onChange={handleInputChange}
         error={!!errors.email || !!errors.invalidCredentials}
         helperText={errors.email || errors.invalidCredentials}
-        className={classes.input}
+        className='w-full px-4 py-4'
         disabled={loading}
       />
       <TextField
-        variant="outlined"
         id="password"
         type="password"
         label="Password"
@@ -112,29 +95,34 @@ export const Signin = () => {
         onChange={handleInputChange}
         error={!!errors.password}
         helperText={errors.password}
-        className={classes.input}
+        className='w-full px-4 py-4'
         disabled={loading}
       />
+      <div className='w-full flex justify-between items-center'>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={isRememberPassword}
+              onChange={handleRememberChange}
+              color="default"
+              inputProps={{ 'aria-label': 'checkbox with default color' }}
+            />
+          }
+          label="Remember me"
+        />
+        <div className='text-[16px] text-[#949494] cursor-pointer'>
+          Forgot Password
+        </div>
+      </div>
       <br />
-      <Button
-        type="submit"
-        color="primary"
-        variant="contained"
-        className={classes.button}
-        disabled={loading}
-      >
-        Sign in
-      </Button>
-      <Button
-        type="button"
-        color="primary"
-        variant="contained"
-        className={classes.button}
-        disabled={loading}
-        onClick={() => history.push('/signup')}
-      >
-        Sign up
-      </Button>
-    </form>
-  );
-};
+      <PrimaryButton onClick={handleSubmit} width='227px' disabled={loading}>
+        Login
+      </PrimaryButton>
+      <br />
+      <div className='flex text-[18px] gap-2'>
+        <span className="text-[#474747]">Don't have an account?</span>
+        <div className="text-[#3FBCE9] cursor-pointer" onClick={() => setIsSignUp(true)}>Sign up</div>
+      </div>
+    </div>
+  )
+}

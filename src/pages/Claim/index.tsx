@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from 'react';
-import { Box, makeStyles, Typography } from '@material-ui/core';
-import { ClaimList } from './ClaimList';
+import React from 'react'
+import { Box, makeStyles, Typography } from '@material-ui/core'
+import { ClaimList } from './ClaimList'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -12,10 +12,10 @@ const useStyles = makeStyles(() => ({
     alignItems: 'center',
     flexDirection: 'column'
   },
-}));
+}))
 
 export const Claim = () => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <Box className={classes.root}>
@@ -29,5 +29,5 @@ export const Claim = () => {
       <br />      
       <ClaimList />
     </Box>
-  );
-};
+  )
+}

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
-import clsx from 'clsx';
+import React, { useEffect, useState } from 'react'
+import clsx from 'clsx'
 import {
   Box,
   Button,
@@ -14,11 +14,11 @@ import {
   Dialog,
   DialogTitle,
   DialogContent
-} from '@material-ui/core';
-import PaperComponent from 'components/DraggableModalPaper';
-import { useVesting } from 'contexts';
-import { VestingInfo } from 'types';
-import { BigNumber } from 'ethers';
+} from '@material-ui/core'
+import PaperComponent from 'components/DraggableModalPaper'
+import { useVesting } from 'contexts'
+import { VestingInfo } from 'types'
+import { BigNumber } from 'ethers'
 import {formatEther} from 'utils'
 
 const useStyles = makeStyles(() => ({
@@ -45,65 +45,65 @@ const useStyles = makeStyles(() => ({
   input: {
     width: '100%',
   },
-}));
+}))
 
 interface IAddVesting {
   isOpen: boolean
   handleClose: () => void
-  edit: boolean;
-  info: Maybe<VestingInfo>;
+  edit: boolean
+  info: Maybe<VestingInfo>
 }
 
 export const AddVesting: React.FC<IAddVesting> = ({ isOpen, handleClose, edit, info }) => {
-  const classes = useStyles();
-  const { addVesting, updateVesting, vestingTypes } = useVesting();
+  const classes = useStyles()
+  const { addVesting, updateVesting, vestingTypes } = useVesting()
 
-  const [typeId, setTypeId] = useState(0);
-  const [recipient, setRecipient] = useState('');
-  const [value, setValue] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [typeId, setTypeId] = useState(0)
+  const [recipient, setRecipient] = useState('')
+  const [value, setValue] = useState('')
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (edit && info) {
-      setRecipient(info.recipient);
-      setValue(formatEther(info.amount, undefined, 3, false));
+      setRecipient(info.recipient)
+      setValue(formatEther(info.amount, undefined, 3, false))
     }
-  }, [edit, info, isOpen]);
+  }, [edit, info, isOpen])
 
   useEffect(() => {
     if (!isOpen) {
-      setTypeId(0);
-      setRecipient('');
-      setValue('');
-      setLoading(false);
+      setTypeId(0)
+      setRecipient('')
+      setValue('')
+      setLoading(false)
     }
   }, [isOpen])
 
   const handleSubmit = async () => {
-    setLoading(true);
-    let res = false;
+    setLoading(true)
+    let res = false
     if (edit) {
       if (info) {
-        res = await updateVesting(info.vestingId, recipient, Number(value));
+        res = await updateVesting(info.vestingId, recipient, Number(value))
       }
     } else {
-      res = await addVesting(typeId, recipient, Number(value));
+      res = await addVesting(typeId, recipient, Number(value))
     }
-    setLoading(false);
+    setLoading(false)
 
     if (res) {
       handleClose()
     }
-  };
+  }
 
   const validAmount = () => {
     if (vestingTypes.length > 0 && !isNaN(Number(value))) {
       return (
         BigNumber.from(Number(value)).lte(vestingTypes[typeId].maxAmount.sub(vestingTypes[typeId].vestedAmount))
-      );
+      )
     }
-    return false;
-  };
+    return false
+  }
 
   return (
     <div>
@@ -187,5 +187,5 @@ export const AddVesting: React.FC<IAddVesting> = ({ isOpen, handleClose, edit, i
         </DialogContent>
       </Dialog>
     </div>
-  );
-};
+  )
+}

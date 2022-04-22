@@ -1,29 +1,29 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react'
 
 export const useLocalStorageState = (key: string, defaultState?: string) => {
 	const [state, setState] = useState(() => {
-		const storedState = localStorage.getItem(key);
+		const storedState = localStorage.getItem(key)
 		if (storedState) {
-			return JSON.parse(storedState);
+			return JSON.parse(storedState)
 		}
-		return defaultState;
-	});
+		return defaultState
+	})
 
 	const setLocalStorageState = useCallback(
 		newState => {
-			const changed = state !== newState;
+			const changed = state !== newState
 			if (!changed) {
-				return;
+				return
 			}
-			setState(newState);
+			setState(newState)
 			if (newState === null) {
-				localStorage.removeItem(key);
+				localStorage.removeItem(key)
 			} else {
-				localStorage.setItem(key, JSON.stringify(newState));
+				localStorage.setItem(key, JSON.stringify(newState))
 			}
 		},
 		[state, key],
-	);
+	)
 
-	return [state, setLocalStorageState];
-};
+	return [state, setLocalStorageState]
+}

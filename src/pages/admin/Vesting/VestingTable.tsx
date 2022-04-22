@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { MouseEvent, ChangeEvent, useEffect, useState } from 'react';
-import Web3 from 'web3';
+import React, { MouseEvent, ChangeEvent, useEffect, useState } from 'react'
+import Web3 from 'web3'
 import {
   Box,
   Button,
@@ -16,13 +16,13 @@ import {
   TableCell,
   TableHead,
   TableRow,
-} from '@material-ui/core';
-import { useVesting } from 'contexts';
-import { VestingInfo, IWalletList, IUpdateVestingList } from 'types';
-import { AddVesting } from './AddVesting';
-import { VestingHistory } from './VestingHistory';
-import { formatEther, parseEther } from 'utils';
-import { toast } from 'react-toastify';
+} from '@material-ui/core'
+import { useVesting } from 'contexts'
+import { VestingInfo, IWalletList, IUpdateVestingList } from 'types'
+import { AddVesting } from './AddVesting'
+import { VestingHistory } from './VestingHistory'
+import { formatEther, parseEther } from 'utils'
+import { toast } from 'react-toastify'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -49,13 +49,13 @@ const useStyles = makeStyles(() => ({
     color: 'red',
     padding: '5px 0'
   }
-}));
+}))
 
 interface IVestingItem {
-  index: number;
-  info: VestingInfo;
-  onAdd: (edit: boolean, info: Maybe<VestingInfo>) => void;
-  onHistory: (info: Maybe<VestingInfo>) => void;
+  index: number
+  info: VestingInfo
+  onAdd: (edit: boolean, info: Maybe<VestingInfo>) => void
+  onHistory: (info: Maybe<VestingInfo>) => void
 }
 
 const VestingItem: React.FC<IVestingItem> = ({
@@ -64,8 +64,8 @@ const VestingItem: React.FC<IVestingItem> = ({
   onAdd,
   onHistory,
 }) => {
-  const classes = useStyles();
-  const { vestingTypes } = useVesting();
+  const classes = useStyles()
+  const { vestingTypes } = useVesting()
 
   return (
     <TableRow key={info.vestingId}>
@@ -99,17 +99,17 @@ const VestingItem: React.FC<IVestingItem> = ({
         </Button>
       </TableCell>
     </TableRow>
-  );
-};
+  )
+}
 
 export const VestingTable = () => {
-  const classes = useStyles();
-  const { vestingTypes, vestingList, addUpdateMultiVesting } = useVesting();
+  const classes = useStyles()
+  const { vestingTypes, vestingList, addUpdateMultiVesting } = useVesting()
 
-  const [typeId, setTypeId] = useState(-1);
-  const [showHistory, setShowHistory] = useState(false);
-  const [isEdit, setEdit] = useState(false);
-  const [activeInfo, setActiveInfo] = useState<Maybe<VestingInfo>>(null);
+  const [typeId, setTypeId] = useState(-1)
+  const [showHistory, setShowHistory] = useState(false)
+  const [isEdit, setEdit] = useState(false)
+  const [activeInfo, setActiveInfo] = useState<Maybe<VestingInfo>>(null)
   const [isOpenAddVesting, setIsOpenAddVesting] = useState(false)
   const [errors, setErrors] = useState<string[]>([])
 
@@ -117,9 +117,9 @@ export const VestingTable = () => {
 
   useEffect(() => {
     if (typeId >= vestingTypes.length) {
-      setTypeId(-1);
+      setTypeId(-1)
     }
-  }, [vestingTypes]);
+  }, [vestingTypes])
 
   const handleOpenAddVesting = () => {
     setIsOpenAddVesting(true)
@@ -130,34 +130,34 @@ export const VestingTable = () => {
   }
 
   const handleAdd = (edit: boolean, info: Maybe<VestingInfo>) => {
-    setEdit(edit);
-    setActiveInfo(info);
+    setEdit(edit)
+    setActiveInfo(info)
     handleOpenAddVesting()
-  };
+  }
 
   const handleHistory = (info: Maybe<VestingInfo>) => {
-    setActiveInfo(info);
-    setShowHistory(true);
-  };
+    setActiveInfo(info)
+    setShowHistory(true)
+  }
 
   const csvFileToArray = (data: string) => {
-    const csvRows = data.slice(data.indexOf("\n") + 1).split("\n");
+    const csvRows = data.slice(data.indexOf("\n") + 1).split("\n")
 
     const array = csvRows.map(i => {
-      const values = i.replaceAll('\r', '').split(",");
+      const values = i.replaceAll('\r', '').split(",")
       const obj: IWalletList = {
         typeId: '',
         recipient: '',
         amount: parseEther('0', undefined)
-      };
+      }
       if (values.length === 3) {
         obj['typeId'] = values[0]
         obj['recipient'] = values[1]
         obj['amount'] = parseEther(values[2], undefined)
       }
 
-      return obj;
-    });
+      return obj
+    })
 
     let _addVestingList: IWalletList[] = [], _updateVestingList: IUpdateVestingList[] = []
     let errors: string[] = []
@@ -199,18 +199,18 @@ export const VestingTable = () => {
     if (_addVestingList.length || _updateVestingList.length)
       addUpdateMultiVesting(_addVestingList, _updateVestingList)
     else toast.warning("There is no valid data in this importing!")
-  };
+  }
 
   const handleOnUpload = (e: ChangeEvent<HTMLInputElement>) => {
     setErrors([])
-    const target = (e.target as HTMLInputElement).files;
+    const target = (e.target as HTMLInputElement).files
     if (target) {
       fileReader.onload = function (event: any) {
-        const csvOutput = event.target.result;
+        const csvOutput = event.target.result
         csvFileToArray(csvOutput)
-      };
+      }
 
-      fileReader.readAsText(target[0]);
+      fileReader.readAsText(target[0])
     }
   }
 
@@ -310,5 +310,5 @@ export const VestingTable = () => {
         </TableBody>
       </Table>
     </Card>
-  );
-};
+  )
+}

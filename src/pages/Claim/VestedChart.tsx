@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
-import { Box, makeStyles, Button } from '@material-ui/core';
-import { useVesting, useWallet } from 'contexts';
+import React, { useEffect, useState } from 'react'
+import { Box, makeStyles, Button } from '@material-ui/core'
+import { useVesting, useWallet } from 'contexts'
 import Highcharts from "highcharts"
 import HighchartsReact from "highcharts-react-official"
-import { formatEther } from 'utils';
-import { BigNumber } from 'ethers';
-import moment from 'moment';
-import { VestingInfo, VestingType } from 'types';
+import { formatEther } from 'utils'
+import { BigNumber } from 'ethers'
+import moment from 'moment'
+import { VestingInfo, VestingType } from 'types'
 
 const seriesColor = ['#65a30d', '#0284c7', '#ea580c', '#2563eb', '#4f46e5', '#7c3aed', '#db2777', '#e11d48', '#57534e', '#ca8a04']
 const options = {
@@ -101,7 +101,7 @@ const options = {
             text: ''
         }
     }
-};
+}
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -110,7 +110,7 @@ const useStyles = makeStyles(() => ({
         boxSizing: 'border-box',
 
     }
-}));
+}))
 
 const curPointMarker = { enabled: true, fillColor: '#00ff00', lineWidth: 2, lineColor: '#ca8a04' }
 const dotLine = {
@@ -133,9 +133,9 @@ const dotLine = {
 
 
 export const VestedChart = ({ info }: { info: VestingInfo }) => {
-    const classes = useStyles();
-    const { account } = useWallet();
-    const { vestingList, vestingTypes, getVestingFrequency } = useVesting();
+    const classes = useStyles()
+    const { account } = useWallet()
+    const { vestingList, vestingTypes, getVestingFrequency } = useVesting()
     const [chartOptions, setChartOptions] = useState({ ...options })
 
     const getYaxis = (val: BigNumber) => {
@@ -254,5 +254,5 @@ export const VestedChart = ({ info }: { info: VestingInfo }) => {
         <div style={{ minWidth: '500px', width: '100%' }}>
             <HighchartsReact highcharts={Highcharts} options={chartOptions} />
         </div>
-    );
-};
+    )
+}

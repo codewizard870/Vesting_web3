@@ -1,9 +1,9 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react'
+import ReactDOM from 'react-dom'
 import "./tailwind.output.css"
-import App from './App';
-import { BrowserRouter } from 'react-router-dom';
-import { SessionProvider } from 'contexts';
+import App from './App'
+import { BrowserRouter } from 'react-router-dom'
+import { SessionProvider } from 'contexts'
 
 ReactDOM.render(
   <React.StrictMode>
@@ -14,4 +14,4 @@ ReactDOM.render(
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
-);
+)

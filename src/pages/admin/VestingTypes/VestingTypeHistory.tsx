@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
-import { BigNumber } from 'ethers';
+import React, { useEffect, useState } from 'react'
+import { BigNumber } from 'ethers'
 import {
   Box,
   Button,
@@ -11,10 +11,10 @@ import {
   TableCell,
   TableHead,
   TableRow,
-} from '@material-ui/core';
-import { useVesting } from 'contexts';
-import { VestingTypeEvent, VF_LIST } from 'types';
-import { formatEther, formatTime } from 'utils';
+} from '@material-ui/core'
+import { useVesting } from 'contexts'
+import { VestingTypeEvent, VF_LIST } from 'types'
+import { formatEther, formatTime } from 'utils'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -31,14 +31,14 @@ const useStyles = makeStyles(() => ({
     height: 40,
     marginRight: 8,
   },
-}));
+}))
 
 interface IHistoryItem {
-  event: VestingTypeEvent;
+  event: VestingTypeEvent
 }
 
 const HistoryItem: React.FC<IHistoryItem> = ({ event }) => {
-  const { eventTopics } = useVesting();
+  const { eventTopics } = useVesting()
 
   return (
     <TableRow>
@@ -51,31 +51,31 @@ const HistoryItem: React.FC<IHistoryItem> = ({ event }) => {
       <TableCell>{formatEther(BigNumber.from(event.data.maxAmount), undefined, 3, true)}</TableCell>
       <TableCell>{new Date(event.timestamp * 1000).toLocaleString()}</TableCell>
     </TableRow>
-  );
-};
+  )
+}
 
 interface IVestingTypeHistory {
-  typeId: number;
-  onBack: () => void;
+  typeId: number
+  onBack: () => void
 }
 
 export const VestingTypeHistory: React.FC<IVestingTypeHistory> = ({
   typeId,
   onBack,
 }) => {
-  const classes = useStyles();
-  const { getTypeEvents } = useVesting();
+  const classes = useStyles()
+  const { getTypeEvents } = useVesting()
 
-  const [eventList, setEventList] = useState<VestingTypeEvent[]>([]);
+  const [eventList, setEventList] = useState<VestingTypeEvent[]>([])
 
   useEffect(() => {
     const updateEventList = async () => {
-      const res = await getTypeEvents(typeId);
-      setEventList(res);
-    };
+      const res = await getTypeEvents(typeId)
+      setEventList(res)
+    }
 
-    updateEventList();
-  }, [typeId]);
+    updateEventList()
+  }, [typeId])
 
   return (
     <Card className={classes.root}>
@@ -129,5 +129,5 @@ export const VestingTypeHistory: React.FC<IVestingTypeHistory> = ({
         </TableBody>
       </Table>
     </Card>
-  );
-};
+  )
+}

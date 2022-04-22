@@ -1,5 +1,5 @@
-import Draggable from "react-draggable";
-import Paper from "@material-ui/core/Paper";
+import Draggable from "react-draggable"
+import Paper from "@material-ui/core/Paper"
 
 export default function PaperComponent(props: any) {
     return (
@@ -9,5 +9,5 @@ export default function PaperComponent(props: any) {
         >
             <Paper {...props} />
         </Draggable>
-    );
+    )
 }
