@@ -13,8 +13,8 @@ import {
   TableRow,
 } from '@material-ui/core'
 import { useVesting } from 'contexts'
-import { VestingTypeEvent } from 'types'
-import { formatEther } from 'utils'
+import { VestingTypeEvent, VF_LIST } from 'types'
+import { formatEther, formatTime } from 'utils'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -43,7 +43,12 @@ const HistoryItem: React.FC<IHistoryItem> = ({ event }) => {
   return (
     <TableRow>
       <TableCell>{eventTopics[event.topic] || 'Undefined'}</TableCell>
-      <TableCell>{formatEther(BigNumber.from(event.amount), undefined, 3, true)}</TableCell>
+      <TableCell>{event.data.name}</TableCell>
+      <TableCell>{new Date(event.data.startTime * 1000).toLocaleString()}</TableCell>
+      <TableCell>{new Date(event.data.endTime * 1000).toLocaleString()}</TableCell>
+      <TableCell>{formatTime(event.data.lockupDuration)}</TableCell>
+      <TableCell>{VF_LIST[event.data.vestingFrequencyId].label}</TableCell>
+      <TableCell>{formatEther(BigNumber.from(event.data.maxAmount), undefined, 3, true)}</TableCell>
       <TableCell>{new Date(event.timestamp * 1000).toLocaleString()}</TableCell>
     </TableRow>
   )
@@ -92,6 +97,21 @@ export const VestingTypeHistory: React.FC<IVestingTypeHistory> = ({
           <TableRow>
             <TableCell>
               <b>Action</b>
+            </TableCell>
+            <TableCell>
+              <b>Name</b>
+            </TableCell>
+            <TableCell>
+              <b>Start Time</b>
+            </TableCell>
+            <TableCell>
+              <b>End Time</b>
+            </TableCell>
+            <TableCell>
+              <b>Lockup Period</b>
+            </TableCell>
+            <TableCell>
+              <b>Vesting Frequency</b>
             </TableCell>
             <TableCell>
               <b>Total</b>

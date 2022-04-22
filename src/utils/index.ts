@@ -1,3 +1,4 @@
+import Web3 from 'web3';
 import { BigNumber, ethers, utils } from 'ethers'
 import jwt from 'jsonwebtoken'
 
@@ -58,4 +59,18 @@ export function formatTime(value: number) {
     return `${value} sec(s)`
   }
   return '0 days'
+}
+
+export function parseVestingTypeData(data: string, web3: Web3) {
+  const str = data.substring(data.length - (data.length - 2))
+  const arrayData = str.match((/.{1,64}/g))
+  console.log('arrayData', arrayData)
+  return {
+    startTime: web3.utils.hexToNumber(`0x${arrayData?.[1]}`),
+    endTime: web3.utils.hexToNumber(`0x${arrayData?.[2]}`),
+    lockupDuration: web3.utils.hexToNumber(`0x${arrayData?.[3]}`),
+    maxAmount: web3.utils.hexToNumberString(`0x${arrayData?.[4]}`),
+    vestingFrequencyId: web3.utils.hexToNumber(`0x${arrayData?.[5]}`),
+    name: web3.utils.hexToAscii(`0x${arrayData?.[7]}`),
+  }
 }

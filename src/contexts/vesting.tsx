@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 import { VestingEvent, VestingTypeEvent, VestingInfo, VestingType, IWalletList, IUpdateVestingList } from 'types'
 import { useContracts } from './contracts'
 import { useWallet } from './wallets'
-import { parseEther } from 'utils'
+import { parseEther, parseVestingTypeData } from 'utils'
 export interface IVestingContext {
   isVestingAdmin: boolean
   vestingTypes: VestingType[]
@@ -392,7 +392,7 @@ export const VestingProvider = ({ children = null as any }) => {
           ({
             timestamp: web3.utils.hexToNumber(item.timeStamp),
             topic: item.topics[0],
-            amount: web3.utils.hexToNumberString(item.topics[2])
+            data: parseVestingTypeData(item.data, web3)
           } as VestingTypeEvent)
         )
       }
@@ -404,12 +404,13 @@ export const VestingProvider = ({ children = null as any }) => {
         }&topic0=0xaf870d609b13b8b808d0daa3d7141d2df9ff51d246b451cd03ecb6cca53df89d&topic1=${typeIdHex}&apikey=${process.env.REACT_APP_ETHERSCAN_API}`
       ).then((res) => res.json())
       if (res && res.status === '1') {
-        addEvents = res.result.map(
+        console.log('updateevents', res)
+        updateEvents = res.result.map(
           (item: any) =>
           ({
             timestamp: web3.utils.hexToNumber(item.timeStamp),
             topic: item.topics[0],
-            amount: web3.utils.hexToNumberString(item.topics[2])
+            data: parseVestingTypeData(item.data, web3)
           } as VestingTypeEvent)
         )
       }
