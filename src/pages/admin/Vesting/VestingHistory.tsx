@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
-import { BigNumber } from 'ethers';
+import React, { useEffect, useState } from 'react'
+import { BigNumber } from 'ethers'
 import {
   Box,
   Button,
@@ -11,10 +11,10 @@ import {
   TableCell,
   TableHead,
   TableRow,
-} from '@material-ui/core';
-import { useVesting } from 'contexts';
-import { VestingEvent } from 'types';
-import { formatEther } from 'utils';
+} from '@material-ui/core'
+import { useVesting } from 'contexts'
+import { VestingEvent } from 'types'
+import { formatEther } from 'utils'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -31,14 +31,14 @@ const useStyles = makeStyles(() => ({
     height: 40,
     marginRight: 8,
   },
-}));
+}))
 
 interface IHistoryItem {
-  event: VestingEvent;
+  event: VestingEvent
 }
 
 const HistoryItem: React.FC<IHistoryItem> = ({ event }) => {
-  const { eventTopics } = useVesting();
+  const { eventTopics } = useVesting()
 
   return (
     <TableRow>
@@ -46,14 +46,14 @@ const HistoryItem: React.FC<IHistoryItem> = ({ event }) => {
       <TableCell>{formatEther(BigNumber.from(event.amount), undefined, 3, true)}</TableCell>
       <TableCell>{new Date(event.timestamp * 1000).toLocaleString()}</TableCell>
     </TableRow>
-  );
-};
+  )
+}
 
 interface IVestingHistory {
-  typeId: number;
-  vestingId: number;
-  address: string;
-  onBack: () => void;
+  typeId: number
+  vestingId: number
+  address: string
+  onBack: () => void
 }
 
 export const VestingHistory: React.FC<IVestingHistory> = ({
@@ -62,19 +62,19 @@ export const VestingHistory: React.FC<IVestingHistory> = ({
   address,
   onBack,
 }) => {
-  const classes = useStyles();
-  const { getEvents } = useVesting();
+  const classes = useStyles()
+  const { getEvents } = useVesting()
 
-  const [eventList, setEventList] = useState<VestingEvent[]>([]);
+  const [eventList, setEventList] = useState<VestingEvent[]>([])
 
   useEffect(() => {
     const updateEventList = async () => {
-      const res = await getEvents(typeId, vestingId, address);
-      setEventList(res);
-    };
+      const res = await getEvents(typeId, vestingId, address)
+      setEventList(res)
+    }
 
-    updateEventList();
-  }, [typeId, vestingId, address]);
+    updateEventList()
+  }, [typeId, vestingId, address])
 
   return (
     <Card className={classes.root}>
@@ -113,5 +113,5 @@ export const VestingHistory: React.FC<IVestingHistory> = ({
         </TableBody>
       </Table>
     </Card>
-  );
-};
+  )
+}

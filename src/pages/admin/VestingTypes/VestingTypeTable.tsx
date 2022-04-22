@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import {
   Box,
   Button,
@@ -10,13 +10,13 @@ import {
   TableCell,
   TableHead,
   TableRow,
-} from '@material-ui/core';
-import { useVesting } from 'contexts';
-import { useHistory } from 'react-router-dom';
-import { VestingType, VF_LIST } from 'types';
-import { formatTime, formatEther } from 'utils';
-import { AddVestingType } from './AddVestingType';
-import { VestingTypeHistory } from './VestingTypeHistory';
+} from '@material-ui/core'
+import { useVesting } from 'contexts'
+import { useHistory } from 'react-router-dom'
+import { VestingType, VF_LIST } from 'types'
+import { formatTime, formatEther } from 'utils'
+import { AddVestingType } from './AddVestingType'
+import { VestingTypeHistory } from './VestingTypeHistory'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -32,18 +32,18 @@ const useStyles = makeStyles(() => ({
   button: {
     height: 50,
   },
-}));
+}))
 
 interface ITypeItem {
-  index: number;
-  info: VestingType;
+  index: number
+  info: VestingType
   handleEdit: () => void,
-  handleHistory: () => void;
+  handleHistory: () => void
 }
 
 const TypeItem: React.FC<ITypeItem> = ({ index, info, handleEdit, handleHistory }) => {
-  const classes = useStyles();
-  const history = useHistory();
+  const classes = useStyles()
+  const history = useHistory()
 
   return (
     <TableRow key={info.typeId}>
@@ -76,18 +76,18 @@ const TypeItem: React.FC<ITypeItem> = ({ index, info, handleEdit, handleHistory 
         </Button>
       </TableCell>
     </TableRow>
-  );
-};
+  )
+}
 
 export const VestingTypeTable = () => {
-  const classes = useStyles();
-  const history = useHistory();
-  const { vestingTypes } = useVesting();
+  const classes = useStyles()
+  const history = useHistory()
+  const { vestingTypes } = useVesting()
   const [isOpenAddType, setIsOpenAddType] = useState(false)
   const [isEditType, setIsEditType] = useState(false)
   const [editTypeId, setEditTypeId] = useState(0)
-  const [showHistory, setShowHistory] = useState(false);
-  const [activeInfo, setActiveInfo] = useState<Maybe<VestingType>>(null);
+  const [showHistory, setShowHistory] = useState(false)
+  const [activeInfo, setActiveInfo] = useState<Maybe<VestingType>>(null)
 
   const handleOpenAddType = () => {
     setIsOpenAddType(true)
@@ -105,8 +105,8 @@ export const VestingTypeTable = () => {
 
   const handleHistory = (id: number) => {
     setEditTypeId(id)
-    setShowHistory(true);
-  };
+    setShowHistory(true)
+  }
 
   return showHistory ? (
     <VestingTypeHistory
@@ -171,5 +171,5 @@ export const VestingTypeTable = () => {
         </TableBody>
       </Table>
     </Card>
-  );
-};
+  )
+}

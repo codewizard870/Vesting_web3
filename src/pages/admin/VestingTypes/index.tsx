@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from 'react';
-import { Box, makeStyles } from '@material-ui/core';
-import clsx from 'clsx';
-import { Redirect, Route, Switch } from 'react-router-dom';
-import { AddVestingType } from './AddVestingType';
-import { VestingTypeTable } from './VestingTypeTable';
+import React from 'react'
+import { Box, makeStyles } from '@material-ui/core'
+import clsx from 'clsx'
+import { Redirect, Route, Switch } from 'react-router-dom'
+import { AddVestingType } from './AddVestingType'
+import { VestingTypeTable } from './VestingTypeTable'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -12,10 +12,10 @@ const useStyles = makeStyles(() => ({
     padding: '2rem',
     boxSizing: 'border-box',
   },
-}));
+}))
 
 export const VestingTypes = () => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <Box className={clsx(classes.root)}>
@@ -24,5 +24,5 @@ export const VestingTypes = () => {
         <Redirect to="/admin/vesting_type" />
       </Switch>
     </Box>
-  );
-};
+  )
+}

@@ -1,6 +1,6 @@
-import tokenAbi from '../abi/Token.json';
-import vestingAbi from '../abi/Vesting.json';
-import stakingAbi from '../abi/Staking.json';
+import tokenAbi from '../abi/Token.json'
+import vestingAbi from '../abi/Vesting.json'
+import stakingAbi from '../abi/Staking.json'
 
 export enum ChainId {
   Mainnet = 1,  

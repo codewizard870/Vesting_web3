@@ -1,21 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext } from 'react';
-import { checkAuthentication } from 'utils';
+import React, { useContext } from 'react'
+import { checkAuthentication } from 'utils'
 
 export interface ISessionContext {
-  getUsername: () => Maybe<string>;
-  requestUserSignin: (email: string, password: string) => Promise<any>;
+  getUsername: () => Maybe<string>
+  requestUserSignin: (email: string, password: string) => Promise<any>
   requestUserSignup: (
     email: string,
     password: string,
     name: string
-  ) => Promise<any>;
+  ) => Promise<any>
   requestUserSignout: () => void
   requestUserList: () => any
   requestUpdatePermit: (id: string, permit: number) => any
 }
 
-const SessionContext = React.createContext<Maybe<ISessionContext>>(null);
+const SessionContext = React.createContext<Maybe<ISessionContext>>(null)
 
 export const SessionProvider = ({ children = null as any }) => {
   const options = (method = 'get', data = 'null') => {
@@ -25,19 +25,19 @@ export const SessionProvider = ({ children = null as any }) => {
       },
       method: method,
       body: JSON.stringify(data),
-    };
-  };
+    }
+  }
 
   const getUsername = () => {
-    return checkAuthentication() ? localStorage.getItem('username') : '';
-  };
+    return checkAuthentication() ? localStorage.getItem('username') : ''
+  }
 
   const getUserToken = () => {
-    return checkAuthentication() ? localStorage.getItem('jwtToken') : '';
-  };
+    return checkAuthentication() ? localStorage.getItem('jwtToken') : ''
+  }
 
   const requestUserSignin = (email: string, password: string) => {
-    const data = { email, password };
+    const data = { email, password }
     return fetch(
       process.env.REACT_APP_REST_SERVER + '/signin',
       options('post', data as any)
@@ -45,13 +45,13 @@ export const SessionProvider = ({ children = null as any }) => {
       .then((res) => res.json())
       .then((res) => {
         if (!res.errors) {
-          localStorage.setItem('jwtToken', res.user.token);
-          localStorage.setItem('username', res.user.name);
-          localStorage.setItem('role', res.user.role);
+          localStorage.setItem('jwtToken', res.user.token)
+          localStorage.setItem('username', res.user.name)
+          localStorage.setItem('role', res.user.role)
         }
-        return res;
-      });
-  };
+        return res
+      })
+  }
 
   const requestUserList = () => {
     const requestOptions = {
@@ -65,12 +65,12 @@ export const SessionProvider = ({ children = null as any }) => {
     )
       .then((res) => res.json())
       .then((res) => {
-        return res;
-      });
-  };
+        return res
+      })
+  }
 
   const requestUpdatePermit = (id: string, permit: number) => {
-    const data = { id, permit };
+    const data = { id, permit }
     const requestOptions = {
       method: 'post',
       headers: new Headers({
@@ -89,22 +89,22 @@ export const SessionProvider = ({ children = null as any }) => {
       .catch(error => {
         return {status: false, msg: error.message}
       })
-  };
+  }
 
 
   const requestUserSignup = (email: string, password: string, name: string) => {
-    const data = { email, password, name };
+    const data = { email, password, name }
     return fetch(
       process.env.REACT_APP_REST_SERVER + '/signup',
       options('post', data as any)
-    ).then((res) => res.json());
-  };
+    ).then((res) => res.json())
+  }
 
   const requestUserSignout = () => {
-    localStorage.setItem('jwtToken', '');
-    localStorage.setItem('username', '');
-    localStorage.setItem('role', '');
-  };
+    localStorage.setItem('jwtToken', '')
+    localStorage.setItem('username', '')
+    localStorage.setItem('role', '')
+  }
 
   return (
     <SessionContext.Provider
@@ -112,15 +112,15 @@ export const SessionProvider = ({ children = null as any }) => {
     >
       {children}
     </SessionContext.Provider>
-  );
-};
+  )
+}
 
 export const useSession = () => {
-  const context = useContext(SessionContext);
+  const context = useContext(SessionContext)
 
   if (!context) {
-    throw new Error('Component rendered outside the provider tree');
+    throw new Error('Component rendered outside the provider tree')
   }
 
-  return context;
-};
+  return context
+}

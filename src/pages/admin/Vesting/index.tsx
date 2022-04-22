@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from 'react';
-import { Box, makeStyles } from '@material-ui/core';
-import clsx from 'clsx';
-import { Redirect, Route, Switch } from 'react-router-dom';
-import { VestingTable } from './VestingTable';
+import React from 'react'
+import { Box, makeStyles } from '@material-ui/core'
+import clsx from 'clsx'
+import { Redirect, Route, Switch } from 'react-router-dom'
+import { VestingTable } from './VestingTable'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -11,10 +11,10 @@ const useStyles = makeStyles(() => ({
     padding: '2rem',
     boxSizing: 'border-box',
   },
-}));
+}))
 
 export const Vesting = () => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <Box className={clsx(classes.root)}>
@@ -23,5 +23,5 @@ export const Vesting = () => {
         <Redirect to="/admin/vesting" />
       </Switch>
     </Box>
-  );
-};
+  )
+}

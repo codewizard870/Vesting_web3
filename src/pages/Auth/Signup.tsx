@@ -1,101 +1,112 @@
-import React, { useState } from 'react';
-import { Button, makeStyles, TextField } from '@material-ui/core';
-import { useSession } from 'contexts';
-import { useHistory } from 'react-router-dom';
-
-const useStyles = makeStyles(() => ({
-  root: {
-    width: '100%',
-    padding: '1rem',
-    boxSizing: 'border-box',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  input: {
-    width: 400,
-    margin: '0.5rem',
-  },
-  button: {
-    width: 400,
-    margin: '0.5rem',
-  },
-}));
+import React, { useState } from 'react'
+import { Button, makeStyles, TextField } from '@material-ui/core'
+import { useSession } from 'contexts'
+import { useHistory } from 'react-router-dom'
+import { PrimaryButton } from 'components/PrimaryButton'
+import zxcvbn from 'zxcvbn'
 
 interface IError {
-  [field: string]: string;
+  [field: string]: string
 }
 
-export const Signup = () => {
-  const classes = useStyles();
-  const { requestUserSignup } = useSession();
-  const history = useHistory();
+export const Signup = ({ setIsSignUp, setRegistered }: { setIsSignUp: (isSignUp: boolean) => void, setRegistered: (registered: boolean) => void }) => {
+  const { requestUserSignup } = useSession()
+  const history = useHistory()
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [errors, setErrors] = useState<IError>({});
-  const [loading, setLoading] = useState(false);
-
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [name, setName] = useState('')
+  const [errors, setErrors] = useState<IError>({})
+  const [loading, setLoading] = useState(false)
+  const [passStrength, setPassStrength] = useState(0)
   const handleValidation = (field: string, value: Maybe<string>) => {
-    const error: IError = {};
-    error[field] = value ? '' : 'This field is required';
-    return error;
-  };
+    const error: IError = {}
+    error[field] = value ? '' : 'This field is required'
+    if (field==='confirmPassword'){
+      if (password !== confirmPassword) {
+        error[field] = "Make sure both passwords match!"
+      }
+    }
+    return error
+  }
 
   const handleInputChange = (e: any) => {
-    const field = e.target.id;
-    const value = e.target.value;
+    const field = e.target.id
+    const value = e.target.value
 
     if (field === 'email') {
-      setEmail(value);
-    } else if (field === 'password') {
-      setPassword(value);
+      setEmail(value)
+    } else if (field === 'password') {      
+      setPassStrength(zxcvbn(value).score)
+      setPassword(value)
     } else if (field === 'name') {
-      setName(value);
+      setName(value)
+    } else if (field === 'confirmPassword') {
+      setConfirmPassword(value)
     }
 
-    const error = { ...errors, ...handleValidation(field, value) };
+    const error = { ...errors, ...handleValidation(field, value) }
     if (errors.invalidCredentials) {
-      delete errors.invalidCredentials;
+      delete errors.invalidCredentials
     }
-    setErrors(error);
-  };
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
+    // setErrors(error)
+    setErrors({})
+  }
+
+  const handleSubmit = async () => {
     const error = {
       ...errors,
+      ...handleValidation('name', name),
       ...handleValidation('email', email),
       ...handleValidation('password', password),
-      ...handleValidation('name', name),
-    };
+      ...handleValidation('confirmPassword', confirmPassword),
+    }
+    console.log(password)
+    console.log(confirmPassword)
+    console.log(error)
+
     const userCredentialsValid =
-      Object.keys(error).filter((field) => error[field] !== '').length === 0;
+      Object.keys(error).filter((field) => error[field] !== '').length === 0
     if (!userCredentialsValid) {
-      setErrors(error);
-      return;
+      setErrors(error)
+      return
     } else {
-      setLoading(true);
+      setLoading(true)
       try {
-        const res = await requestUserSignup(email, password, name);
+        const res = await requestUserSignup(email, password, name)
         if (res.errors) {
-          setErrors(res.errors);
+          setErrors(res.errors)
         } else {
-          history.push('/signin');          
+          // history.push('/signin')
+          setRegistered(true)
         }
       } catch (err) {
-        console.log(err);
+        console.log(err)
       }
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
+  const getPasswordStrengthColor = () => {
+    if (passStrength<=1) return '#E10A0A'
+    if (passStrength<=3) return '#E18B0A'
+    return '#0C9434'
+  }
   return (
-    <form className={classes.root} onSubmit={handleSubmit}>
-      <h2>Sign up</h2>
+    <div className='flex flex-col justify-center items-center gap-6 mt-6'>
       <TextField
-        variant="outlined"
+        id="name"
+        value={name}
+        label="Full Name"
+        onChange={handleInputChange}
+        error={!!errors.name}
+        helperText={errors.name}
+        className='w-full px-4 py-4'
+        disabled={loading}
+      />
+      <TextField
         id="email"
         type="email"
         label="Email"
@@ -103,52 +114,47 @@ export const Signup = () => {
         onChange={handleInputChange}
         error={!!errors.email || !!errors.invalidCredentials}
         helperText={errors.email || errors.invalidCredentials}
-        className={classes.input}
+        className='w-full px-4 py-4'
         disabled={loading}
       />
+      <div className='w-full'>
+        <TextField
+          id="password"
+          type="password"
+          label="Password"
+          value={password}
+          onChange={handleInputChange}
+          error={!!errors.password}
+          helperText={errors.password}
+          className='w-full px-4 py-4'
+          disabled={loading}
+        />
+        {password.length>0 && <div className='w-full flex gap-2 mt-2'>
+          <div className='basis-1/3 h-1' style={{backgroundColor: getPasswordStrengthColor()}}></div>
+          <div className='basis-1/3 h-1' style={{backgroundColor: passStrength>1?getPasswordStrengthColor():'#bbbbbb'}}></div>
+          <div className='basis-1/3 h-1' style={{backgroundColor: passStrength>3?getPasswordStrengthColor():'#bbbbbb'}}></div>
+        </div>}
+      </div>
       <TextField
-        variant="outlined"
-        id="password"
+        id="confirmPassword"
         type="password"
-        label="Password"
-        value={password}
+        label="Confirm Password"
+        value={confirmPassword}
         onChange={handleInputChange}
-        error={!!errors.password}
-        helperText={errors.password}
-        className={classes.input}
-        disabled={loading}
-      />
-      <TextField
-        variant="outlined"
-        id="name"
-        value={name}
-        label="Name"
-        onChange={handleInputChange}
-        error={!!errors.name}
-        helperText={errors.name}
-        className={classes.input}
+        error={!!errors.confirmPassword}
+        helperText={errors.confirmPassword}
+        className='w-full px-4 py-4'
         disabled={loading}
       />
       <br />
-      <Button
-        type="submit"
-        color="primary"
-        variant="contained"
-        className={classes.button}
-        disabled={loading}
-      >
-        Sign up
-      </Button>
-      <Button
-        type="button"
-        color="primary"
-        variant="contained"
-        className={classes.button}
-        disabled={loading}
-        onClick={() => history.push('/signin')}
-      >
-        Sign in
-      </Button>
-    </form>
-  );
-};
+      <PrimaryButton onClick={handleSubmit} width='227px' disabled={loading}>
+        Sign Up
+      </PrimaryButton>
+      <br />
+      <div className='flex text-[18px] gap-2'>
+        <span className="text-[#474747]">Already have an account?</span>
+        <div className="text-[#3FBCE9] cursor-pointer" onClick={() => setIsSignUp(false)}>Login</div>
+      </div>
+    </div>
+  )
+}

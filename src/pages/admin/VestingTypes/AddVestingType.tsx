@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
-import clsx from 'clsx';
+import React, { useEffect, useState } from 'react'
+import clsx from 'clsx'
 import {
   Box,
   Button,
@@ -14,13 +14,13 @@ import {
   Dialog,
   DialogTitle,
   DialogContent
-} from '@material-ui/core';
-import PaperComponent from 'components/DraggableModalPaper';
-import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
-import { useVesting } from 'contexts';
-import { useHistory, useParams } from 'react-router-dom';
-import { VF_LIST } from 'types';
+} from '@material-ui/core'
+import PaperComponent from 'components/DraggableModalPaper'
+import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
+import DateFnsUtils from '@date-io/date-fns'
+import { useVesting } from 'contexts'
+import { useHistory, useParams } from 'react-router-dom'
+import { VF_LIST } from 'types'
 import { formatEther } from 'utils'
 
 const useStyles = makeStyles(() => ({
@@ -47,7 +47,7 @@ const useStyles = makeStyles(() => ({
   input: {
     width: '100%',
   },
-}));
+}))
 
 interface IAddVestingType {
   isOpen: boolean
@@ -57,7 +57,7 @@ interface IAddVestingType {
 }
 
 interface IParam {
-  id?: string;
+  id?: string
 }
 
 const VF_DEFAULT = 1
@@ -77,50 +77,50 @@ const getUTC2Local_timestamp = (timevalue: number): number => {
 }
 
 export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose, edit, id }) => {
-  const classes = useStyles();
-  const history = useHistory();
-  const { addVestingType, updateVestingType, vestingTypes } = useVesting();
+  const classes = useStyles()
+  const history = useHistory()
+  const { addVestingType, updateVestingType, vestingTypes } = useVesting()
 
-  const [name, setName] = useState('');
-  const [startTime, setStartTime] = useState(new Date());
-  const [endTime, setEndTime] = useState(new Date());
-  const [lockupDuration, setLockupDuration] = useState('');
-  const [maxAmount, setMaxAmount] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState('')
+  const [startTime, setStartTime] = useState(new Date())
+  const [endTime, setEndTime] = useState(new Date())
+  const [lockupDuration, setLockupDuration] = useState('')
+  const [maxAmount, setMaxAmount] = useState('')
+  const [loading, setLoading] = useState(false)
   const [vestingFrequency, setVestingFrequency] = useState(VF_DEFAULT)
 
   useEffect(() => {
     if (edit && vestingTypes.length > Number(id)) {
-      const info = vestingTypes[Number(id)];
-      setName(info.name);
+      const info = vestingTypes[Number(id)]
+      setName(info.name)
 
-      setStartTime(new Date(getUTC2Local_timestamp(info.startTime) * 1000));
-      setEndTime(new Date(getUTC2Local_timestamp(info.endTime) * 1000));
+      setStartTime(new Date(getUTC2Local_timestamp(info.startTime) * 1000))
+      setEndTime(new Date(getUTC2Local_timestamp(info.endTime) * 1000))
       setLockupDuration(
         Math.abs(info.lockupDuration / 60 / 60 / 24).toString()
-      );
-      setMaxAmount(formatEther(info.maxAmount, undefined, 3, false));
+      )
+      setMaxAmount(formatEther(info.maxAmount, undefined, 3, false))
       setVestingFrequency(VF_LIST[info.vestingFrequencyId].value)
     }
-  }, [vestingTypes, edit, id, isOpen]);
+  }, [vestingTypes, edit, id, isOpen])
 
   useEffect(() => {
     if (isOpen && !edit) {
-      setStartTime(new Date());
-      setEndTime(new Date());
+      setStartTime(new Date())
+      setEndTime(new Date())
     }
     if (!isOpen) {
       setName('')
-      setLockupDuration('');
-      setMaxAmount('');
-      setLoading(false);
-      setVestingFrequency(VF_DEFAULT);
+      setLockupDuration('')
+      setMaxAmount('')
+      setLoading(false)
+      setVestingFrequency(VF_DEFAULT)
     }
   }, [isOpen])
 
   const handleSubmit = async () => {
-    setLoading(true);
-    let res = false;
+    setLoading(true)
+    let res = false
     let timezoneOffset = startTime.getTimezoneOffset() //mins
     timezoneOffset = timezoneOffset * 60 //seconds
     if (edit) {
@@ -133,7 +133,7 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
           Math.floor(Number(lockupDuration)) * 24 * 60 * 60,
           Number(maxAmount),
           vestingFrequency
-        );
+        )
       }
     } else {
       res = await addVestingType(
@@ -143,14 +143,14 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
         Math.floor(Number(lockupDuration)) * 24 * 60 * 60,
         Number(maxAmount),
         vestingFrequency
-      );
+      )
     }
-    setLoading(false);
+    setLoading(false)
 
     if (res) {
       handleClose()
     }
-  };
+  }
 
   return (
     <div>
@@ -257,5 +257,5 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
         </DialogContent>
       </Dialog>
     </div>
-  );
-};
+  )
+}

@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react';
-import { Box, Button, makeStyles, Typography } from '@material-ui/core';
-import { useVesting, useWallet } from 'contexts';
-import { useHistory } from 'react-router-dom';
-import { formatTime, formatEther, parseEther } from 'utils';
-import { VestingInfo, VestingType } from 'types';
-import { VestedChart } from './VestedChart';
+import React, { useCallback, useEffect, useState } from 'react'
+import { Box, Button, makeStyles, Typography } from '@material-ui/core'
+import { useVesting, useWallet } from 'contexts'
+import { useHistory } from 'react-router-dom'
+import { formatTime, formatEther, parseEther } from 'utils'
+import { VestingInfo, VestingType } from 'types'
+import { VestedChart } from './VestedChart'
 import { BigNumber } from 'ethers'
 
 const useStyles = makeStyles((theme) => ({
@@ -50,58 +50,58 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     fontSize: 16,
   },
-}));
+}))
 
 interface IClaimDetail {
-  info: VestingInfo;
+  info: VestingInfo
 }
 
 export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
-  const classes = useStyles();
-  const { tokenBalance } = useWallet();
-  const { claim, getClaimAvailable, vestingTypes } = useVesting();
-  const history = useHistory();
+  const classes = useStyles()
+  const { tokenBalance } = useWallet()
+  const { claim, getClaimAvailable, vestingTypes } = useVesting()
+  const history = useHistory()
 
-  const [type, setType] = useState<Maybe<VestingType>>(null);
-  const [availableAmount, setAvailableAmount] = useState<BigNumber>(BigNumber.from(0));
-  const [loading, setLoading] = useState(false);
+  const [type, setType] = useState<Maybe<VestingType>>(null)
+  const [availableAmount, setAvailableAmount] = useState<BigNumber>(BigNumber.from(0))
+  const [loading, setLoading] = useState(false)
 
   const nextClaim = Math.max(
     (info?.lastClaim || 0) +
     (type?.lockupDuration || 0) -
     Math.floor(new Date().getTime() / 1000),
     0
-  );
+  )
 
   useEffect(() => {
     if (vestingTypes.length > info.typeId) {
-      setType(vestingTypes[info.typeId]);
+      setType(vestingTypes[info.typeId])
     } else {
-      setType(null);
+      setType(null)
     }
-  }, [vestingTypes, info]);
+  }, [vestingTypes, info])
 
   const getAvailableAmount = useCallback(
     async (vestingId: number) => {
-      const res = await getClaimAvailable(vestingId);
-      setAvailableAmount(res);
+      const res = await getClaimAvailable(vestingId)
+      setAvailableAmount(res)
     },
     [getClaimAvailable, info]
-  );
+  )
 
   useEffect(() => {
     if (info) {
-      getAvailableAmount(info.vestingId);
+      getAvailableAmount(info.vestingId)
     }
-  }, [info, getAvailableAmount]);
+  }, [info, getAvailableAmount])
 
   const handleClaim = async () => {
-    setLoading(true);
+    setLoading(true)
     if (info) {
-      await claim(info.vestingId);
+      await claim(info.vestingId)
     }
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
   return (
     <Box className={classes.root}>
@@ -179,7 +179,7 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
             variant="contained"
             style={{ height: 35 }}
             onClick={() => {
-              history.push('/staking');
+              history.push('/staking')
             }}
           >
             Stake
@@ -188,5 +188,5 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
       </Box>
       <VestedChart info={info} />
     </Box>
-  );
-};
+  )
+}

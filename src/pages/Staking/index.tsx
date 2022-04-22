@@ -1,36 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from 'react';
-import { Box, makeStyles, Typography } from '@material-ui/core';
-import clsx from 'clsx';
-import { StakingView } from './StakingView';
-
-const useStyles = makeStyles(() => ({
-  root: {
-    width: '100%',
-    padding: '2rem',
-    boxSizing: 'border-box',
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'column'
-  },
-  flex: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-}));
-
+import React, {useState} from 'react'
+import { Box, makeStyles, Typography } from '@material-ui/core'
+import { StakingView } from './StakingView'
+import { Indicators } from './Indicators'
 export const Staking = () => {
-  const classes = useStyles();
 
   return (
-    <Box className={clsx(classes.root, classes.flex)}>
-      <Box>
-        <Typography variant="h3">Welcome to FLUID Staking</Typography>
-        <br />
-        <Typography variant="h5"></Typography>
-        <br />
+    <div className="w-full flex justify-center py-10 md:px-6 lg:px-8 xl:px-16 2xl:px-[124px]">
+      <div className='w-full max-w-[1620px] flex flex-col items-center gap-16 md:gap-20'>
+        <Indicators />
         <StakingView />
-      </Box>
-    </Box>
-  );
-};
+      </div>
+    </div>
+  )
+}

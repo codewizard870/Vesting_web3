@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import {
     Box,
     Button,
@@ -16,10 +16,10 @@ import {
     TableRow,
     Checkbox,
     FormControlLabel
-} from '@material-ui/core';
-import { toast } from 'react-toastify';
-import { useSession } from 'contexts';
-import CircularProgress from '@material-ui/core/CircularProgress';
+} from '@material-ui/core'
+import { toast } from 'react-toastify'
+import { useSession } from 'contexts'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -46,18 +46,18 @@ const useStyles = makeStyles(() => ({
         justifyContent: 'center',
         alignItems: 'center'
     }
-}));
+}))
 
 interface IUserInfo {
-    index: number;
-    info: any;
+    index: number
+    info: any
 }
 
 const UserInfo: React.FC<IUserInfo> = ({
     index,
     info
 }) => {
-    const classes = useStyles();
+    const classes = useStyles()
     const [checked, setChecked] = useState(info.permit ? true : false)
     const [sendingPermit, setSendingPermit] = useState(false)
     const { requestUpdatePermit } = useSession()
@@ -70,16 +70,16 @@ const UserInfo: React.FC<IUserInfo> = ({
             const res = await requestUpdatePermit(id, permit)
             if (res.status) {
                 setChecked(!event.target.checked)
-                toast.success(permit === 1 ? "Approve!" : "Unapprove!");
+                toast.success(permit === 1 ? "Approve!" : "Unapprove!")
             } else {
                 setChecked(event.target.checked)
-                toast.error(res.msg);
+                toast.error(res.msg)
             }
             setSendingPermit(false)
         } catch (err) {
             setChecked(event.target.checked)
             let error: any = err
-            toast.error(error.message);
+            toast.error(error.message)
             setSendingPermit(false)
         }
     }
@@ -109,13 +109,13 @@ const UserInfo: React.FC<IUserInfo> = ({
                 />
             </TableCell>
         </TableRow>
-    );
-};
+    )
+}
 
 export const UserList = () => {
-    const classes = useStyles();
+    const classes = useStyles()
     const { requestUserList } = useSession()
-    const [permitId, setPermitId] = useState(-1);
+    const [permitId, setPermitId] = useState(-1)
     const [userList, setUserList] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     useEffect(() => {
@@ -131,7 +131,7 @@ export const UserList = () => {
                 setIsLoading(false)
             } catch (err) {
                 setIsLoading(false)
-                console.log(err);
+                console.log(err)
             }
         }
         fetch()
@@ -198,5 +198,5 @@ export const UserList = () => {
                 </div>
             }
         </Card>
-    );
-};
+    )
+}
