@@ -38,14 +38,14 @@ export const StakingView = () => {
 
   return (
     <div className='w-full rounded-[20px] bg-white shadow-xl p-6 lg:px-16 lg:py-7'>
-      <div className=''>
+      <div className='w-full'>
         <div className='text-[28px] text-[#0A208F] font-medium uppercase'>STAKING/LP</div>
-        <div className='text-[20px] font-regular text-[#3F3F3F] mt-2'>
+        <div className='text-[16px] md:text-[20px] font-regular text-[#3F3F3F] mt-2'>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
         </div>
       </div>
       {!isLoading ?
-        <div className='flex flex-col lg:flex-row gap-10 lg:gap-[110px] mt-10 mb-8'>
+        <div className='flex flex-col xl:flex-row justify-center items-center gap-10 xl:gap-[110px] mt-10 mb-8'>
           {poolList.map((poolInfo, pid) => (
             <StakingPool poolInfo={poolInfo} pid={pid} key={pid} />
           ))}

@@ -74,7 +74,8 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
     updateTokenBalance()
   }, [pid, poolInfo, account])
 
-  const handleDeposit = async () => {
+  const handleDeposit = async (e: any) => {
+    e.preventDefault()
     setLoading(true)
     const res = await deposit(pid, Number(value))
     if (res) {
@@ -83,7 +84,8 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
     setLoading(false)
   }
 
-  const handleWithdraw = async () => {
+  const handleWithdraw = async (e: any) => {
+    e.preventDefault()
     setLoading(true)
     const res = await withdraw(pid, Number(value))
     if (res) {
@@ -92,7 +94,8 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
     setLoading(false)
   }
 
-  const handleHarvest = async () => {
+  const handleHarvest = async (e: any) => {
+    e.preventDefault()
     setLoading(true)
     await claim(pid)
     setLoading(false)
@@ -119,10 +122,13 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
             disabled={loading}
             style={{ width: '100%' }}
             margin="dense"
-            inputProps={{ style: { fontSize: 42, color: '#3F3F3F', textAlign: 'center' } }} // font size of input text
+            inputProps={{ style: { fontSize: 42, color: '#3F3F3F', textAlign: 'center' } }} // font size of input text            
             InputLabelProps={{ style: { fontSize: 42, color: '#3F3F3F', textAlign: 'center' } }}
+            onInput={(e:any) => {
+              e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 12)
+            }}
           />
-          <div className='flex justify-between gap-6 w-full mt-6 mb-4'>
+          <div className='flex justify-between gap-6 w-full mt-5 mb-3'>
             <SecondaryButton
               onClick={handleDeposit}
               width='220px'
@@ -146,24 +152,24 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
             </PrimaryButton>
           </div>
           <div className='w-full flex justify-between py-3 border-b border-[#CECECE]'>
-            <div className='text-[17px] text-[#0A208F] font-medium uppercase'>Your Balance</div>
-            <div className='text-[20px] text-[#676767] font-regular'>
+            <div className='text-[14px] md:text-[17px] text-[#0A208F] font-medium uppercase'>Your Balance</div>
+            <div className='text-[16px] md:text-[20px] text-[#676767] font-regular'>
               {formatEther(tokenBalance || BigNumber.from(0), undefined, 3, true)} {stakeToken}
             </div>
           </div>
           <div className='w-full flex justify-between py-3 border-b border-[#CECECE]'>
-            <div className='text-[17px] text-[#0A208F] font-medium uppercase'>Your Staked Amount</div>
-            <div className='text-[20px] text-[#676767] font-regular'>
+            <div className='text-[14px] md:text-[17px] text-[#0A208F] font-medium uppercase'>Your Staked Amount</div>
+            <div className='text-[16px] md:text-[20px] text-[#676767] font-regular'>
               {formatEther(userInfo?.amount || BigNumber.from(0), undefined, 3, true)} {stakeToken}
             </div>
           </div>
           <div className='w-full flex justify-between py-3'>
-            <div className='text-[17px] text-[#0A208F] font-medium uppercase'>Reward Amount</div>
-            <div className='text-[20px] text-[#676767] font-regular'>
+            <div className='text-[14px] md:text-[17px] text-[#0A208F] font-medium uppercase'>Reward Amount</div>
+            <div className='text-[16px] md:text-[20px] text-[#676767] font-regular'>
               {formatEther(rewards[pid] || BigNumber.from(0), undefined, 3, true)} FLD
             </div>
           </div>
-          <div className='w-full flex justify-between items-center mt-2 mb-4'>
+          <div className='w-full flex flex-col justify-center md:flex-row md:justify-between gap-8 md:gap-0 items-center mt-1 mb-3'>
             <div>
               {pid === 0 && (
                 <a href='https://app.uniswap.org/#/add/v2/ETH/0xb00f1f831261FbeaEE98f5D3EbB22EcC3c7726A5?chain=rinkeby' target="_blank">

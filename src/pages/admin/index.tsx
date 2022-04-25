@@ -10,24 +10,9 @@ import {
 import { Vesting } from './Vesting'
 import { VestingTypes } from './VestingTypes'
 import { UserList } from './UserList'
-import { Box, makeStyles, Tab, Tabs } from '@material-ui/core'
-
-const useStyles = makeStyles(() => ({
-  root: {
-    width: '100%',
-    padding: '2rem',
-    boxSizing: 'border-box',
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'column'
-  },
-  content: {
-    width: '100%',
-  },
-}))
+import { makeStyles, Tab, Tabs } from '@material-ui/core'
 
 export const Admin = () => {
-  const classes = useStyles()
   const location = useLocation()
   const history = useHistory()
   const { isVestingAdmin } = useVesting()
@@ -60,21 +45,21 @@ export const Admin = () => {
   }
 
   return (
-    <Box className={classes.root}>
+    <div className='w-full flex flex-col items-center mt-6'>
       <Tabs value={tabValue} onChange={handleTabChange}>
         <Tab value="0" label="Wallet List" />
         <Tab value="1" label="Vesting Types" />
         <Tab value="2" label="User List" />
       </Tabs>
 
-      <Box className={classes.content}>
+      <div className='w-full'>
         <Switch>
           <Route path="/admin/vesting_type" component={VestingTypes} />
           <Route path="/admin/vesting" component={Vesting} />
           <Route path="/admin/user" component={UserList} />
           <Redirect to="/admin/vesting" />
         </Switch>
-      </Box>
-    </Box>
+      </div>
+    </div>
   )
 }

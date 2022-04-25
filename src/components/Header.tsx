@@ -114,12 +114,12 @@ export const Header = () => {
             <div className={`text-[18px] text-[#051C42] uppercase cursor-pointer`} onClick={userSignOut}>Sign Out</div>
           </div>
           {!connected ? <div className='mt-10 w-full flex justify-center'>
-            <PrimaryButton onClick={() => connect(WalletType.MetaMask)} width='227px' disabled={false}>
+            <PrimaryButton onClick={() => connect(WalletType.MetaMask)} width='227px'>
               Connect Wallet
             </PrimaryButton>
           </div> :
             <div className='mt-10 w-full flex justify-center'>
-              <SecondaryButton onClick={() => disconnect()} disabled={false}>
+              <SecondaryButton onClick={() => disconnect()}>
                 Disconnect Wallet
               </SecondaryButton>
             </div>}
@@ -181,7 +181,7 @@ export const Header = () => {
             </div>
           ) : (
             <div>
-              <PrimaryButton onClick={() => connect(WalletType.MetaMask)} width='227px' disabled={false}>
+              <PrimaryButton onClick={() => connect(WalletType.MetaMask)} width='227px'>
                 Connect Wallet
               </PrimaryButton>
             </div>

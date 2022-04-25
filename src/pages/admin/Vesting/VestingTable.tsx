@@ -23,33 +23,9 @@ import { AddVesting } from './AddVesting'
 import { VestingHistory } from './VestingHistory'
 import { formatEther, parseEther } from 'utils'
 import { toast } from 'react-toastify'
-
-const useStyles = makeStyles(() => ({
-  root: {
-    width: '100%',
-    padding: '1rem',
-    boxSizing: 'border-box',
-  },
-  flex: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  button: {
-    height: 40,
-    marginRight: 8,
-  },
-  buttonUploadFile: {
-    marginRight: 8
-  },
-  buttonList: {
-    display: 'flex'
-  },
-  error: {
-    color: 'red',
-    padding: '5px 0'
-  }
-}))
+import { PrimaryButtonMD } from 'components/PrimaryButtonMD'
+import { SecondaryButtonMD } from 'components/SecondaryButtonMD'
+import { getShortWalletAddress } from 'utils'
 
 interface IVestingItem {
   index: number
@@ -63,47 +39,38 @@ const VestingItem: React.FC<IVestingItem> = ({
   info,
   onAdd,
   onHistory,
-}) => {
-  const classes = useStyles()
+}) => {  
   const { vestingTypes } = useVesting()
 
   return (
     <TableRow key={info.vestingId}>
       <TableCell>{(index + 1)}</TableCell>
       <TableCell>{vestingTypes[info.typeId].name}</TableCell>
-      <TableCell>{info.recipient}</TableCell>
+      <TableCell className='break-words'>{getShortWalletAddress(info.recipient)}</TableCell>
       <TableCell>{formatEther(info.amount, undefined, 3, true)} FLD</TableCell>
       <TableCell>
         {formatEther(info.claimedAmount, undefined, 3, true)} FLD
       </TableCell>
       <TableCell
-        className={classes.flex}
-        style={{ justifyContent: 'flex-start' }}
+        className='flex items-center gap-4'        
       >
-        <Button
-          color="primary"
-          variant="contained"
-          className={classes.button}
+        <PrimaryButtonMD
+          width='80px'
           onClick={() => onAdd(true, info)}
         >
           Edit
-        </Button>
-
-        <Button
-          color="primary"
-          variant="outlined"
-          className={classes.button}
+        </PrimaryButtonMD>
+        <SecondaryButtonMD
           onClick={() => onHistory(info)}
         >
           History
-        </Button>
+        </SecondaryButtonMD>
       </TableCell>
     </TableRow>
   )
 }
 
-export const VestingTable = () => {
-  const classes = useStyles()
+export const VestingTable = () => {  
   const { vestingTypes, vestingList, addUpdateMultiVesting } = useVesting()
 
   const [typeId, setTypeId] = useState(-1)
@@ -222,14 +189,14 @@ export const VestingTable = () => {
       onBack={() => setShowHistory(false)}
     />
   ) : (
-    <Card className={classes.root}>
+    <div className='w-full'>          
       <AddVesting
         isOpen={isOpenAddVesting}
         handleClose={handleCloseAddVesting}
         edit={isEdit}
         info={activeInfo}
       />     
-      <Box className={classes.flex}>
+      <div className='w-full flex justify-between'>
         <FormControl style={{ width: 200 }}>
           <InputLabel id="vesting-type-label">Vesting Type</InputLabel>
           <Select
@@ -247,26 +214,23 @@ export const VestingTable = () => {
           </Select>
         </FormControl>
 
-        <Box className={classes.buttonList}>
-          <Button
-            color="primary"
-            variant="contained"
-            className={classes.button}
+        <div className='flex gap-4'>
+          <PrimaryButtonMD         
             onClick={() => handleAdd(false, null)}
           >
             Add Client
-          </Button>
+          </PrimaryButtonMD>
           <div>
             <input accept=".csv" id="file" type="file" hidden
               onChange={handleOnUpload} />
             <label htmlFor="file">
-              <Button variant="contained" component="span" className={classes.buttonUploadFile} onClick={(e: MouseEvent<HTMLButtonElement>) => {e.stopPropagation()}}>
+              <SecondaryButtonMD width='120px' onClick={(e: MouseEvent<HTMLButtonElement>) => {e.stopPropagation()}}>
                 Import
-              </Button>
+              </SecondaryButtonMD>
             </label>
           </div>
-        </Box>
-      </Box>
+        </div>
+      </div>
 
       <Table>
         <TableHead>
@@ -309,6 +273,6 @@ export const VestingTable = () => {
             ))}
         </TableBody>
       </Table>
-    </Card>
+    </div>
   )
 }

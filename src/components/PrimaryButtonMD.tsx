@@ -16,19 +16,19 @@ const useStyles = makeStyles((theme) => ({
         fontFamily: "Gibson",
         fontWeight: 600,        
         [theme.breakpoints.down('md')]: {
-            paddingTop: '9px',
-            paddingBottom: '9px',
-            fontSize: "16px"
+            paddingTop: '6px',
+            paddingBottom: '6px',
+            fontSize: "14px"
         },
         [theme.breakpoints.up('md')]: {
-            paddingTop: '13px',
-            paddingBottom: '13px',
-            fontSize: "18px"
+            paddingTop: '7px',
+            paddingBottom: '7px',
+            fontSize: "16px"
         }
     },
 }))
 
-export const PrimaryButton = ({ width = 'fit-content', children, onClick, disabled = false }: ButtonProps) => {
+export const PrimaryButtonMD = ({ width = 'fit-content', children, onClick, disabled = false }: ButtonProps) => {
     const classes = useStyles();
 
     return (
@@ -42,7 +42,7 @@ export const PrimaryButton = ({ width = 'fit-content', children, onClick, disabl
             disableElevation
         >
             {/* {children} */}
-            <span className={`text-[16px] md:text-[18px] ${disabled?'text-[#A8A8A8]':'text-white'} font-semibold uppercase`}>{children}</span>
+            <span className={`text-[14px] md:text-[16px] ${disabled?'text-[#A8A8A8]':'text-white'} font-medium uppercase`}>{children}</span>
         </Button>
     )
 }

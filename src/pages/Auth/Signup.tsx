@@ -23,7 +23,7 @@ export const Signup = ({ setIsSignUp, setRegistered }: { setIsSignUp: (isSignUp:
   const handleValidation = (field: string, value: Maybe<string>) => {
     const error: IError = {}
     error[field] = value ? '' : 'This field is required'
-    if (field==='confirmPassword'){
+    if (field === 'confirmPassword') {
       if (password !== confirmPassword) {
         error[field] = "Make sure both passwords match!"
       }
@@ -37,7 +37,7 @@ export const Signup = ({ setIsSignUp, setRegistered }: { setIsSignUp: (isSignUp:
 
     if (field === 'email') {
       setEmail(value)
-    } else if (field === 'password') {      
+    } else if (field === 'password') {
       setPassStrength(zxcvbn(value).score)
       setPassword(value)
     } else if (field === 'name') {
@@ -55,7 +55,8 @@ export const Signup = ({ setIsSignUp, setRegistered }: { setIsSignUp: (isSignUp:
     setErrors({})
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: any) => {
+    e.preventDefault()
     const error = {
       ...errors,
       ...handleValidation('name', name),
@@ -90,12 +91,12 @@ export const Signup = ({ setIsSignUp, setRegistered }: { setIsSignUp: (isSignUp:
   }
 
   const getPasswordStrengthColor = () => {
-    if (passStrength<=1) return '#E10A0A'
-    if (passStrength<=3) return '#E18B0A'
+    if (passStrength <= 1) return '#E10A0A'
+    if (passStrength <= 3) return '#E18B0A'
     return '#0C9434'
   }
   return (
-    <div className='flex flex-col justify-center items-center gap-6 mt-6'>
+    <form className='flex flex-col justify-center items-center gap-6 md:gap-8 mt-8 md:mt-16' onSubmit={handleSubmit}>
       <TextField
         id="name"
         value={name}
@@ -129,10 +130,10 @@ export const Signup = ({ setIsSignUp, setRegistered }: { setIsSignUp: (isSignUp:
           className='w-full px-4 py-4'
           disabled={loading}
         />
-        {password.length>0 && <div className='w-full flex gap-2 mt-2'>
-          <div className='basis-1/3 h-1' style={{backgroundColor: getPasswordStrengthColor()}}></div>
-          <div className='basis-1/3 h-1' style={{backgroundColor: passStrength>1?getPasswordStrengthColor():'#bbbbbb'}}></div>
-          <div className='basis-1/3 h-1' style={{backgroundColor: passStrength>3?getPasswordStrengthColor():'#bbbbbb'}}></div>
+        {password.length > 0 && <div className='w-full flex gap-2 mt-2'>
+          <div className='basis-1/3 h-1' style={{ backgroundColor: getPasswordStrengthColor() }}></div>
+          <div className='basis-1/3 h-1' style={{ backgroundColor: passStrength > 1 ? getPasswordStrengthColor() : '#bbbbbb' }}></div>
+          <div className='basis-1/3 h-1' style={{ backgroundColor: passStrength > 3 ? getPasswordStrengthColor() : '#bbbbbb' }}></div>
         </div>}
       </div>
       <TextField
@@ -146,15 +147,16 @@ export const Signup = ({ setIsSignUp, setRegistered }: { setIsSignUp: (isSignUp:
         className='w-full px-4 py-4'
         disabled={loading}
       />
-      <br />
-      <PrimaryButton onClick={handleSubmit} width='227px' disabled={loading}>
-        Sign Up
-      </PrimaryButton>
-      <br />
-      <div className='flex text-[18px] gap-2'>
+      <div className='mt-10'>
+        <PrimaryButton onClick={handleSubmit} width='227px' disabled={loading}>
+          Sign Up
+        </PrimaryButton>
+        <div className='hidden'><Button type="submit" disabled={loading} /></div>
+      </div>
+      <div className='flex text-[18px] gap-2 mt-2 md:mt-4'>
         <span className="text-[#474747]">Already have an account?</span>
         <div className="text-[#3FBCE9] cursor-pointer" onClick={() => setIsSignUp(false)}>Login</div>
       </div>
-    </div>
+    </form>
   )
 }

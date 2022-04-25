@@ -7,57 +7,14 @@ import { formatTime, formatEther, parseEther } from 'utils'
 import { VestingInfo, VestingType } from 'types'
 import { VestedChart } from './VestedChart'
 import { BigNumber } from 'ethers'
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    gap: '30px',
-    width: '100%',
-    margin: '1rem',
-    padding: '1rem',
-    borderRadius: 5,
-    border: '1px solid black',
-    boxSizing: 'border-box',
-    [theme.breakpoints.down('lg')]: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexWrap: 'wrap'
-    },
-    [theme.breakpoints.up('lg')]: {
-      alignItems: 'center',
-      flexWrap: 'nowrap'
-    }
-  },
-  card: {
-    [theme.breakpoints.down('lg')]: {
-      minWidth: 750
-    },
-    [theme.breakpoints.up('lg')]: {
-      minWidth: 450
-    }
-  },
-  row: {
-    padding: '0.4rem 1rem',
-    display: 'flex',
-    alignItems: 'center',
-  },
-  title: {
-    width: '45%',
-    fontSize: 16,
-  },
-  value: {
-    width: '35%',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-}))
+import { PrimaryButton } from 'components/PrimaryButton'
+import { SecondaryButton } from 'components/SecondaryButton'
 
 interface IClaimDetail {
   info: VestingInfo
 }
 
 export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
-  const classes = useStyles()
   const { tokenBalance } = useWallet()
   const { claim, getClaimAvailable, vestingTypes } = useVesting()
   const history = useHistory()
@@ -104,89 +61,98 @@ export const ClaimDetail: React.FC<IClaimDetail> = ({ info }) => {
   }
 
   return (
-    <Box className={classes.root}>
-      <Box className={classes.card}>
-        <Box className={classes.row}>
-          <Typography className={classes.title}>Vesting Type</Typography>
-          <Typography className={classes.value}>{type?.name || ''}</Typography>
-        </Box>
+    <div className='w-full flex flex-col xl:flex-row gap-10 justify-center items-center rounded-[20px] bg-white shadow-xl p-6 lg:pl-8 lg:py-7'>
+      <div className='max-w-[600px] xl:max-w-[380px] xl:max-w-[400px] w-full'>
+        <div className='w-full'>
+          <span className='text-[28px] font-medium text-[#0A208F]'>{type?.name || ''}</span>
+        </div>
+        <div className='w-full py-6'>
+          <span className='text-[20px] font-regular text-[#3F3F3F] underline underline-offset-4'>View Instructions</span>
+        </div>
+        {/* <div className='w-full flex justify-between py-1'>
+          <div className='text-[16px] md:text-[20px] text-[#0A208F] font-medium'>Vesting Type</div>
+          <div className='text-[16px] md:text-[20px] text-[#676767] font-regular'>
+            {type?.name || ''}
+          </div>
+        </div> */}
 
-        <Box className={classes.row}>
-          <Typography className={classes.title}>Total Amount</Typography>
-          <Typography className={classes.value}>
-            {formatEther(info.amount, undefined, 3, true)} FLD
-          </Typography>
-        </Box>
+        <div className='w-full flex justify-between py-1'>
+          <div className='text-[16px] md:text-[20px] text-[#0A208F] font-medium'>Total Amount</div>
+          <div className='text-[16px] md:text-[20px] text-[#676767] font-regular'>
+            {formatEther(info.amount, undefined, 3, true)}{' '}FLD
+          </div>
+        </div>
 
-        <Box className={classes.row}>
-          <Typography className={classes.title}>Next unlock in</Typography>
-          <Typography className={classes.value}>
+        <div className='w-full flex justify-between py-1'>
+          <div className='text-[16px] md:text-[20px] text-[#0A208F] font-medium'>Next Unlock In</div>
+          <div className='text-[16px] md:text-[20px] text-[#676767] font-regular'>
             {info ? (nextClaim > 0 ? formatTime(nextClaim) : 'Available') : ''}
-          </Typography>
-        </Box>
+          </div>
+        </div>
 
-        <Box className={classes.row}>
-          <Typography className={classes.title}>Tokens pending</Typography>
-          <Typography className={classes.value}>
-            {formatEther(info.amount.sub(info.claimedAmount), undefined, 3, true)}{' '}
-            FLD
-          </Typography>
-        </Box>
+        <div className='w-full flex justify-between py-1'>
+          <div className='text-[16px] md:text-[20px] text-[#0A208F] font-medium'>Tokens Pending</div>
+          <div className='text-[16px] md:text-[20px] text-[#676767] font-regular'>
+            {formatEther(info.amount.sub(info.claimedAmount), undefined, 3, true)}{' '}FLD
+          </div>
+        </div>
 
-        <Box className={classes.row}>
-          <Typography className={classes.title}>Tokens claimed</Typography>
-          <Typography className={classes.value}>
-            {formatEther(info?.claimedAmount, undefined, 3, true)} FLD
-          </Typography>
-        </Box>
+        <div className='w-full flex justify-between py-1'>
+          <div className='text-[16px] md:text-[20px] text-[#0A208F] font-medium'>Tokens Claimed</div>
+          <div className='text-[16px] md:text-[20px] text-[#676767] font-regular'>
+            {formatEther(info?.claimedAmount, undefined, 3, true)}{' '}FLD
+          </div>
+        </div>
 
-        <Box className={classes.row}>
-          <Typography className={classes.title}>Tokens vested</Typography>
-          <Typography className={classes.value}>
-            {formatEther(info.claimedAmount.add(availableAmount), undefined, 3, true)} FLD            
-          </Typography>
-        </Box>
+        <div className='w-full flex justify-between py-1'>
+          <div className='text-[16px] md:text-[20px] text-[#0A208F] font-medium'>Tokens Vested</div>
+          <div className='text-[16px] md:text-[20px] text-[#676767] font-regular'>
+            {formatEther(info.claimedAmount.add(availableAmount), undefined, 3, true)}{' '}FLD
+          </div>
+        </div>
 
-        <Box className={classes.row}>
-          <Typography className={classes.title}>Available to claim</Typography>
-          <Typography className={classes.value}>
-            {formatEther(availableAmount, undefined, 3, true)} FLD            
-          </Typography>
+        <div className='w-full flex justify-between py-1'>
+          <div className='text-[16px] md:text-[20px] text-[#0A208F] font-medium'>Available To Claim</div>
+          <div className='text-[16px] md:text-[20px] text-[#676767] font-regular'>
+            {formatEther(availableAmount, undefined, 3, true)}{' '}FLD
+          </div>
+        </div>
 
-          <Button
-            color="primary"
-            variant="contained"
-            style={{ height: 35 }}
+        <div className='w-full flex justify-center py-2 border-b border-[#CECECE] mb-2'>
+          <PrimaryButton
+            onClick={handleClaim}
+            width='250px'
             disabled={
               loading ||
               availableAmount.lte(0) ||
               nextClaim > 0 ||
               !info
             }
-            onClick={handleClaim}
           >
             {loading ? 'Claiming' : 'Claim'}
-          </Button>
-        </Box>
+          </PrimaryButton>
+        </div>
 
-        <Box className={classes.row}>
-          <Typography className={classes.title}>Your token balance</Typography>
-          <Typography className={classes.value}>
-            {formatEther(tokenBalance, undefined, 3, true)} FLD
-          </Typography>
-          <Button
-            color="primary"
-            variant="contained"
-            style={{ height: 35 }}
+        <div className='w-full flex justify-between py-1'>
+          <div className='text-[16px] md:text-[20px] text-[#0A208F] font-medium'>Your Token Balance</div>
+          <div className='text-[16px] md:text-[20px] text-[#676767] font-regular'>
+            {formatEther(tokenBalance, undefined, 3, true)}{' '}FLD
+          </div>
+        </div>
+
+        <div className='w-full flex justify-center py-2'>
+          <PrimaryButton
+            width='250px'
             onClick={() => {
               history.push('/staking')
             }}
           >
             Stake
-          </Button>
-        </Box>
-      </Box>
+          </PrimaryButton>
+        </div>
+
+      </div>
       <VestedChart info={info} />
-    </Box>
+    </div>
   )
 }

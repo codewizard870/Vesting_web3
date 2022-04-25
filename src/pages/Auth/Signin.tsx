@@ -42,7 +42,8 @@ export const Signin = ({ setIsSignUp, setLogined }: { setIsSignUp: (isSignUp: bo
     setIsRemember(event.target.checked)
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
     const error = {
       ...errors,
       ...handleValidation('email', email),
@@ -59,11 +60,10 @@ export const Signin = ({ setIsSignUp, setLogined }: { setIsSignUp: (isSignUp: bo
         const res = await requestUserSignin(email, password)
         if (res.errors) {
           setErrors(res.errors)
-        } else {
-          console.log(res.user?.permit)
-          if (res.user?.permit === 1){
+        } else {          
+          if (res.user?.permit === 1) {
             window.location.reload()
-          }else{
+          } else {
             setLogined(true)
           }
         }
@@ -75,7 +75,7 @@ export const Signin = ({ setIsSignUp, setLogined }: { setIsSignUp: (isSignUp: bo
   }
 
   return (
-    <div className='flex flex-col justify-center items-center gap-6 mt-6'>
+    <form className='flex flex-col justify-center items-center gap-6 md:gap-8 mt-8 md:mt-16' onSubmit={handleSubmit}>
       <TextField
         id="email"
         type="email"
@@ -114,15 +114,16 @@ export const Signin = ({ setIsSignUp, setLogined }: { setIsSignUp: (isSignUp: bo
           Forgot Password
         </div>
       </div>
-      <br />
-      <PrimaryButton onClick={handleSubmit} width='227px' disabled={loading}>
-        Login
-      </PrimaryButton>
-      <br />
-      <div className='flex text-[18px] gap-2'>
+      <div className='mt-10'>
+        <PrimaryButton onClick={handleSubmit} width='227px' disabled={loading}>
+          Login
+        </PrimaryButton>
+        <div className='hidden'><Button type="submit" disabled={loading} /></div>
+      </div>
+      <div className='flex text-[18px] gap-2 mt-2 md:mt-4'>
         <span className="text-[#474747]">Don't have an account?</span>
         <div className="text-[#3FBCE9] cursor-pointer" onClick={() => setIsSignUp(true)}>Sign up</div>
       </div>
-    </div>
+    </form>
   )
 }
