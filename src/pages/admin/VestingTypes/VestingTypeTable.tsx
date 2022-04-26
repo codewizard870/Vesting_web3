@@ -17,22 +17,8 @@ import { VestingType, VF_LIST } from 'types'
 import { formatTime, formatEther } from 'utils'
 import { AddVestingType } from './AddVestingType'
 import { VestingTypeHistory } from './VestingTypeHistory'
-
-const useStyles = makeStyles(() => ({
-  root: {
-    width: '100%',
-    padding: '1rem',
-    boxSizing: 'border-box',
-  },
-  flex: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  button: {
-    height: 50,
-  },
-}))
+import { PrimaryButtonMD } from 'components/PrimaryButtonMD'
+import { SecondaryButtonMD } from 'components/SecondaryButtonMD'
 
 interface ITypeItem {
   index: number
@@ -42,7 +28,6 @@ interface ITypeItem {
 }
 
 const TypeItem: React.FC<ITypeItem> = ({ index, info, handleEdit, handleHistory }) => {
-  const classes = useStyles()
   const history = useHistory()
 
   return (
@@ -56,31 +41,26 @@ const TypeItem: React.FC<ITypeItem> = ({ index, info, handleEdit, handleHistory 
       <TableCell>{formatEther(info.maxAmount, undefined, 3, true)} FLD</TableCell>
       <TableCell>{formatEther(info.vestedAmount, undefined, 3, true)} FLD</TableCell>
       <TableCell
-        className={classes.flex}
+        className='flex justify-between items-center'
         style={{ justifyContent: 'flex-start' }}
       >
-        <Button
-          color="primary"
-          variant="contained"
+        <PrimaryButtonMD
+          width='80px'
           onClick={handleEdit}
-          style={{ marginRight: 8 }}
         >
           Edit
-        </Button>
-        <Button
-          color="primary"
-          variant="outlined"
+        </PrimaryButtonMD>
+        <SecondaryButtonMD        
           onClick={handleHistory}
         >
           History
-        </Button>
+        </SecondaryButtonMD>
       </TableCell>
     </TableRow>
   )
 }
 
 export const VestingTypeTable = () => {
-  const classes = useStyles()
   const history = useHistory()
   const { vestingTypes } = useVesting()
   const [isOpenAddType, setIsOpenAddType] = useState(false)
@@ -108,68 +88,69 @@ export const VestingTypeTable = () => {
     setShowHistory(true)
   }
 
-  return showHistory ? (
-    <VestingTypeHistory
-      typeId={editTypeId || 0}
-      onBack={() => setShowHistory(false)}
-    />
-  ) : (
-    <Card className={classes.root}>
-      <Box className={classes.flex}>
-        <Button
-          color="primary"
-          variant="contained"
-          className={classes.button}
-          onClick={() => {
-            setIsEditType(false)
-            handleOpenAddType()
-          }}
-        >
-          Add Vesting Type
-        </Button>
-      </Box>
+  return (
+    <div className='w-full'>
+      {showHistory ?
+        <VestingTypeHistory
+          typeId={editTypeId || 0}
+          onBack={() => setShowHistory(false)}
+        />
+        :
+        <div className='w-full'>
+          <div className='w-full flex items-center justify-between'>
+            <PrimaryButtonMD          
+              onClick={() => {
+                setIsEditType(false)
+                handleOpenAddType()
+              }}
+            >
+              Add Vesting Type
+            </PrimaryButtonMD>
+          </div>
 
-      <AddVestingType handleClose={handleCloseAddType} isOpen={isOpenAddType} edit={isEditType} id={editTypeId} />
+          <AddVestingType handleClose={handleCloseAddType} isOpen={isOpenAddType} edit={isEditType} id={editTypeId} />
 
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <b>No</b>
-            </TableCell>
-            <TableCell>
-              <b>Name</b>
-            </TableCell>
-            <TableCell>
-              <b>Start Time</b>
-            </TableCell>
-            <TableCell>
-              <b>End Time</b>
-            </TableCell>
-            <TableCell>
-              <b>Lockup Period</b>
-            </TableCell>
-            <TableCell>
-              <b>Vesting Frequency</b>
-            </TableCell>
-            <TableCell>
-              <b>Total</b>
-            </TableCell>
-            <TableCell>
-              <b>Sold</b>
-            </TableCell>
-            <TableCell>
-              <b>Actions</b>
-            </TableCell>
-          </TableRow>
-        </TableHead>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>
+                  <b>No</b>
+                </TableCell>
+                <TableCell>
+                  <b>Name</b>
+                </TableCell>
+                <TableCell>
+                  <b>Start Time</b>
+                </TableCell>
+                <TableCell>
+                  <b>End Time</b>
+                </TableCell>
+                <TableCell>
+                  <b>Lockup Period</b>
+                </TableCell>
+                <TableCell>
+                  <b>Vesting Frequency</b>
+                </TableCell>
+                <TableCell>
+                  <b>Total</b>
+                </TableCell>
+                <TableCell>
+                  <b>Sold</b>
+                </TableCell>
+                <TableCell>
+                  <b>Actions</b>
+                </TableCell>
+              </TableRow>
+            </TableHead>
 
-        <TableBody>
-          {vestingTypes.map((info, index) => (
-            <TypeItem index={index} info={info} key={index} handleEdit={() => handleEdit(info.typeId)} handleHistory={() => handleHistory(info.typeId)}/>
-          ))}
-        </TableBody>
-      </Table>
-    </Card>
+            <TableBody>
+              {vestingTypes.map((info, index) => (
+                <TypeItem index={index} info={info} key={index} handleEdit={() => handleEdit(info.typeId)} handleHistory={() => handleHistory(info.typeId)} />
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      }
+    </div>
   )
 }

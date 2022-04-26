@@ -6,6 +6,7 @@ import { VestingEvent, VestingTypeEvent, VestingInfo, VestingType, IWalletList, 
 import { useContracts } from './contracts'
 import { useWallet } from './wallets'
 import { parseEther, parseVestingTypeData } from 'utils'
+
 export interface IVestingContext {
   isVestingAdmin: boolean
   vestingTypes: VestingType[]

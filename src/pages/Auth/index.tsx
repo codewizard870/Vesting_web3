@@ -1,8 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useSession, useVesting, useWallet } from 'contexts'
-import { checkAuthentication, getShortWalletAddress } from 'utils'
-import { WalletType } from 'types'
-import clsx from 'clsx'
 import { Signup } from './Signup'
 import { Signin } from './Signin'
 import { Logo } from 'components/Logo'
@@ -13,8 +9,8 @@ export const Auth = () => {
     const [isRegistered, setRegistered] = useState(false)
     const [isLogined, setLogined] = useState(false)
     const [isNotVerifiedEmail, setNotVerifiedEmail] = useState(false)
-    const handleResend = () => {
-
+    const handleResend = (e: any) => {
+        e.preventDefault()
     }
 
     return (
@@ -28,7 +24,7 @@ export const Auth = () => {
                         </div>
                     </div>
                 </div>
-                <div className="px-8 md:px-20 py-10">
+                <div className="px-8 md:px-20 py-5 md:py-10">
                     {!isRegistered && !isLogined && <div className='w-full h-full flex flex-col items-center'>
                         <div className='w-full md:w-[440px]'>
                             <div className='w-full flex justify-center'>
@@ -50,7 +46,7 @@ export const Auth = () => {
                             Please click the link to activateyour account.
                         </div>
                         <div className='mt-4'>
-                            <PrimaryButton onClick={handleResend} width='275px' disabled={false}>
+                            <PrimaryButton onClick={handleResend} width='275px'>
                                 Resend Verification
                             </PrimaryButton>
                         </div>
@@ -62,7 +58,7 @@ export const Auth = () => {
                             Please click the link to activateyour account.
                         </div>
                         <div className='mt-4'>
-                            <PrimaryButton onClick={handleResend} width='275px' disabled={false}>
+                            <PrimaryButton onClick={handleResend} width='275px'>
                                 Resend Verification
                             </PrimaryButton>
                         </div>

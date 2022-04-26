@@ -22,29 +22,8 @@ import { useSession } from 'contexts'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 const useStyles = makeStyles(() => ({
-    root: {
-        width: '100%',
-        padding: '1rem',
-        boxSizing: 'border-box',
-    },
-    flex: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    button: {
-        height: 40,
-        marginRight: 8,
-    },
     checkbox: {
         marginLeft: "30px"
-    },
-    progress: {
-        margin: '20px',
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
     }
 }))
 
@@ -91,7 +70,7 @@ const UserInfo: React.FC<IUserInfo> = ({
             <TableCell>{info.name}</TableCell>
             <TableCell>{info.email}</TableCell>
             <TableCell>{info.createdAt}</TableCell>
-            <TableCell className={classes.flex}>
+            <TableCell className='flex justify-center items-center'>
                 <FormControlLabel
                     control={
                         <Checkbox
@@ -138,65 +117,67 @@ export const UserList = () => {
     }, [])
 
     return (
-        <Card className={classes.root}>
-            <Box className={classes.flex}>
-                <FormControl style={{ width: 200 }}>
-                    <InputLabel id="vesting-type-label">Approval Status</InputLabel>
-                    <Select
-                        labelId="vesting-type-label"
-                        value={permitId}
-                        label="Vesting Type"
-                        onChange={(e) => setPermitId(Number(e.target.value))}
-                    >
-                        <MenuItem value={-1}>All</MenuItem>
-                        <MenuItem value={0}>Not Approved</MenuItem>
-                        <MenuItem value={1}>Approved</MenuItem>
-                    </Select>
-                </FormControl>
-            </Box>
-
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>
-                            <b>No</b>
-                        </TableCell>
-                        <TableCell>
-                            <b>Name</b>
-                        </TableCell>
-                        <TableCell>
-                            <b>Email</b>
-                        </TableCell>
-                        <TableCell>
-                            <b>CreatedAt</b>
-                        </TableCell>
-                        <TableCell style={{ textAlign: 'center' }}>
-                            <b>Approval</b>
-                        </TableCell>
-                    </TableRow>
-                </TableHead>
-                {!isLoading &&
-                    <TableBody>
-                        {userList && userList
-                            .filter(
-                                (item: any) =>
-                                    permitId === -1 || item.permit === permitId
-                            )
-                            .map((info, index) => (
-                                <UserInfo
-                                    index={index}
-                                    info={info}
-                                    key={index}
-                                />
-                            ))}
-                    </TableBody>
-                }
-            </Table>
-            {isLoading &&
-                <div className={classes.progress}>
-                    <CircularProgress />
+        <div className="w-full flex justify-center py-8 md:px-6 lg:px-8 xl:px-16 2xl:px-[124px]">
+            <div className='w-full max-w-[1620px] flex flex-col items-center gap-4 rounded-[20px] bg-white shadow-xl py-8 px-6'>            
+                <div className='flex justify-center'>
+                    <FormControl style={{ width: 200 }}>
+                        <InputLabel id="vesting-type-label">Approval Status</InputLabel>
+                        <Select
+                            labelId="vesting-type-label"
+                            value={permitId}
+                            label="Vesting Type"
+                            onChange={(e) => setPermitId(Number(e.target.value))}
+                        >
+                            <MenuItem value={-1}>All</MenuItem>
+                            <MenuItem value={0}>Not Approved</MenuItem>
+                            <MenuItem value={1}>Approved</MenuItem>
+                        </Select>
+                    </FormControl>
                 </div>
-            }
-        </Card>
+
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>
+                                <b>No</b>
+                            </TableCell>
+                            <TableCell>
+                                <b>Name</b>
+                            </TableCell>
+                            <TableCell>
+                                <b>Email</b>
+                            </TableCell>
+                            <TableCell>
+                                <b>CreatedAt</b>
+                            </TableCell>
+                            <TableCell style={{ textAlign: 'center' }}>
+                                <b>Approval</b>
+                            </TableCell>
+                        </TableRow>
+                    </TableHead>
+                    {!isLoading &&
+                        <TableBody>
+                            {userList && userList
+                                .filter(
+                                    (item: any) =>
+                                        permitId === -1 || item.permit === permitId
+                                )
+                                .map((info, index) => (
+                                    <UserInfo
+                                        index={index}
+                                        info={info}
+                                        key={index}
+                                    />
+                                ))}
+                        </TableBody>
+                    }
+                </Table>
+                {isLoading &&
+                    <div className='m-5 w-full flex justify-center items-center'>
+                        <CircularProgress />
+                    </div>
+                }
+            </div>
+        </div>
     )
 }

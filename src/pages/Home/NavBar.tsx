@@ -13,7 +13,7 @@ export const NavBar = () => {
         <div className="w-full p-4 fixed top-0 flex justify-around">
             <div className='flex items-center justify-center gap-4'>
                 <img src="/images/fluid_logo.svg" alt="FLUID" />
-                <div className='text-[50] text-black font-semibold'>FLUID</div>
+                <div className='text-[50px] text-black font-semibold'>FLUID</div>
             </div>
             <div className='flex flex-col gap-5 justify-center items-end'>
                 <div className='flex gap-8 items-center'>

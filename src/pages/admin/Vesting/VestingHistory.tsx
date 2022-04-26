@@ -15,23 +15,7 @@ import {
 import { useVesting } from 'contexts'
 import { VestingEvent } from 'types'
 import { formatEther } from 'utils'
-
-const useStyles = makeStyles(() => ({
-  root: {
-    width: '100%',
-    padding: '1rem',
-    boxSizing: 'border-box',
-  },
-  flex: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  button: {
-    height: 40,
-    marginRight: 8,
-  },
-}))
+import { SecondaryButtonMD } from 'components/SecondaryButtonMD'
 
 interface IHistoryItem {
   event: VestingEvent
@@ -62,7 +46,6 @@ export const VestingHistory: React.FC<IVestingHistory> = ({
   address,
   onBack,
 }) => {
-  const classes = useStyles()
   const { getEvents } = useVesting()
 
   const [eventList, setEventList] = useState<VestingEvent[]>([])
@@ -77,19 +60,17 @@ export const VestingHistory: React.FC<IVestingHistory> = ({
   }, [typeId, vestingId, address])
 
   return (
-    <Card className={classes.root}>
-      <Box className={classes.flex}>
+    <div className='w-full'>
+      <div className='w-full flex justify-between items-center'>
         <h3>Vesting History</h3>
 
-        <Button
-          color="primary"
-          variant="outlined"
-          className={classes.button}
+        <SecondaryButtonMD
+          width='80px'
           onClick={onBack}
         >
           Back
-        </Button>
-      </Box>
+        </SecondaryButtonMD>
+      </div>
 
       <Table>
         <TableHead>
@@ -112,6 +93,6 @@ export const VestingHistory: React.FC<IVestingHistory> = ({
           ))}
         </TableBody>
       </Table>
-    </Card>
+    </div>
   )
 }

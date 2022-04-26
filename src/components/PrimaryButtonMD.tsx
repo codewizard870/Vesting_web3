@@ -1,5 +1,3 @@
-
-
 import { Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -18,33 +16,33 @@ const useStyles = makeStyles((theme) => ({
         fontFamily: "Gibson",
         fontWeight: 600,        
         [theme.breakpoints.down('md')]: {
+            paddingTop: '6px',
+            paddingBottom: '6px',
+            fontSize: "14px"
+        },
+        [theme.breakpoints.up('md')]: {
             paddingTop: '7px',
             paddingBottom: '7px',
             fontSize: "16px"
-        },
-        [theme.breakpoints.up('md')]: {
-            paddingTop: '11px',
-            paddingBottom: '11px',
-            fontSize: "18px"
         }
     },
 }))
 
-export const SecondaryButton = ({ width = 'fit-content', children, onClick, disabled = false }: ButtonProps) => {
+export const PrimaryButtonMD = ({ width = 'fit-content', children, onClick, disabled = false }: ButtonProps) => {
     const classes = useStyles()
 
     return (
         <Button
-            variant="outlined"
-            color="secondary"
+            variant="contained"
+            color="primary"
             className={classes.button}
-            style={{ width: width, border: disabled?'2px solid #C8C8C8':'2px solid #050025' }}
+            style={{ width: width }}
             onClick={onClick}
             disabled={disabled}
             disableElevation
         >
             {/* {children} */}
-            <span className={`text-[16px] md:text-[18px] ${disabled?'text-[#A8A8A8]':'text-[#051C42]'} font-semibold uppercase`}>{children}</span>
+            <span className={`text-[14px] md:text-[16px] ${disabled?'text-[#A8A8A8]':'text-white'} font-medium uppercase`}>{children}</span>
         </Button>
     )
 }

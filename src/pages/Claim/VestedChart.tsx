@@ -54,11 +54,11 @@ const options = {
     },
     chart: {
         backgroundColor: 'transparent',
-        height: '35%',
+        height: '45%',
         // width: '100%',
         spacingBottom: 0,
         spacingLeft: 0,
-        spacingRight: 30,
+        spacingRight: 0,
         animation: {
             duration: 1000
         }
@@ -94,7 +94,8 @@ const options = {
             },
             formatter: function (): any {
                 let t: any = this
-                return t.pos + " FLD"
+                // return t.pos + " FLD"
+                return t.pos
             }
         },
         title: {
@@ -251,7 +252,7 @@ export const VestedChart = ({ info }: { info: VestingInfo }) => {
     }, [vestingList, vestingTypes, info])
 
     return (
-        <div style={{ minWidth: '500px', width: '100%' }}>
+        <div className='w-full min-w-[400px]'>
             <HighchartsReact highcharts={Highcharts} options={chartOptions} />
         </div>
     )

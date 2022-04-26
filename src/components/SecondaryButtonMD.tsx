@@ -12,25 +12,25 @@ interface ButtonProps {
 
 const useStyles = makeStyles((theme) => ({
     button: {
-        borderRadius: "9999px",
         margin: '4px',
+        borderRadius: "9999px",        
         color: "#FFFFFF",       
         fontFamily: "Gibson",
         fontWeight: 600,        
         [theme.breakpoints.down('md')]: {
-            paddingTop: '7px',
-            paddingBottom: '7px',
-            fontSize: "16px"
+            paddingTop: '4px',
+            paddingBottom: '4px',
+            fontSize: "14px"
         },
         [theme.breakpoints.up('md')]: {
-            paddingTop: '11px',
-            paddingBottom: '11px',
-            fontSize: "18px"
+            paddingTop: '5px',
+            paddingBottom: '5px',
+            fontSize: "16px"
         }
     },
 }))
 
-export const SecondaryButton = ({ width = 'fit-content', children, onClick, disabled = false }: ButtonProps) => {
+export const SecondaryButtonMD = ({ width = 'fit-content', children, onClick, disabled = false }: ButtonProps) => {
     const classes = useStyles()
 
     return (
@@ -44,7 +44,7 @@ export const SecondaryButton = ({ width = 'fit-content', children, onClick, disa
             disableElevation
         >
             {/* {children} */}
-            <span className={`text-[16px] md:text-[18px] ${disabled?'text-[#A8A8A8]':'text-[#051C42]'} font-semibold uppercase`}>{children}</span>
+            <span className={`text-[14px] md:text-[16px] ${disabled?'text-[#A8A8A8]':'text-[#051C42]'} font-medium uppercase`}>{children}</span>
         </Button>
     )
 }

@@ -9,11 +9,13 @@ import {
   WalletProvider,
   StakingProvider,
 } from 'contexts'
-import { Claim, Staking, Auth, Admin } from 'pages'
+import { Claim, Staking, Auth, Admin, Lend } from 'pages'
 import { Header } from 'components'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import { checkAuthentication } from 'utils'
 import 'react-toastify/dist/ReactToastify.css'
+import { ThemeProvider } from '@material-ui/core/styles'
+import theme from "./styles/theme"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,32 +37,35 @@ function App() {
       <ContractProvider>
         <WalletProvider>
           <VestingProvider>
-            <main className={classes.root}>
-              <div className="w-full bg-no-repeat bg-top md:bg-[url('./assets/images/signup/hero.png')]" style={{ minHeight: '100vh' }}>
-                <div className="h-full w-full bg-[#F3F6FA] md:bg-[#FFFFFF]/70" style={{ minHeight: '100vh' }}>
-                  {checkAuthentication() && <Header />}
-                  {checkAuthentication() ? (
-                    <Switch>
-                      <Route path="/admin" component={Admin} />
-                      <Route path="/claiming" component={Claim} />
-                      <Route path="/staking">
-                        <StakingProvider>
-                          <Staking />
-                        </StakingProvider>
-                      </Route>
-                      <Redirect to="/staking" />
-                    </Switch>
-                  ) : (
-                    <Switch>
-                      <Route path="/Auth" component={Auth} />
-                      <Route path="/signup" component={Auth} />
-                      <Redirect to="/Auth" />
-                    </Switch>
-                  )}
+            <ThemeProvider theme={theme}>
+              <main className={classes.root}>
+                <div className="w-full bg-no-repeat md:bg-cover bg-center md:bg-[url('./assets/images/signup/hero.png')]" style={{ minHeight: '100vh' }}>
+                  <div className="h-full w-full bg-[#F3F6FA] md:bg-[#FFFFFF]/70" style={{ minHeight: '100vh' }}>
+                    {checkAuthentication() && <Header />}
+                    {checkAuthentication() ? (
+                      <Switch>
+                        <Route path="/admin" component={Admin} />
+                        <Route path="/claiming" component={Claim} />
+                        <Route path="/staking">
+                          <StakingProvider>
+                            <Staking />
+                          </StakingProvider>
+                        </Route>
+                        <Route path="/lend" component={Lend} />
+                        <Redirect to="/staking" />
+                      </Switch>
+                    ) : (
+                      <Switch>
+                        <Route path="/Auth" component={Auth} />
+                        <Route path="/signup" component={Auth} />
+                        <Redirect to="/Auth" />
+                      </Switch>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <ToastContainer />
-            </main>
+                <ToastContainer />
+              </main>
+            </ThemeProvider>
           </VestingProvider>
         </WalletProvider>
       </ContractProvider>

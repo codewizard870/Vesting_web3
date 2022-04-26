@@ -1,33 +1,28 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react'
-import { Box, makeStyles, Typography } from '@material-ui/core'
 import { ClaimList } from './ClaimList'
 
-const useStyles = makeStyles(() => ({
-  root: {
-    width: '100%',
-    padding: '2rem',
-    boxSizing: 'border-box',
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'column'
-  },
-}))
-
 export const Claim = () => {
-  const classes = useStyles()
 
   return (
-    <Box className={classes.root}>
-      <Typography variant="h3">Welcome to FLUID Token Portal</Typography>
-      <br />
-      <Typography variant="h5" style={{ width: '70%' }}>
-        Here it will be explained how to use the portal. Instructions on how to
-        connect and claim the tokens, vesting mechanics explained, plus risk and
-        warnings (be aware of the phishing sties etc)
-      </Typography>
-      <br />      
-      <ClaimList />
-    </Box>
+    <div className="w-full flex justify-center py-10 px-6 lg:px-8 xl:px-16 2xl:px-[124px]">
+      <div className='w-full max-w-[1620px] flex flex-col items-center gap-16 md:gap-20'>
+        <div className='w-full'>
+          <div className='mt-16 mb-4 md:hidden w-full flex justify-center'>
+            <div>
+              <div className='text-[26px] font-semibold text-[#051C42] uppercase'>Claiming</div>
+              <div className='bg-[#3FBCE9] h-0.5 w-full'></div>
+            </div>
+          </div>
+          <div className='hidden md:block'>
+            <div className='text-[28px] text-[#0A208F] font-medium uppercase'>Claiming</div>
+          </div>
+          <div className='text-[16px] md:text-[20px] text-center md:text-left font-regular text-[#3F3F3F] mt-2'>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          </div>
+        </div>
+        <ClaimList />
+      </div>
+    </div>
   )
 }
