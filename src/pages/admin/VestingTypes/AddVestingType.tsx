@@ -220,7 +220,7 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
                     label="Vesting Type"
                     onChange={(e) => setVestingFrequency(Number(e.target.value))}
                   >
-                    {VF_LIST.filter(item=> item.value!==0).map((info, index) => (
+                    {VF_LIST.filter(item => item.value !== 0).map((info, index) => (
                       <MenuItem value={info.value} key={info.value}>
                         {info.label}
                       </MenuItem>
