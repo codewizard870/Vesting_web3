@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export const SecondaryButton = ({ width = 'fit-content', children, onClick, disabled = false }: ButtonProps) => {
-    const classes = useStyles();
+    const classes = useStyles()
 
     return (
         <Button

@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export const PrimaryButton = ({ width = 'fit-content', children, onClick, disabled = false }: ButtonProps) => {
-    const classes = useStyles();
+    const classes = useStyles()
 
     return (
         <Button

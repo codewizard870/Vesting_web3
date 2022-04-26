@@ -10,6 +10,6 @@ const theme = createTheme({
             main: "#050025",
         },
     },
-});
+})
 
-export default theme;
+export default theme

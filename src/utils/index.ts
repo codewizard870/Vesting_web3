@@ -1,4 +1,4 @@
-import Web3 from 'web3';
+import Web3 from 'web3'
 import { BigNumber, ethers, utils } from 'ethers'
 import jwt from 'jsonwebtoken'
 

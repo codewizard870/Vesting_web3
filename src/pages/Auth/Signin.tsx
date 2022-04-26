@@ -43,7 +43,7 @@ export const Signin = ({ setIsSignUp, setLogined }: { setIsSignUp: (isSignUp: bo
   }
 
   const handleSubmit = async (e: any) => {
-    e.preventDefault();
+    e.preventDefault()
     const error = {
       ...errors,
       ...handleValidation('email', email),
