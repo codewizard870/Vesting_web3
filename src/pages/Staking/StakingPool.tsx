@@ -11,7 +11,7 @@ import clsx from 'clsx'
 import { PoolInfo, UserInfo } from 'types'
 import { useStaking, useWallet } from 'contexts'
 import { BigNumber } from 'ethers'
-import { formatEther } from 'utils'
+import { formatEther, parseEther } from 'utils'
 import { Link } from 'react-router-dom'
 import { PrimaryButton } from 'components/PrimaryButton'
 import { SecondaryButton } from 'components/SecondaryButton'
@@ -118,14 +118,15 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
             variant="outlined"
             type="number"
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => setValue(Number(e.target.value).toString())}
             disabled={loading}
             style={{ width: '100%' }}
             margin="dense"
             inputProps={{ style: { fontSize: 42, color: '#3F3F3F', textAlign: 'center' } }} // font size of input text            
             InputLabelProps={{ style: { fontSize: 42, color: '#3F3F3F', textAlign: 'center' } }}
-            onInput={(e:any) => {
-              e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 12)
+            onInput={(e: any) => {
+              // e.target.value = Math.max(0, Number(e.target.value)).toString().slice(0, 12)
+              if (Number(e.target.value) < 0) e.target.value = -Number(e.target.value)              
             }}
           />
           <div className='flex justify-between gap-6 w-full mt-5 mb-3'>
@@ -133,7 +134,7 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
               onClick={handleDeposit}
               width='220px'
               disabled={
-                loading || !isValueCorrect() || BigNumber.from(Number(value)).gt(tokenBalance)
+                loading || !isValueCorrect() || parseEther(Number(value).toString()).gt(tokenBalance)
               }
             >
               Deposit
@@ -145,7 +146,7 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
               disabled={
                 loading ||
                 !isValueCorrect() ||
-                BigNumber.from(Number(value)).gt(userInfo?.amount || BigNumber.from(0))
+                parseEther(Number(value).toString()).gt(userInfo?.amount || BigNumber.from(0))
               }
             >
               Withdraw
