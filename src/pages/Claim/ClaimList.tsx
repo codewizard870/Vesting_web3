@@ -12,7 +12,7 @@ export const ClaimList = () => {
   )
 
   return (
-    <div className='w-full gap-12 md:gap-16'>      
+    <div className='w-full flex flex-col gap-12 md:gap-16'>      
       {userVestingList.map((info, index) => (
         <ClaimDetail info={info} key={index} />
       ))}

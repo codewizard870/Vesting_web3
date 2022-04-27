@@ -24,10 +24,7 @@ export const injected = new InjectedConnector({
 
 // mainnet only
 export const walletconnect = new WalletConnectConnector({
-    rpc: {
-        1: ProviderUrl[ChainId.Mainnet] ?? '',
-        4: ProviderUrl[ChainId.Rinkeby] ?? ''
-    },
+    rpc: `https://mainnet.infura.io/v3/${process.env.REACT_APP_ETHERSCAN_API}`,
     bridge: 'https://bridge.walletconnect.org',
     qrcode: true
 })
@@ -38,10 +35,10 @@ export const fortmatic = new FortmaticConnector({
     chainId: 1
 })
 
-// // mainnet only
-// export const walletlink = new WalletLinkConnector({
-//     url: NETWORK_URL,
-//     appName: 'Uniswap',
-//     appLogoUrl:
-//         'https://mpng.pngfly.com/20181202/bex/kisspng-emoji-domain-unicorn-pin-badges-sticker-unicorn-tumblr-emoji-unicorn-iphoneemoji-5c046729264a77.5671679315437924251569.jpg'
-// })
+// mainnet only
+export const walletlink = new WalletLinkConnector({
+    url: `https://mainnet.infura.io/v3/${process.env.REACT_APP_ETHERSCAN_API}`,
+    appName: 'Uniswap',
+    appLogoUrl:
+        'https://mpng.pngfly.com/20181202/bex/kisspng-emoji-domain-unicorn-pin-badges-sticker-unicorn-tumblr-emoji-unicorn-iphoneemoji-5c046729264a77.5671679315437924251569.jpg'
+})
