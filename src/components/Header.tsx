@@ -63,8 +63,8 @@ export const Header = () => {
             <div className='cursor-pointer' onClick={() => setIsOpen(false)}>
               <svg xmlns="http://www.w3.org/2000/svg" width="19.473" height="19.473" viewBox="0 0 19.473 19.473">
                 <g id="Group_2741" data-name="Group 2741" transform="translate(-348.456 -22.585)">
-                  <path id="Path_1136" data-name="Path 1136" d="M-2163.129,15066l16.643,16.645" transform="translate(2513 -15042)" fill="none" stroke="#b9b9b9" stroke-linecap="round" stroke-width="2" />
-                  <path id="Path_1137" data-name="Path 1137" d="M0,0,16.643,16.644" transform="translate(366.514 24) rotate(90)" fill="none" stroke="#b9b9b9" stroke-linecap="round" stroke-width="2" />
+                  <path id="Path_1136" data-name="Path 1136" d="M-2163.129,15066l16.643,16.645" transform="translate(2513 -15042)" fill="none" stroke="#b9b9b9" strokeLinecap="round" strokeWidth="2" />
+                  <path id="Path_1137" data-name="Path 1137" d="M0,0,16.643,16.644" transform="translate(366.514 24) rotate(90)" fill="none" stroke="#b9b9b9" strokeLinecap="round" strokeWidth="2" />
                 </g>
               </svg>
             </div>
@@ -141,9 +141,9 @@ export const Header = () => {
         </div>
         <div className='flex justify-center items-center py-2 pl-4 pr-2 bg-white rounded-l-full md:hidden cursor-pointer' onClick={() => setIsOpen(true)}>
           <svg id="Group_896" data-name="Group 896" xmlns="http://www.w3.org/2000/svg" width="58" height="34" viewBox="0 0 58 34">
-            <line id="Line_72" data-name="Line 72" x1="27" transform="translate(10 8)" fill="none" stroke="#0b1b40" stroke-linecap="round" stroke-width="3" />
-            <line id="Line_73" data-name="Line 73" x1="18" transform="translate(19 16)" fill="none" stroke="#0b1b40" stroke-linecap="round" stroke-width="3" />
-            <line id="Line_74" data-name="Line 74" x1="27" transform="translate(10 24)" fill="none" stroke="#0b1b40" stroke-linecap="round" stroke-width="3" />
+            <line id="Line_72" data-name="Line 72" x1="27" transform="translate(10 8)" fill="none" stroke="#0b1b40" strokeLinecap="round" strokeWidth="3" />
+            <line id="Line_73" data-name="Line 73" x1="18" transform="translate(19 16)" fill="none" stroke="#0b1b40" strokeLinecap="round" strokeWidth="3" />
+            <line id="Line_74" data-name="Line 74" x1="27" transform="translate(10 24)" fill="none" stroke="#0b1b40" strokeLinecap="round" strokeWidth="3" />
             <rect id="Rectangle_231" data-name="Rectangle 231" width="58" height="34" fill="#fff" opacity="0" />
           </svg>
         </div>
@@ -167,7 +167,7 @@ export const Header = () => {
                   </div>
                 </div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="15.475" height="8.586" viewBox="0 0 15.475 8.586">
-                  <path id="Vector_4" data-name="Vector 4" d="M0,0,6.889,6.889,0,13.778" transform="translate(14.626 0.849) rotate(90)" fill="none" stroke="#303030" stroke-linecap="round" stroke-width="1.2" />
+                  <path id="Vector_4" data-name="Vector 4" d="M0,0,6.889,6.889,0,13.778" transform="translate(14.626 0.849) rotate(90)" fill="none" stroke="#303030" strokeLinecap="round" strokeWidth="1.2" />
                 </svg>
               </div>
 

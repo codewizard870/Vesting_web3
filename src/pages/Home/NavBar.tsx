@@ -31,7 +31,7 @@ export const NavBar = () => {
                         <div className="border-b-2 border-[#61B8E6] flex gap-2 items-center cursor-pointer">
                             <span className='text-[16px] text-black font-semibold uppercase'>ENG</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="15.167" height="8.998" viewBox="0 0 15.167 8.998">
-                                <path id="Path_13" data-name="Path 13" d="M1864,104l6.169,6.169,6.169-6.169" transform="translate(-1862.586 -102.586)" fill="none" stroke="#35bbea" stroke-linecap="round" stroke-width="2" />
+                                <path id="Path_13" data-name="Path 13" d="M1864,104l6.169,6.169,6.169-6.169" transform="translate(-1862.586 -102.586)" fill="none" stroke="#35bbea" strokeLinecap="round" strokeWidth="2" />
                             </svg>
                         </div>
                         <div className="dropdown-content">
@@ -73,7 +73,7 @@ export const NavBar = () => {
                         <div className="bg-[#3FBCE9] rounded-full flex gap-2 items-center py-3 pl-12 pr-4 cursor-pointer">
                             <span className='text-[18px] text-white font-semibold uppercase'>Launch App</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="12.227" height="6.133" viewBox="0 0 12.227 6.133">
-                                <path id="Path_1135" data-name="Path 1135" d="M-6812.93,204l5.783,5.092,5.783-5.092" transform="translate(6813.261 -203.625)" fill="none" stroke="#fff" stroke-width="1" />
+                                <path id="Path_1135" data-name="Path 1135" d="M-6812.93,204l5.783,5.092,5.783-5.092" transform="translate(6813.261 -203.625)" fill="none" stroke="#fff" strokeWidth="1" />
                             </svg>
                         </div>
                         <div className="dropdown-content">

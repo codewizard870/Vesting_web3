@@ -6,7 +6,6 @@ import { VestingEvent, VestingTypeEvent, VestingInfo, VestingType, IWalletList, 
 import { useContracts } from './contracts'
 import { useWallet } from './wallets'
 import { parseEther, parseVestingTypeData } from 'utils'
-
 export interface IVestingContext {
   isVestingAdmin: boolean
   vestingTypes: VestingType[]
@@ -59,6 +58,7 @@ export const VestingProvider = ({ children = null as any }) => {
   const [isVestingAdmin, setVestingAdmin] = useState(false)
   const [vestingTypes, setVestingTypes] = useState<VestingType[]>([])
   const [vestingList, setVestingList] = useState<VestingInfo[]>([])
+  const { updateTokenBalance } = useWallet()
 
   const eventTopics: { [id: string]: string } = {
     '0x41e2396a6e9c1acf60ed38dcf04ccf13d4de214df6bb8499fe002b4909865212': 'Add Vesting',
@@ -173,6 +173,7 @@ export const VestingProvider = ({ children = null as any }) => {
         .send({ from: account })
       toast.success('Claimed successfully')
       updateVestingList()
+      updateTokenBalance()
     } catch (err) {
       console.error(err)
       toast.error('Error happened')

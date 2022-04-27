@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useState } from 'react'
-import { Box, Button, makeStyles, Typography } from '@material-ui/core'
 import { useVesting, useWallet } from 'contexts'
 import { useHistory } from 'react-router-dom'
 import { formatTime, formatEther, parseEther } from 'utils'
@@ -8,7 +7,6 @@ import { VestingInfo, VestingType } from 'types'
 import { VestedChart } from './VestedChart'
 import { BigNumber } from 'ethers'
 import { PrimaryButton } from 'components/PrimaryButton'
-import { SecondaryButton } from 'components/SecondaryButton'
 
 interface IClaimDetail {
   info: VestingInfo

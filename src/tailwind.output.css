@@ -853,12 +853,12 @@ Ensure the default browser behavior of the `hidden` attribute.
   background-repeat: no-repeat;
 }
 
-.p-6 {
-  padding: 1.5rem;
-}
-
 .p-4 {
   padding: 1rem;
+}
+
+.p-6 {
+  padding: 1.5rem;
 }
 
 .p-5 {
@@ -994,6 +994,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   font-size: 14px;
 }
 
+.text-\[24px\] {
+  font-size: 24px;
+}
+
 .text-\[28px\] {
   font-size: 28px;
 }
@@ -1067,14 +1071,19 @@ Ensure the default browser behavior of the `hidden` attribute.
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
-.text-\[\#36BBEB\] {
-  --tw-text-opacity: 1;
-  color: rgb(54 187 235 / var(--tw-text-opacity));
-}
-
 .text-\[\#474747\] {
   --tw-text-opacity: 1;
   color: rgb(71 71 71 / var(--tw-text-opacity));
+}
+
+.text-\[\#050025\] {
+  --tw-text-opacity: 1;
+  color: rgb(5 0 37 / var(--tw-text-opacity));
+}
+
+.text-\[\#36BBEB\] {
+  --tw-text-opacity: 1;
+  color: rgb(54 187 235 / var(--tw-text-opacity));
 }
 
 .text-\[\#949494\] {
@@ -1100,11 +1109,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 .text-\[\#676767\] {
   --tw-text-opacity: 1;
   color: rgb(103 103 103 / var(--tw-text-opacity));
-}
-
-.text-\[\#050025\] {
-  --tw-text-opacity: 1;
-  color: rgb(5 0 37 / var(--tw-text-opacity));
 }
 
 .underline {
@@ -1407,6 +1411,10 @@ code {
     justify-content: space-between;
   }
 
+  .md\:gap-10 {
+    gap: 2.5rem;
+  }
+
   .md\:gap-8 {
     gap: 2rem;
   }
@@ -1441,6 +1449,10 @@ code {
 
   .md\:bg-cover {
     background-size: cover;
+  }
+
+  .md\:p-5 {
+    padding: 1.25rem;
   }
 
   .md\:px-20 {
