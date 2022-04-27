@@ -42,8 +42,8 @@ export const Auth = () => {
                     {isRegistered && <div className='w-full flex flex-col gap-8 justify-center items-center'>
                         <div className='text-[28px] font-500 text-[#474747] text-center'>Thank you for registering.</div>
                         <div className='text-[18px] text-[#474747] text-center'>
-                            An email has been sent to activate youraccount.<br />
-                            Please click the link to activateyour account.
+                            An email has been sent to activate your account.<br />
+                            Please click the link to activate your account.
                         </div>
                         <div className='mt-4'>
                             <PrimaryButton onClick={handleResend} width='275px'>
@@ -54,8 +54,8 @@ export const Auth = () => {
                     {isNotVerifiedEmail && <div className='w-full flex flex-col gap-8 justify-center items-center'>
                         <div className='text-[28px] font-500 text-[#474747] text-center'>Your email is yet to be verified.</div>
                         <div className='text-[18px] text-[#474747] text-center'>
-                            An email has been sent to activate youraccount.<br />
-                            Please click the link to activateyour account.
+                            An email has been sent to activate your account.<br />
+                            Please click the link to activate your account.
                         </div>
                         <div className='mt-4'>
                             <PrimaryButton onClick={handleResend} width='275px'>
