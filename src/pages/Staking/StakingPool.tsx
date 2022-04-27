@@ -118,7 +118,7 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
             variant="outlined"
             type="number"
             value={value}
-            onChange={(e) => setValue(Number(e.target.value).toString())}
+            onChange={(e) => setValue(e.target.value!==''?Number(e.target.value).toString():'')}
             disabled={loading}
             style={{ width: '100%' }}
             margin="dense"
