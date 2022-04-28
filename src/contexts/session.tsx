@@ -19,7 +19,6 @@ export interface ISessionContext {
 const SessionContext = React.createContext<Maybe<ISessionContext>>(null)
 
 export const SessionProvider = ({ children = null as any }) => {
-  const { disconnect } = useWallet()
 
   const options = (method = 'get', data = 'null') => {
     return {
@@ -108,8 +107,6 @@ export const SessionProvider = ({ children = null as any }) => {
     localStorage.setItem('username', '')
     localStorage.setItem('role', '')
     localStorage.setItem('wallet_type', '')
-    disconnect()
-
   }
 
   return (

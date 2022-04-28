@@ -21,6 +21,7 @@ export const Header = () => {
   history.listen((location) => { setPathname(location.pathname) })
 
   const userSignOut = () => {
+    disconnect()
     requestUserSignout()
     window.location.reload()
   }
