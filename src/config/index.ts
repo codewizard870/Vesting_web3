@@ -2,11 +2,18 @@ import tokenAbi from '../abi/Token.json'
 import vestingAbi from '../abi/Vesting.json'
 import stakingAbi from '../abi/Staking.json'
 import { AbstractConnector } from '@web3-react/abstract-connector'
-import { fortmatic, injected, walletconnect, /* walletlink */ } from '../connectors'
+import { FortmaticConnector } from './Fortmatic'
+import { InjectedConnector } from '@web3-react/injected-connector'
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
+import { WalletLinkConnector } from '@web3-react/walletlink-connector'
 
 export enum ChainId {
-  Mainnet = 1,  
+  Mainnet = 1,
   Rinkeby = 4
+}
+
+export const config = {
+  networkId: ChainId.Rinkeby
 }
 
 export const ABI = {
@@ -36,12 +43,8 @@ export const NetworkName: { [chainId in ChainId]?: string } = {
 }
 
 export const ProviderUrl: { [chainId in ChainId]?: string } = {
-  [ChainId.Mainnet]: "https://mainnet.infura.io/v3/f8bdc9ea610d4e3d9f7d07c4d76bb08e",
-  [ChainId.Rinkeby]: "https://rinkeby.infura.io/v3/f8bdc9ea610d4e3d9f7d07c4d76bb08e"
-}
-
-export const config = {
-  networkId: ChainId.Rinkeby
+  [ChainId.Mainnet]: `https://mainnet.infura.io/v3/${process.env.REACT_APP_ETHERSCAN_API}`,
+  [ChainId.Rinkeby]: `https://rinkeby.infura.io/v3/${process.env.REACT_APP_ETHERSCAN_API}`
 }
 
 export interface WalletInfo {
@@ -56,16 +59,36 @@ export interface WalletInfo {
   mobileOnly?: true
 }
 
-export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
-  INJECTED: {
-    connector: injected,
-    name: 'Injected',
-    iconName: 'arrow-right.svg',
-    description: 'Injected web3 provider.',
-    href: null,
-    color: '#010101',
-    primary: true
+
+
+const FORMATIC_KEY = process.env.REACT_APP_FORTMATIC_KEY
+
+export const injected = new InjectedConnector({
+  supportedChainIds: [1, 3, 4, 5, 42, 43113, 43114, 97, 56, 1287, 80001, 137, 128]
+})
+
+export const walletconnect = new WalletConnectConnector({
+  rpc: {
+    1: ProviderUrl[ChainId.Mainnet] ?? '',
+    4: ProviderUrl[ChainId.Rinkeby] ?? '',
   },
+  bridge: 'https://bridge.walletconnect.org',
+  qrcode: true
+})
+
+export const fortmatic = new FortmaticConnector({
+  apiKey: FORMATIC_KEY ?? '',
+  chainId: 1
+})
+
+export const walletlink = new WalletLinkConnector({
+  url: ProviderUrl[config.networkId] ?? '',
+  appName: 'Uniswap',
+  appLogoUrl:
+    'https://mpng.pngfly.com/20181202/bex/kisspng-emoji-domain-unicorn-pin-badges-sticker-unicorn-tumblr-emoji-unicorn-iphoneemoji-5c046729264a77.5671679315437924251569.jpg'
+})
+
+export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   METAMASK: {
     connector: injected,
     name: 'MetaMask',
@@ -83,28 +106,19 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     color: '#4196FC',
     mobile: true
   },
-  // WALLET_LINK: {
-  //   connector: walletlink,
-  //   name: 'Coinbase Wallet',
-  //   iconName: 'coinbaseWalletIcon.svg',
-  //   description: 'Use Coinbase Wallet app on mobile device',
-  //   href: null,
-  //   color: '#315CF5'
-  // },
-  COINBASE_LINK: {
-    name: 'Open in Coinbase Wallet',
+  WALLET_LINK: {
+    connector: walletlink,
+    name: 'Coinbase Wallet',
     iconName: 'coinbaseWalletIcon.svg',
-    description: 'Open in Coinbase Wallet app.',
-    href: 'https://go.cb-w.com/mtUDhEZPy1',
-    color: '#315CF5',
-    mobile: true,
-    mobileOnly: true
+    description: 'Use Coinbase Wallet app on mobile device',
+    href: null,
+    color: '#315CF5'
   },
   FORTMATIC: {
     connector: fortmatic,
     name: 'Fortmatic',
     iconName: 'fortmaticIcon.png',
-    description: 'Login using Fortmatic hosted wallet',
+    description: 'Login using Fortmatic hosted wallet.',
     href: null,
     color: '#6748FF',
     mobile: true

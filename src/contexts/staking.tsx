@@ -104,10 +104,10 @@ export const StakingProvider = ({ children = null as any }) => {
   }
 
   useEffect(() => {
-    if (poolList.length > 0) {
+    if (poolList.length > 0 && account) {
       updatePendingRewards()
     }
-  }, [poolList.length])
+  }, [poolList.length, account])
 
   const getAllowance = async (token: string) => {
     try {

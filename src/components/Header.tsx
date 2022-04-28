@@ -1,15 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState } from 'react'
-import { Box, Button, makeStyles, Typography } from '@material-ui/core'
 import { useSession, useVesting, useWallet } from 'contexts'
 import { checkAuthentication, getShortWalletAddress } from 'utils'
-import { WalletType } from 'types'
-import clsx from 'clsx'
 import { Link } from 'react-router-dom'
 import Avatar from '@material-ui/core/Avatar'
 import { PrimaryButton } from 'components/PrimaryButton'
 import { SecondaryButton } from 'components/SecondaryButton'
 import { useHistory, useLocation } from 'react-router-dom'
+import { ConnectWallet } from './ConnectWallet'
 
 export const Header = () => {
   const history = useHistory()
@@ -114,9 +112,7 @@ export const Header = () => {
             <div className={`text-[18px] text-[#051C42] uppercase cursor-pointer`} onClick={userSignOut}>Sign Out</div>
           </div>
           {!connected ? <div className='mt-10 w-full flex justify-center'>
-            <PrimaryButton onClick={() => connect(WalletType.MetaMask)} width='227px'>
-              Connect Wallet
-            </PrimaryButton>
+            <ConnectWallet width="227px" />
           </div> :
             <div className='mt-10 w-full flex justify-center'>
               <SecondaryButton onClick={() => disconnect()}>
@@ -180,11 +176,7 @@ export const Header = () => {
               </div>
             </div>
           ) : (
-            <div>
-              <PrimaryButton onClick={() => connect(WalletType.MetaMask)} width='227px'>
-                Connect Wallet
-              </PrimaryButton>
-            </div>
+            <ConnectWallet width="227px" />
           )}
         </div>
       </div>

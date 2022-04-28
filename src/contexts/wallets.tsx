@@ -5,10 +5,11 @@ import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { useWeb3React } from '@web3-react/core'
 import { toast } from 'react-toastify'
 import { config, NetworkName, ABI, TokenAddress, ChainId, ProviderUrl } from '../config'
-import { WalletType } from 'types'
 import { useLocalStorageState } from 'hooks'
 import { useContracts } from './contracts'
 import { BigNumber } from 'ethers'
+import { AbstractConnector } from '@web3-react/abstract-connector'
+import { SUPPORTED_WALLETS } from '../config'
 
 export interface IWalletContext {
   connected: boolean
@@ -16,7 +17,7 @@ export interface IWalletContext {
   balance: BigNumber
   tokenBalance: BigNumber
   chainId: Maybe<number>
-  connect: (type: WalletType) => void
+  connect: (connector: AbstractConnector, key: string) => void
   disconnect: () => void
   updateBalance: () => void
   updateTokenBalance: () => void
@@ -25,19 +26,6 @@ export interface IWalletContext {
     tokenAddress: string
   ) => Promise<BigNumber>
 }
-
-export const metamaskInjected = new InjectedConnector({
-  supportedChainIds: [1, 3, 4, 5, 42, 56, 97],
-})
-
-export const walletconnect = new WalletConnectConnector({
-  rpc: {
-    1: ProviderUrl[ChainId.Mainnet] ?? '',
-    4: ProviderUrl[ChainId.Rinkeby] ?? ''
-  },
-  bridge: 'https://bridge.walletconnect.org',
-  qrcode: true
-})
 
 const WalletContext = React.createContext<Maybe<IWalletContext>>(null)
 
@@ -51,14 +39,14 @@ export const WalletProvider = ({ children = null as any }) => {
   const [tokenBalance, setTokenBalance] = useState<BigNumber>(BigNumber.from(0))
 
   const connect = useCallback(
-    async (type: WalletType = WalletType.MetaMask) => {
+    async (connector: AbstractConnector, key: string) => {
       try {
-        if (type === WalletType.MetaMask) {
-          await activate(metamaskInjected)
-        } else if (type === WalletType.WalletConnect) {
-          await activate(walletconnect)
-        }
-        setWalletType(type.toString())
+        activate(connector, undefined, true).then(res => {
+          setWalletType(key)
+        }).catch(error => {
+          toast.error('Wallet connect failed!')
+          console.log("Error: "+error)
+        })        
       } catch (err) {
         toast.error('Wallet connect failed!')
       }
@@ -73,11 +61,8 @@ export const WalletProvider = ({ children = null as any }) => {
 
   useEffect(() => {
     if (walletType) {
-      if (walletType === 'metamask') {
-        connect(WalletType.MetaMask)
-      } else if (walletType === 'walletconnect') {
-        connect(WalletType.WalletConnect)
-      }
+      const option= SUPPORTED_WALLETS[walletType]
+      if (option?.connector) connect(option.connector, walletType)
     }
   }, [connect, activate, walletType])
 

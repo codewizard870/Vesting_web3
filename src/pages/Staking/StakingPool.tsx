@@ -70,8 +70,10 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
   }
 
   useEffect(() => {
-    updateUserInfo()
-    updateTokenBalance()
+    if (account) {
+      updateUserInfo()
+      updateTokenBalance()
+    }
   }, [pid, poolInfo, account])
 
   const handleDeposit = async (e: any) => {
@@ -118,7 +120,7 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
             variant="outlined"
             type="number"
             value={value}
-            onChange={(e) => setValue(e.target.value!==''?Number(e.target.value).toString():'')}
+            onChange={(e) => setValue(e.target.value !== '' ? Number(e.target.value).toString() : '')}
             disabled={loading}
             style={{ width: '100%' }}
             margin="dense"
@@ -126,7 +128,7 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
             InputLabelProps={{ style: { fontSize: 42, color: '#3F3F3F', textAlign: 'center' } }}
             onInput={(e: any) => {
               // e.target.value = Math.max(0, Number(e.target.value)).toString().slice(0, 12)
-              if (Number(e.target.value) < 0) e.target.value = -Number(e.target.value)              
+              if (Number(e.target.value) < 0) e.target.value = -Number(e.target.value)
             }}
           />
           <div className='flex justify-between gap-6 w-full mt-5 mb-3'>

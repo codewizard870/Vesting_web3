@@ -566,6 +566,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   height: 0px;
 }
 
+.h-\[60px\] {
+  height: 60px;
+}
+
 .h-1 {
   height: 0.25rem;
 }
@@ -715,6 +719,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   border-radius: 0.75rem;
 }
 
+.rounded-\[12px\] {
+  border-radius: 12px;
+}
+
 .rounded-\[5px\] {
   border-radius: 5px;
 }
@@ -853,12 +861,12 @@ Ensure the default browser behavior of the `hidden` attribute.
   background-repeat: no-repeat;
 }
 
-.p-4 {
-  padding: 1rem;
-}
-
 .p-6 {
   padding: 1.5rem;
+}
+
+.p-4 {
+  padding: 1rem;
 }
 
 .p-5 {
@@ -952,6 +960,14 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .pr-2 {
   padding-right: 0.5rem;
+}
+
+.pt-8 {
+  padding-top: 2rem;
+}
+
+.pb-8 {
+  padding-bottom: 2rem;
 }
 
 .pt-\[70px\] {
@@ -1362,6 +1378,15 @@ code {
   }
 }
 
+.hover\:border:hover {
+  border-width: 1px;
+}
+
+.hover\:border-slate-400:hover {
+  --tw-border-opacity: 1;
+  border-color: rgb(148 163 184 / var(--tw-border-opacity));
+}
+
 @media (min-width: 768px) {
   .md\:mt-16 {
     margin-top: 4rem;
@@ -1381,6 +1406,10 @@ code {
 
   .md\:hidden {
     display: none;
+  }
+
+  .md\:h-\[67px\] {
+    height: 67px;
   }
 
   .md\:w-\[720px\] {
@@ -1451,8 +1480,14 @@ code {
     background-size: cover;
   }
 
-  .md\:p-5 {
-    padding: 1.25rem;
+  .md\:px-10 {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+
+  .md\:px-5 {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
   }
 
   .md\:px-20 {
@@ -1482,6 +1517,14 @@ code {
 
   .md\:pt-8 {
     padding-top: 2rem;
+  }
+
+  .md\:pt-10 {
+    padding-top: 2.5rem;
+  }
+
+  .md\:pb-10 {
+    padding-bottom: 2.5rem;
   }
 
   .md\:pt-\[40px\] {

@@ -6,10 +6,12 @@ export interface IContract {
   address: string
 }
 
-export enum WalletType {
-  MetaMask = 'metamask',
-  WalletConnect = 'walletconnect',
-}
+// export enum WalletType {
+//   MetaMask = 'metamask',
+//   WalletConnect = 'walletconnect',
+//   Coinbase = 'coinbase',
+//   Fortmatic = 'fortmatic'
+// }
 
 export interface PoolInfo {
   stakeToken: string
