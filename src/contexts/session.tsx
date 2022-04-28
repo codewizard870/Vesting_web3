@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext } from 'react'
 import { checkAuthentication } from 'utils'
+import { useWallet } from './wallets'
 
 export interface ISessionContext {
   getUsername: () => Maybe<string>
@@ -18,6 +19,8 @@ export interface ISessionContext {
 const SessionContext = React.createContext<Maybe<ISessionContext>>(null)
 
 export const SessionProvider = ({ children = null as any }) => {
+  const { disconnect } = useWallet()
+
   const options = (method = 'get', data = 'null') => {
     return {
       headers: {
@@ -84,10 +87,10 @@ export const SessionProvider = ({ children = null as any }) => {
       requestOptions
     ).then((res) => res.json())
       .then((res) => {
-        return {status: true, msg: ''}
+        return { status: true, msg: '' }
       })
       .catch(error => {
-        return {status: false, msg: error.message}
+        return { status: false, msg: error.message }
       })
   }
 
@@ -104,6 +107,9 @@ export const SessionProvider = ({ children = null as any }) => {
     localStorage.setItem('jwtToken', '')
     localStorage.setItem('username', '')
     localStorage.setItem('role', '')
+    localStorage.setItem('wallet_type', '')
+    disconnect()
+
   }
 
   return (
