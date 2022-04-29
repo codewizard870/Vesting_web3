@@ -30,12 +30,18 @@ interface ITypeItem {
 const TypeItem: React.FC<ITypeItem> = ({ index, info, handleEdit, handleHistory }) => {
   const history = useHistory()
 
+  const getFormatedDateTime = (d: Date):string => {
+    // return d.toLocaleString('en-US',{ year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+    let res:string=d.toISOString().slice(0, 16)
+    return res.split('T')[0]+'  '+res.split('T')[1]
+  }
+
   return (
     <TableRow key={info.typeId}>
       <TableCell>{(index + 1)}</TableCell>
       <TableCell>{info.name}</TableCell>
-      <TableCell>{new Date(info.startTime * 1000).toLocaleString()}</TableCell>
-      <TableCell>{new Date(info.endTime * 1000).toLocaleString()}</TableCell>
+      <TableCell>{getFormatedDateTime(new Date(info.startTime * 1000))}</TableCell>
+      <TableCell>{getFormatedDateTime(new Date(info.endTime * 1000))}</TableCell>
       <TableCell>{formatTime(info.lockupDuration)}</TableCell>
       <TableCell>{VF_LIST[info.vestingFrequencyId].label}</TableCell>
       <TableCell>{formatEther(info.maxAmount, undefined, 3, true)} FLD</TableCell>

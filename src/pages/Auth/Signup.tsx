@@ -9,7 +9,7 @@ interface IError {
   [field: string]: string
 }
 
-export const Signup = ({ setIsSignUp, setRegistered }: { setIsSignUp: (isSignUp: boolean) => void, setRegistered: (registered: boolean) => void }) => {
+export const Signup = ({ setIsSignUp, handleSendSignUp }: { setIsSignUp: (isSignUp: boolean) => void, handleSendSignUp: (email: string) => void }) => {
   const { requestUserSignup } = useSession()
   const history = useHistory()
 
@@ -64,9 +64,6 @@ export const Signup = ({ setIsSignUp, setRegistered }: { setIsSignUp: (isSignUp:
       ...handleValidation('password', password),
       ...handleValidation('confirmPassword', confirmPassword),
     }
-    console.log(password)
-    console.log(confirmPassword)
-    console.log(error)
 
     const userCredentialsValid =
       Object.keys(error).filter((field) => error[field] !== '').length === 0
@@ -81,7 +78,7 @@ export const Signup = ({ setIsSignUp, setRegistered }: { setIsSignUp: (isSignUp:
           setErrors(res.errors)
         } else {
           // history.push('/signin')
-          setRegistered(true)
+          handleSendSignUp(email)
         }
       } catch (err) {
         console.log(err)

@@ -3,16 +3,36 @@ import { Signup } from './Signup'
 import { Signin } from './Signin'
 import { Logo } from 'components/Logo'
 import { PrimaryButton } from 'components/PrimaryButton'
+import { useSession } from 'contexts'
+import { toast } from 'react-toastify'
 
 export const Auth = () => {
     const [isSignUp, setIsSignUp] = useState(true)
     const [isRegistered, setRegistered] = useState(false)
+    const [registeredEmail, setRegisteredEmail] = useState('')
     const [isLogined, setLogined] = useState(false)
     const [isNotVerifiedEmail, setNotVerifiedEmail] = useState(false)
-    const handleResend = (e: any) => {
-        e.preventDefault()
-    }
+    const { requestResendVerification } = useSession()
 
+    const handleResend = async (e: any) => {
+        e.preventDefault()
+        try {
+            const res = await requestResendVerification(registeredEmail)
+            if (res.errors) {
+              console.log(res.errors)
+            } else {
+              if (res.action === 'success'){
+                toast.success("New verification sent!")
+              }
+            }
+          } catch (err) {
+            console.log(err)
+          }
+    }
+    const handleSendSignUp = (email:string) => {
+        setRegisteredEmail(email)
+        setRegistered(true)
+    }
     return (
         <div className="w-full bg-no-repeat bg-center bg-none md:bg-[url('./assets/images/signup/hero.png')]" style={{ minHeight: '100vh' }}>
             <div className="h-full w-full md:w-[720px] md:bg-[#FFFFFF]/70" style={{ minHeight: '100vh' }}>
@@ -35,7 +55,7 @@ export const Auth = () => {
                                         <div className='w-[154px] md:w-[196px] flex justify-center items-center py-4 md:py-5 text-[18px] font-regular text-[#051C42] cursor-pointer uppercase' onClick={() => setIsSignUp(false)}>Login</div>}
                                 </div>
                             </div>
-                            {isSignUp && <Signup setIsSignUp={setIsSignUp} setRegistered={setRegistered} />}
+                            {isSignUp && <Signup setIsSignUp={setIsSignUp} handleSendSignUp={handleSendSignUp} />}
                             {!isSignUp && <Signin setIsSignUp={setIsSignUp} setLogined={setLogined} />}
                         </div>
                     </div>}

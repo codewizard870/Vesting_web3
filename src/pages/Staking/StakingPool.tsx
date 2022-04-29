@@ -1,20 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import {
-  Box,
-  Button,
   makeStyles,
-  TextField,
-  Typography,
+  TextField
 } from '@material-ui/core'
-import clsx from 'clsx'
 import { PoolInfo, UserInfo } from 'types'
 import { useStaking, useWallet } from 'contexts'
 import { BigNumber } from 'ethers'
 import { formatEther, parseEther } from 'utils'
-import { Link } from 'react-router-dom'
 import { PrimaryButton } from 'components/PrimaryButton'
 import { SecondaryButton } from 'components/SecondaryButton'
+import { ADD_LIQUIDITY_LINK } from 'config'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -175,8 +171,8 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
           <div className='w-full flex flex-col justify-center md:flex-row md:justify-between gap-8 md:gap-0 items-center mt-1 mb-3'>
             <div>
               {pid === 0 && (
-                <a href='https://app.uniswap.org/#/add/v2/ETH/0xb00f1f831261FbeaEE98f5D3EbB22EcC3c7726A5?chain=rinkeby' target="_blank">
-                  <span className='text-[18px] font-medium text-[#3FBCE9] underline underline-offset-4'>Add Liquidity - SWAP</span>
+                <a href={ADD_LIQUIDITY_LINK} target="_blank">
+                  <span className='text-[18px] font-medium text-[#3FBCE9] underline underline-offset-4'>Add Liquidity</span>
                 </a>
               )}
             </div>

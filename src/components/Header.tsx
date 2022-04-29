@@ -8,7 +8,7 @@ import { PrimaryButton } from 'components/PrimaryButton'
 import { SecondaryButton } from 'components/SecondaryButton'
 import { useHistory, useLocation } from 'react-router-dom'
 import { ConnectWallet } from './ConnectWallet'
-
+import { ADD_LIQUIDITY_LINK } from 'config'
 export const Header = () => {
   const history = useHistory()
   const location = useLocation()
@@ -37,10 +37,10 @@ export const Header = () => {
           <span className='text-[18px] text-[#051C42] font-semibold uppercase'>Claiming</span>
           <div className={`bg-[#3FBCE9] h-0.5 w-full ${pathname.includes('claiming') ? 'block' : 'hidden'}`}></div>
         </Link>
-        <Link to="/swap">
-          <span className='text-[18px] text-[#051C42] font-semibold uppercase'>Swap</span>
+        <a href={ ADD_LIQUIDITY_LINK } target="_blank">
+          <span className='text-[18px] text-[#051C42] font-semibold uppercase'>Add Liquidity</span>
           <div className={`bg-[#3FBCE9] h-0.5 w-full ${pathname.includes('swap') ? 'block' : 'hidden'}`}></div>
-        </Link>
+        </a>
         <Link to="/lend">
           <span className='text-[18px] text-[#051C42] font-semibold uppercase'>Lend</span>
           <div className={`bg-[#3FBCE9] h-0.5 w-full ${pathname.includes('lend') ? 'block' : 'hidden'}`}></div>
@@ -85,7 +85,7 @@ export const Header = () => {
           </div>}
           <div className='py-4 border-b border-[#C2C2C2]'>
             <Link to="/staking">
-              <span className={`text-[18px] text-[#051C42] ${pathname.includes('claiming') ? 'font-semibold' : 'font-regular'} uppercase`}>Staking/LP</span>
+              <span className={`text-[18px] text-[#051C42] ${pathname.includes('staking') ? 'font-semibold' : 'font-regular'} uppercase`}>Staking/LP</span>
             </Link>
           </div>
           <div className='py-4 border-b border-[#C2C2C2]'>
@@ -94,19 +94,19 @@ export const Header = () => {
             </Link>
           </div>
           <div className='py-4 border-b border-[#C2C2C2]'>
-            <Link to="/swap">
-              <span className={`text-[18px] text-[#051C42] ${pathname.includes('claiming') ? 'font-semibold' : 'font-regular'} uppercase`}>Swap</span>
-            </Link>
+            <a href={ ADD_LIQUIDITY_LINK } target="_blank">
+              <span className={`text-[18px] text-[#051C42] font-regular uppercase`}>Add Liquidity</span>
+            </a>
           </div>
           <div className='py-4 border-b border-[#C2C2C2]'>
             <Link to="/lend">
-              <span className={`text-[18px] text-[#051C42] ${pathname.includes('claiming') ? 'font-semibold' : 'font-regular'} uppercase`}>Lend</span>
+              <span className={`text-[18px] text-[#051C42] ${pathname.includes('lend') ? 'font-semibold' : 'font-regular'} uppercase`}>Lend</span>
             </Link>
           </div>
           {isVestingAdmin && (
             <div className='py-4 border-b border-[#C2C2C2]'>
               <Link to="/admin">
-                <span className={`text-[18px] text-[#051C42] ${pathname.includes('claiming') ? 'font-semibold' : 'font-regular'} uppercase`}>Admin</span>
+                <span className={`text-[18px] text-[#051C42] ${pathname.includes('admin') ? 'font-semibold' : 'font-regular'} uppercase`}>Admin</span>
               </Link>
             </div>)}
           <div className='py-4 border-b border-[#C2C2C2]'>

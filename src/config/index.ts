@@ -59,7 +59,7 @@ export interface WalletInfo {
   mobileOnly?: true
 }
 
-
+export const ADD_LIQUIDITY_LINK = 'https://app.uniswap.org/#/add/v2/ETH/0xb00f1f831261FbeaEE98f5D3EbB22EcC3c7726A5?chain=rinkeby'
 
 const FORMATIC_KEY = process.env.REACT_APP_FORTMATIC_KEY
 

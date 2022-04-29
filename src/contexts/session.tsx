@@ -11,6 +11,9 @@ export interface ISessionContext {
     password: string,
     name: string
   ) => Promise<any>
+  requestResendVerification: (
+    email:string
+  ) => Promise<any>
   requestUserSignout: () => void
   requestUserList: () => any
   requestUpdatePermit: (id: string, permit: number) => any
@@ -102,6 +105,14 @@ export const SessionProvider = ({ children = null as any }) => {
     ).then((res) => res.json())
   }
 
+  const requestResendVerification = (email: string) => {
+    const data = { email }
+    return fetch(
+      process.env.REACT_APP_REST_SERVER + '/resendverification',
+      options('post', data as any)
+    ).then((res) => res.json())
+  }
+
   const requestUserSignout = () => {
     localStorage.setItem('jwtToken', '')
     localStorage.setItem('username', '')
@@ -111,7 +122,7 @@ export const SessionProvider = ({ children = null as any }) => {
 
   return (
     <SessionContext.Provider
-      value={{ getUsername, requestUserSignin, requestUserSignup, requestUserSignout, requestUserList, requestUpdatePermit }}
+      value={{ getUsername, requestUserSignin, requestUserSignup, requestResendVerification, requestUserSignout, requestUserList, requestUpdatePermit }}
     >
       {children}
     </SessionContext.Provider>

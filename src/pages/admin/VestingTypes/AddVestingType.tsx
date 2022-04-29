@@ -186,6 +186,7 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
                   onChange={(_date) => setStartTime(_date as Date)}
                   className={classes.input}
                   disabled={loading}
+                  format="yyyy-MM-dd hh:mm a"
                 />
               </Box>
 
@@ -196,6 +197,7 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
                   onChange={(_date) => setEndTime(_date as Date)}
                   className={classes.input}
                   disabled={loading}
+                  format="yyyy-MM-dd hh:mm a"
                 />
               </Box>
 
