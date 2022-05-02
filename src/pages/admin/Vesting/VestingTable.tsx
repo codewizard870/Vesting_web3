@@ -34,13 +34,33 @@ interface IVestingItem {
   onHistory: (info: Maybe<VestingInfo>) => void
 }
 
+const useStyles = makeStyles((theme) => ({
+  importButton: {
+      margin: '4px',
+      borderRadius: "9999px",        
+      color: "#FFFFFF",       
+      fontFamily: "Gibson",
+      fontWeight: 600,        
+      [theme.breakpoints.down('md')]: {
+          paddingTop: '4px',
+          paddingBottom: '4px',
+          fontSize: "14px"
+      },
+      [theme.breakpoints.up('md')]: {
+          paddingTop: '5px',
+          paddingBottom: '5px',
+          fontSize: "16px"
+      }
+  },
+}))
+
 const VestingItem: React.FC<IVestingItem> = ({
   index,
   info,
   onAdd,
   onHistory,
-}) => {  
-  const { vestingTypes } = useVesting()
+}) => {
+  const { vestingTypes } = useVesting()  
 
   return (
     <TableRow key={info.vestingId}>
@@ -52,7 +72,7 @@ const VestingItem: React.FC<IVestingItem> = ({
         {formatEther(info.claimedAmount, undefined, 3, true)} FLD
       </TableCell>
       <TableCell
-        className='flex items-center gap-4'        
+        className='flex items-center gap-4'
       >
         <PrimaryButtonMD
           width='80px'
@@ -70,9 +90,9 @@ const VestingItem: React.FC<IVestingItem> = ({
   )
 }
 
-export const VestingTable = () => {  
+export const VestingTable = () => {
   const { vestingTypes, vestingList, addUpdateMultiVesting } = useVesting()
-
+  const classes = useStyles()
   const [typeId, setTypeId] = useState(-1)
   const [showHistory, setShowHistory] = useState(false)
   const [isEdit, setEdit] = useState(false)
@@ -132,7 +152,7 @@ export const VestingTable = () => {
       if (d.recipient || d.typeId) {
         const inx = vestingTypes.findIndex(v => v.name.toLowerCase() === d.typeId.toLowerCase())
         if (inx < 0 || !Web3.utils.isAddress(d.recipient)) {
-          if (inx < 0) 
+          if (inx < 0)
             errors.push(`VestingType Name: ${d.typeId}`)
           if (!Web3.utils.isAddress(d.recipient))
             errors.push(`Wallet: ${d.recipient}`)
@@ -140,11 +160,11 @@ export const VestingTable = () => {
           const index = vestingList.findIndex(v => v.typeId === vestingTypes[inx].typeId && v.recipient.toLowerCase() === d.recipient.toLowerCase())
           if (index < 0) {
             if (d.recipient.length > 0)
-            _addVestingList.push({
-              typeId: `${vestingTypes[inx].typeId}`,
-              recipient: d.recipient,
-              amount: d.amount
-            })
+              _addVestingList.push({
+                typeId: `${vestingTypes[inx].typeId}`,
+                recipient: d.recipient,
+                amount: d.amount
+              })
           } else {
             _updateVestingList.push({
               vestingId: `${vestingList[index].vestingId}`,
@@ -159,7 +179,7 @@ export const VestingTable = () => {
     if (errors.length) {
       setErrors(errors)
       console.error('error', errors.join(','))
-      toast.warning("Error: "+errors.join(','))
+      toast.warning("Error: " + errors.join(','))
       return
     }
 
@@ -189,13 +209,13 @@ export const VestingTable = () => {
       onBack={() => setShowHistory(false)}
     />
   ) : (
-    <div className='w-full'>          
+    <div className='w-full'>
       <AddVesting
         isOpen={isOpenAddVesting}
         handleClose={handleCloseAddVesting}
         edit={isEdit}
         info={activeInfo}
-      />     
+      />
       <div className='w-full flex justify-between'>
         <FormControl style={{ width: 200 }}>
           <InputLabel id="vesting-type-label">Vesting Type</InputLabel>
@@ -215,7 +235,7 @@ export const VestingTable = () => {
         </FormControl>
 
         <div className='flex gap-4'>
-          <PrimaryButtonMD         
+          <PrimaryButtonMD
             onClick={() => handleAdd(false, null)}
           >
             Add Client
@@ -224,9 +244,17 @@ export const VestingTable = () => {
             <input accept=".csv" id="file" type="file" hidden
               onChange={handleOnUpload} />
             <label htmlFor="file">
-              <SecondaryButtonMD width='120px' onClick={(e: MouseEvent<HTMLButtonElement>) => {e.stopPropagation()}}>
-                Import
-              </SecondaryButtonMD>
+              <Button
+                variant="outlined"
+                color="secondary"
+                component="span"
+                className={classes.importButton}
+                style={{ width: '120px', border: '2px solid #050025' }}
+                onClick={(e: MouseEvent<HTMLButtonElement>) => {e.stopPropagation()}}
+                disableElevation
+              >
+                <span className={`text-[14px] md:text-[16px] text-[#051C42] font-medium uppercase`}>Import</span>
+              </Button>           
             </label>
           </div>
         </div>

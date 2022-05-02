@@ -63,14 +63,14 @@ export function formatTime(value: number) {
 
 export function parseVestingTypeData(data: string, web3: Web3) {
   const str = data.substring(data.length - (data.length - 2))
-  const arrayData = str.match((/.{1,64}/g))
-  console.log('arrayData', arrayData)
+  const arrayData = str.match((/.{1,64}/g))  
+  
   return {
     startTime: web3.utils.hexToNumber(`0x${arrayData?.[1]}`),
     endTime: web3.utils.hexToNumber(`0x${arrayData?.[2]}`),
     lockupDuration: web3.utils.hexToNumber(`0x${arrayData?.[3]}`),
     maxAmount: web3.utils.hexToNumberString(`0x${arrayData?.[4]}`),
     vestingFrequencyId: web3.utils.hexToNumber(`0x${arrayData?.[5]}`),
-    name: web3.utils.hexToAscii(`0x${arrayData?.[7]}`),
+    name: web3.utils.hexToAscii(`0x${arrayData?.[7]}`).split(web3.utils.hexToAscii(`0x00`))[0],
   }
 }

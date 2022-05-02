@@ -138,7 +138,7 @@ export const WalletProvider = ({ children = null as any }) => {
   const getTokenBalance = async (userAddress: string, tokenAddress: string) => {
     const tokenContract = new web3.eth.Contract(
       ABI.tokenAbi as any,
-      TokenAddress[config.networkId]
+      tokenAddress
     )
 
     try {

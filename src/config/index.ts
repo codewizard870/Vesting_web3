@@ -24,17 +24,17 @@ export const ABI = {
 
 export const TokenAddress: { [chainId in ChainId]?: string } = {
   [ChainId.Mainnet]: "",
-  [ChainId.Rinkeby]: "0xABD420a04F15C687F96B3DBBB200EB06fDcE8de5"
+  [ChainId.Rinkeby]: "0x4Bd1B90C8d7D77b1924cF0e0bFC55548aFCCdF72"
 }
 
 export const VestingAddress: { [chainId in ChainId]?: string } = {
   [ChainId.Mainnet]: "",
-  [ChainId.Rinkeby]: "0x91E526dda1c0116B6A889EA26e206E8C4dF5CD98"
+  [ChainId.Rinkeby]: "0xf8e8304163E94C9629eF7dba90A348aF86f31fE1"
 }
 
 export const StakingAddress: { [chainId in ChainId]?: string } = {
   [ChainId.Mainnet]: "",
-  [ChainId.Rinkeby]: "0x62cA1F093E8E4Be1F303E39b50A56691e6F2fCbf"
+  [ChainId.Rinkeby]: "0x6d93888C2E24B265a6Cde1402D9b41de980Dc7CC"
 }
 
 export const NetworkName: { [chainId in ChainId]?: string } = {
@@ -43,8 +43,8 @@ export const NetworkName: { [chainId in ChainId]?: string } = {
 }
 
 export const ProviderUrl: { [chainId in ChainId]?: string } = {
-  [ChainId.Mainnet]: `https://mainnet.infura.io/v3/${process.env.REACT_APP_ETHERSCAN_API}`,
-  [ChainId.Rinkeby]: `https://rinkeby.infura.io/v3/${process.env.REACT_APP_ETHERSCAN_API}`
+  [ChainId.Mainnet]: `https://mainnet.infura.io/v3/${process.env.REACT_APP_ETH_RPC_KEY}`,
+  [ChainId.Rinkeby]: `https://rinkeby.infura.io/v3/${process.env.REACT_APP_ETH_RPC_KEY}`
 }
 
 export interface WalletInfo {

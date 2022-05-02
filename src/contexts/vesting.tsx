@@ -325,9 +325,6 @@ export const VestingProvider = ({ children = null as any }) => {
 
   const getEvents = async (typeId: number, vestingId: number, address: string) => {
     let addEvents: VestingEvent[] = [], updateEvents: VestingEvent[] = []
-
-    console.log('typeId', typeId)
-    console.log('vestingId', vestingId)
     let typeIdHex = web3.utils.toHex(typeId)
     let vestingIdHex = web3.utils.toHex(vestingId)
     typeIdHex = web3.utils.padLeft(typeIdHex, 64)
@@ -339,7 +336,7 @@ export const VestingProvider = ({ children = null as any }) => {
       let res = await fetch(
         `${process.env.REACT_APP_ETHERSCAN_URL
         }?module=logs&action=getLogs&fromBlock=${10389525}&toBlock=latest&address=${vestingContract.address
-        }&topic0=0x41e2396a6e9c1acf60ed38dcf04ccf13d4de214df6bb8499fe002b4909865212&topic1=${typeIdHex}&topic2=${addressHex}&apikey=${process.env.REACT_APP_ETHERSCAN_API}`
+        }&topic0=0x41e2396a6e9c1acf60ed38dcf04ccf13d4de214df6bb8499fe002b4909865212&topic1=${typeIdHex}&topic2=${addressHex}&apikey=${process.env.REACT_APP_ETHERSCAN_API_KEY}`
       ).then((res) => res.json())
       if (res && res.status === '1') {
         addEvents = res.result.map(
@@ -355,7 +352,7 @@ export const VestingProvider = ({ children = null as any }) => {
       res = await fetch(
         `${process.env.REACT_APP_ETHERSCAN_URL
         }?module=logs&action=getLogs&fromBlock=${10389525}&toBlock=latest&address=${vestingContract.address
-        }&topic0=0x165c12094c1f9f8266d89897df9a046ab1a4718d06238f3952ec1f367336851a&topic1=${vestingIdHex}&topic2=${addressHex}&apikey=${process.env.REACT_APP_ETHERSCAN_API}`
+        }&topic0=0x165c12094c1f9f8266d89897df9a046ab1a4718d06238f3952ec1f367336851a&topic1=${vestingIdHex}&topic2=${addressHex}&apikey=${process.env.REACT_APP_ETHERSCAN_API_KEY}`
       ).then((res) => res.json())
       if (res && res.status === '1') {
         updateEvents = res.result.map(
@@ -380,13 +377,12 @@ export const VestingProvider = ({ children = null as any }) => {
 
     let typeIdHex = web3.utils.toHex(typeId)
     typeIdHex = web3.utils.padLeft(typeIdHex, 64)
-
     try {
       // add vesting types
       let res = await fetch(
         `${process.env.REACT_APP_ETHERSCAN_URL
         }?module=logs&action=getLogs&fromBlock=${10389525}&toBlock=latest&address=${vestingContract.address
-        }&topic0=0xaf27d723038cb53553cb7f48a969ed95217fa6f4fdddc612c06792fb0ea9f0ce&topic1=${typeIdHex}&apikey=${process.env.REACT_APP_ETHERSCAN_API}`
+        }&topic0=0xaf27d723038cb53553cb7f48a969ed95217fa6f4fdddc612c06792fb0ea9f0ce&topic1=${typeIdHex}&apikey=${process.env.REACT_APP_ETHERSCAN_API_KEY}`
       ).then((res) => res.json())
       if (res && res.status === '1') {
         addEvents = res.result.map(
@@ -403,7 +399,7 @@ export const VestingProvider = ({ children = null as any }) => {
       res = await fetch(
         `${process.env.REACT_APP_ETHERSCAN_URL
         }?module=logs&action=getLogs&fromBlock=${10389525}&toBlock=latest&address=${vestingContract.address
-        }&topic0=0xaf870d609b13b8b808d0daa3d7141d2df9ff51d246b451cd03ecb6cca53df89d&topic1=${typeIdHex}&apikey=${process.env.REACT_APP_ETHERSCAN_API}`
+        }&topic0=0xaf870d609b13b8b808d0daa3d7141d2df9ff51d246b451cd03ecb6cca53df89d&topic1=${typeIdHex}&apikey=${process.env.REACT_APP_ETHERSCAN_API_KEY}`
       ).then((res) => res.json())
       if (res && res.status === '1') {
         console.log('updateevents', res)

@@ -57,7 +57,7 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
   }
 
   const updateTokenBalance = async () => {
-    if (account) {
+    if (account) {      
       const res = await getTokenBalance(account, poolInfo.stakeToken)
       setTokenBalance(res)
     } else {
@@ -179,7 +179,7 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
             <SecondaryButton
               onClick={handleHarvest}
               width='220px'
-              disabled={loading || rewards.length > 0 && rewards[pid].gte(0)}
+              disabled={loading || rewards.length > 0 && rewards[pid].lte(0)}
             >
               Harvest
             </SecondaryButton>

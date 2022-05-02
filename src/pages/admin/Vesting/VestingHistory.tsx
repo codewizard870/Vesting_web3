@@ -52,7 +52,7 @@ export const VestingHistory: React.FC<IVestingHistory> = ({
 
   useEffect(() => {
     const updateEventList = async () => {
-      const res = await getEvents(typeId, vestingId, address)
+      const res = await getEvents(typeId, vestingId, address)      
       setEventList(res)
     }
 
