@@ -152,7 +152,7 @@ export const StakingProvider = ({ children = null as any }) => {
 
     try {
       await stakingContract.contract.methods
-        .deposit(pid, 10)
+        .deposit(pid, parseEther(amount.toString()))
         .send({ from: account })
 
       updatePoolList()
