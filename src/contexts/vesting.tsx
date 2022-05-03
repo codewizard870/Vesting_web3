@@ -304,7 +304,7 @@ export const VestingProvider = ({ children = null as any }) => {
     return false
   }
 
-  const addUpdateMultiVesting = async(
+  const addUpdateMultiVesting = async (
     _addVestingList: IWalletList[],
     _updateVestingList: IUpdateVestingList[]
   ) => {

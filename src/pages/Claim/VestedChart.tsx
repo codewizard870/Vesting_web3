@@ -31,7 +31,8 @@ const options = {
     },
     plotOptions: {
         series: {
-            showInLegend: false
+            showInLegend: false,
+            turboThreshold: 0
         },
         area: {
             lineWidth: 4,
