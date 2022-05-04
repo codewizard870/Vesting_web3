@@ -43,26 +43,16 @@ interface IStakingPool {
 export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
   const classes = useStyles()
   const { getUserInfo, rewards, deposit, withdraw, claim } = useStaking()
-  const { getTokenBalance, account } = useWallet()
+  const { updateTokenBalance, tokenBalance, account } = useWallet()
   const stakeToken = pid === 0 ? 'FLD-ETH' : 'FLD'
 
   const [userInfo, setUserInfo] = useState<Maybe<UserInfo>>(null)
-  const [value, setValue] = useState('')
-  const [tokenBalance, setTokenBalance] = useState<BigNumber>(BigNumber.from(0))
+  const [value, setValue] = useState('')  
   const [loading, setLoading] = useState(false)
 
   const updateUserInfo = async () => {
     const res = await getUserInfo(pid)
     setUserInfo(res)
-  }
-
-  const updateTokenBalance = async () => {
-    if (account) {      
-      const res = await getTokenBalance(account, poolInfo.stakeToken)
-      setTokenBalance(res)
-    } else {
-      setTokenBalance(BigNumber.from(0))
-    }
   }
 
   useEffect(() => {
@@ -76,6 +66,7 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
     e.preventDefault()
     setLoading(true)
     const res = await deposit(pid, Number(value))
+    updateTokenBalance()
     if (res) {
       setValue('')
     }
@@ -86,6 +77,7 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
     e.preventDefault()
     setLoading(true)
     const res = await withdraw(pid, Number(value))
+    updateTokenBalance()
     if (res) {
       setValue('')
     }
@@ -96,6 +88,7 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
     e.preventDefault()
     setLoading(true)
     await claim(pid)
+    updateTokenBalance()
     setLoading(false)
   }
 

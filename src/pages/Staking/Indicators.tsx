@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import { useSession } from 'contexts'
-import { useHistory } from 'react-router-dom'
-
+import { BigNumber } from 'ethers'
+import { formatEther, parseEther } from 'utils'
+import { useWallet } from 'contexts'
 
 export const Indicators = () => {
+    const { tokenBalance, account } = useWallet()
 
     return (
         <div className="w-full flex flex-col px-6 md:px-0 items-center">
@@ -54,7 +55,7 @@ export const Indicators = () => {
                     <div className="flex-1 rounded-[24px] bg-white basis-1/2 w-full shadow-xl">
                         <div className='h-[124px] flex justify-center items-center w-full '>
                             <span className='text-[#0A208F] text-[34px] font-medium'>
-                                {'---'}
+                                {account?formatEther(tokenBalance || BigNumber.from(0), undefined, 1, true)+" FLD":'---'}
                             </span>
                         </div>
                         <div className='h-[86px] flex justify-center items-center rounded-b-[24px] bg-gradient-to-r from-[#F3E8FF] to-[#7AFBFD] w-full'>

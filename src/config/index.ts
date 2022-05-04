@@ -12,6 +12,11 @@ export enum ChainId {
   Rinkeby = 4
 }
 
+export const uniChainName: { [chainId in ChainId]?:string} = {
+  [ChainId.Mainnet]: "mainnet",
+  [ChainId.Rinkeby]: "rinkeby"
+}
+
 export const config = {
   networkId: ChainId.Rinkeby
 }
@@ -59,7 +64,7 @@ export interface WalletInfo {
   mobileOnly?: true
 }
 
-export const ADD_LIQUIDITY_LINK = 'https://app.uniswap.org/#/add/v2/ETH/0xb00f1f831261FbeaEE98f5D3EbB22EcC3c7726A5?chain=rinkeby'
+export const ADD_LIQUIDITY_LINK = `https://app.uniswap.org/#/add/v2/ETH/${TokenAddress[config.networkId]}?chain=${uniChainName[config.networkId]}`
 
 const FORMATIC_KEY = process.env.REACT_APP_FORTMATIC_KEY
 
