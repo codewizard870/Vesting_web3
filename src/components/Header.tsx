@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState } from 'react'
 import { useSession, useVesting, useWallet } from 'contexts'
-import { checkAuthentication, getShortWalletAddress } from 'utils'
+import { checkAuthentication, getUserName, getShortWalletAddress } from 'utils'
 import { Link } from 'react-router-dom'
 import Avatar from '@material-ui/core/Avatar'
 import { PrimaryButton } from 'components/PrimaryButton'
@@ -13,7 +13,7 @@ export const Header = () => {
   const history = useHistory()
   const location = useLocation()
   const { connected, account, connect, disconnect } = useWallet()
-  const { getUsername, requestUserSignout } = useSession()
+  const { requestUserSignout } = useSession()
   const { isVestingAdmin } = useVesting()
   const [isOpen, setIsOpen] = useState(false)
   const [pathname, setPathname] = useState(location.pathname)
@@ -74,7 +74,7 @@ export const Header = () => {
               <div className='flex flex-col'>
                 <div className='text-[#303030] text-[26px] font-bold'>
                   {checkAuthentication() && (
-                    <>{getUsername()}</>
+                    <>{getUserName()}</>
                   )}
                 </div>
                 <div className='text-[#303030] text-[16px] font-regular'>
@@ -156,7 +156,7 @@ export const Header = () => {
                 <div className='flex flex-col'>
                   <div className='text-[#303030] text-[26px] font-bold'>
                     {checkAuthentication() && (
-                      <>{getUsername()}</>
+                      <>{getUserName()}</>
                     )}
                   </div>
                   <div className='text-[#303030] text-[16px] font-regular'>

@@ -1,10 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext } from 'react'
-import { checkAuthentication } from 'utils'
-import { useWallet } from './wallets'
+import { getUserToken } from 'utils'
 
 export interface ISessionContext {
-  getUsername: () => Maybe<string>
   requestUserSignin: (email: string, password: string) => Promise<any>
   requestUserSignup: (
     email: string,
@@ -12,7 +10,7 @@ export interface ISessionContext {
     name: string
   ) => Promise<any>
   requestResendVerification: (
-    email:string
+    email: string
   ) => Promise<any>
   requestUserSignout: () => void
   requestUserList: () => any
@@ -23,28 +21,31 @@ const SessionContext = React.createContext<Maybe<ISessionContext>>(null)
 
 export const SessionProvider = ({ children = null as any }) => {
 
-  const options = (method = 'get', data = 'null') => {
+  const options = (method = 'get', data = {}) => {
     return {
       headers: {
         'Content-Type': 'application/json',
       },
       method: method,
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     }
   }
 
-  const getUsername = () => {
-    return checkAuthentication() ? localStorage.getItem('username') : ''
-  }
-
-  const getUserToken = () => {
-    return checkAuthentication() ? localStorage.getItem('jwtToken') : ''
+  const optionsAuthorized = (method = 'get', data = {}) => {
+    return {
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + getUserToken()
+      }),
+      method: method,
+      body: JSON.stringify(data)
+    }
   }
 
   const requestUserSignin = (email: string, password: string) => {
     const data = { email, password }
     return fetch(
-      process.env.REACT_APP_REST_SERVER + '/signin',
+      process.env.REACT_APP_REST_SERVER + '/auth/signin',
       options('post', data as any)
     )
       .then((res) => res.json())
@@ -59,48 +60,25 @@ export const SessionProvider = ({ children = null as any }) => {
   }
 
   const requestUserList = () => {
-    const requestOptions = {
-      method: 'post',
-      headers: new Headers({
-        'Authorization': 'Bearer ' + getUserToken()
-      })
-    }
+
     return fetch(
-      process.env.REACT_APP_REST_SERVER + '/userlist', requestOptions
+      process.env.REACT_APP_REST_SERVER + '/auth/userlist', optionsAuthorized('post')
     )
       .then((res) => res.json())
-      .then((res) => {
-        return res
-      })
   }
 
   const requestUpdatePermit = (id: string, permit: number) => {
-    const data = { id, permit }
-    const requestOptions = {
-      method: 'post',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + getUserToken()
-      }),
-      body: JSON.stringify(data)
-    }
+    const data = { id, permit }    
     return fetch(
-      process.env.REACT_APP_REST_SERVER + '/updatepermit',
-      requestOptions
+      process.env.REACT_APP_REST_SERVER + '/auth/updatepermit',
+      optionsAuthorized('post', data)
     ).then((res) => res.json())
-      .then((res) => {
-        return { status: true, msg: '' }
-      })
-      .catch(error => {
-        return { status: false, msg: error.message }
-      })
   }
-
 
   const requestUserSignup = (email: string, password: string, name: string) => {
     const data = { email, password, name }
     return fetch(
-      process.env.REACT_APP_REST_SERVER + '/signup',
+      process.env.REACT_APP_REST_SERVER + '/auth/signup',
       options('post', data as any)
     ).then((res) => res.json())
   }
@@ -108,7 +86,7 @@ export const SessionProvider = ({ children = null as any }) => {
   const requestResendVerification = (email: string) => {
     const data = { email }
     return fetch(
-      process.env.REACT_APP_REST_SERVER + '/resendverification',
+      process.env.REACT_APP_REST_SERVER + '/auth/resendverification',
       options('post', data as any)
     ).then((res) => res.json())
   }
@@ -122,7 +100,7 @@ export const SessionProvider = ({ children = null as any }) => {
 
   return (
     <SessionContext.Provider
-      value={{ getUsername, requestUserSignin, requestUserSignup, requestResendVerification, requestUserSignout, requestUserList, requestUpdatePermit }}
+      value={{ requestUserSignin, requestUserSignup, requestResendVerification, requestUserSignout, requestUserList, requestUpdatePermit }}
     >
       {children}
     </SessionContext.Provider>

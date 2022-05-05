@@ -2,10 +2,7 @@
 import React, { MouseEvent, ChangeEvent, useEffect, useState } from 'react'
 import Web3 from 'web3'
 import {
-  Box,
   Button,
-  Card,
-  Grid,
   FormControl,
   InputLabel,
   makeStyles,
@@ -64,15 +61,16 @@ const VestingItem: React.FC<IVestingItem> = ({
 
   return (
     <TableRow key={info.vestingId}>
-      <TableCell>{(index + 1)}</TableCell>
-      <TableCell>{vestingTypes[info.typeId].name}</TableCell>
-      <TableCell className='break-words'>{getShortWalletAddress(info.recipient)}</TableCell>
-      <TableCell>{formatEther(info.amount, undefined, 3, true)} FLD</TableCell>
-      <TableCell>
+      <TableCell style={{textAlign: 'right'}}>{(index + 1)}</TableCell>
+      <TableCell style={{textAlign: 'center'}}>{vestingTypes[info.typeId].name}</TableCell>
+      <TableCell className='break-words' style={{textAlign: 'center'}}>{getShortWalletAddress(info.recipient)}</TableCell>
+      <TableCell style={{textAlign: 'center'}}>{formatEther(info.amount, undefined, 3, true)} FLD</TableCell>
+      <TableCell style={{textAlign: 'center'}}>
         {formatEther(info.claimedAmount, undefined, 3, true)} FLD
       </TableCell>
       <TableCell
         className='flex items-center gap-4'
+        style={{textAlign: 'center'}}
       >
         <PrimaryButtonMD
           width='80px'
@@ -263,22 +261,22 @@ export const VestingTable = () => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>
+            <TableCell style={{textAlign: 'right'}}>
               <b>No</b>
             </TableCell>
-            <TableCell>
+            <TableCell style={{textAlign: 'center'}}>
               <b>Type</b>
             </TableCell>
-            <TableCell>
+            <TableCell style={{textAlign: 'center'}}>
               <b>User Wallet</b>
             </TableCell>
-            <TableCell>
+            <TableCell style={{textAlign: 'center'}}>
               <b>Total</b>
             </TableCell>
-            <TableCell>
+            <TableCell style={{textAlign: 'center'}}>
               <b>Claimed</b>
             </TableCell>
-            <TableCell>
+            <TableCell style={{textAlign: 'center'}}>
               <b>Actions</b>
             </TableCell>
           </TableRow>

@@ -42,6 +42,14 @@ export const checkAuthentication = () => {
   }
 }
 
+export const getUserName = () => {
+  return checkAuthentication() ? localStorage.getItem('username') : ''
+}
+
+export const getUserToken = () => {
+  return checkAuthentication() ? localStorage.getItem('jwtToken') : ''
+}
+
 export function formatTime(value: number) {
   const mins = Math.round(value / 60)
   const hours = Math.round(mins / 60)

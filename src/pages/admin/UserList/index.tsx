@@ -47,12 +47,12 @@ const UserInfo: React.FC<IUserInfo> = ({
         try {
             setSendingPermit(true)
             const res = await requestUpdatePermit(id, permit)
-            if (res.status) {
+            if (!res.errors) {
                 setChecked(!event.target.checked)
                 toast.success(permit === 1 ? "Approve!" : "Unapprove!")
             } else {
                 setChecked(event.target.checked)
-                toast.error(res.msg)
+                toast.error(res.errors.message)
             }
             setSendingPermit(false)
         } catch (err) {
@@ -66,11 +66,11 @@ const UserInfo: React.FC<IUserInfo> = ({
 
     return (
         <TableRow key={info.vestingId}>
-            <TableCell>{(index + 1)}</TableCell>
-            <TableCell>{info.name}</TableCell>
-            <TableCell>{info.email}</TableCell>
-            <TableCell>{info.createdAt}</TableCell>
-            <TableCell className='flex justify-center items-center'>
+            <TableCell style={{textAlign: 'right'}}>{(index + 1)}</TableCell>
+            <TableCell style={{textAlign: 'center'}}>{info.name}</TableCell>
+            <TableCell style={{textAlign: 'center'}}>{info.email}</TableCell>
+            <TableCell style={{textAlign: 'center'}}>{info.createdAt}</TableCell>
+            <TableCell className='flex justify-center items-center' style={{textAlign: 'center'}}>
                 <FormControlLabel
                     control={
                         <Checkbox
@@ -102,7 +102,7 @@ export const UserList = () => {
             setIsLoading(true)
             try {
                 const res = await requestUserList()
-                if (res) {
+                if (!res.errors) {
                     setUserList(res.userlist)
                 } else {
                     setUserList([])
@@ -138,16 +138,16 @@ export const UserList = () => {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>
+                            <TableCell style={{textAlign: 'right'}}>
                                 <b>No</b>
                             </TableCell>
-                            <TableCell>
+                            <TableCell style={{textAlign: 'center'}}>
                                 <b>Name</b>
                             </TableCell>
-                            <TableCell>
+                            <TableCell style={{textAlign: 'center'}}>
                                 <b>Email</b>
                             </TableCell>
-                            <TableCell>
+                            <TableCell style={{textAlign: 'center'}}>
                                 <b>CreatedAt</b>
                             </TableCell>
                             <TableCell style={{ textAlign: 'center' }}>
