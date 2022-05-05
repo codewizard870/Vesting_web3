@@ -43,8 +43,7 @@ interface IStakingPool {
 export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
   const { getUserInfo, rewards, deposit, withdraw, claim } = useStaking()
   const { getTokenBalance, account, updateTokenBalance } = useWallet()
-  const stakeToken = pid === 0 ? 'FLD-ETH' : 'FLD'
-
+  const stakeToken = pid === 0 ? 'FLD-ETH' : 'FLD'  
   const [userInfo, setUserInfo] = useState<Maybe<UserInfo>>(null)
   const [value, setValue] = useState('')
   const [tokenBalance, setTokenBalance] = useState<BigNumber>(BigNumber.from(0))
@@ -118,14 +117,14 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
             variant="outlined"
             type="number"
             value={value}
-            onChange={(e) => setValue(e.target.value !== '' ? Number(e.target.value).toString() : '')}
+            onChange={(e) => setValue(e.target.value !== '' ? Number(e.target.value)>0?Number(e.target.value).toString():e.target.value : '')}
             disabled={loading}
             style={{ width: '100%' }}
             margin="dense"
             inputProps={{ style: { fontSize: 42, color: '#3F3F3F', textAlign: 'center' } }} // font size of input text            
             InputLabelProps={{ style: { fontSize: 42, color: '#3F3F3F', textAlign: 'center' } }}
             onInput={(e: any) => {
-              // e.target.value = Math.max(0, Number(e.target.value)).toString().slice(0, 12)
+              // e.target.value = Math.max(0, Number(e.target.value)).toString().slice(0, 12)                            
               if (Number(e.target.value) < 0) e.target.value = -Number(e.target.value)
             }}
           />

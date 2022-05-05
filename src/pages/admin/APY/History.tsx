@@ -12,52 +12,50 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core'
-import { useVesting } from 'contexts'
+import { useApy } from 'contexts'
 import { VestingEvent } from 'types'
 import { formatEther } from 'utils'
 import { SecondaryButtonMD } from 'components/SecondaryButtonMD'
 
 interface IHistoryItem {
-  event: VestingEvent
+  info: any
 }
 
-const HistoryItem: React.FC<IHistoryItem> = ({ event }) => {
-  const { eventTopics } = useVesting()
-
+const HistoryItem: React.FC<IHistoryItem> = ({ info }) => {
+  
   return (
     <TableRow>
-      <TableCell style={{textAlign: 'center'}}>{eventTopics[event.topic] || 'Undefined'}</TableCell>
-      <TableCell style={{textAlign: 'center'}}>{formatEther(BigNumber.from(event.amount), undefined, 3, true)}</TableCell>
-      <TableCell style={{textAlign: 'center'}}>{new Date(event.timestamp * 1000).toLocaleString()}</TableCell>
+      <TableCell style={{textAlign: 'center'}}>{info.apy.pool}</TableCell>
+      <TableCell style={{textAlign: 'center'}}>{info.apyAfter}</TableCell>
+      <TableCell style={{textAlign: 'center'}}>{info.updatedAt}</TableCell>
+      <TableCell style={{textAlign: 'center'}}>{info.updatedBy.name}</TableCell>
     </TableRow>
   )
 }
 
-interface IVestingHistory {
-  typeId: number
-  vestingId: number
-  address: string
+interface IApyHistory {
+  id: string
   onBack: () => void
 }
 
-export const VestingHistory: React.FC<IVestingHistory> = ({
-  typeId,
-  vestingId,
-  address,
+export const ApyHistory: React.FC<IApyHistory> = ({
+  id,
   onBack,
 }) => {
-  const { getEvents } = useVesting()
-
-  const [eventList, setEventList] = useState<VestingEvent[]>([])
-
+  const [apyLogs, setApyLogs] = useState<any[]>([])
+  const { requestUpdateLogs } = useApy()
   useEffect(() => {
-    const updateEventList = async () => {
-      const res = await getEvents(typeId, vestingId, address)      
-      setEventList(res)
-    }
-
-    updateEventList()
-  }, [typeId, vestingId, address])
+    
+        const fetch = async () => {                
+            try {                    
+                const res = await requestUpdateLogs(id)      
+                setApyLogs(res.logs)                             
+            } catch (err) {                    
+                console.log(err)
+            }
+        }
+        fetch()
+}, [])
 
   return (
     <div className='w-full'>
@@ -76,20 +74,23 @@ export const VestingHistory: React.FC<IVestingHistory> = ({
         <TableHead>
           <TableRow>
             <TableCell style={{textAlign: 'center'}}>
-              <b>Action</b>
+              <b>Pool</b>
             </TableCell>
             <TableCell style={{textAlign: 'center'}}>
-              <b>Amount</b>
+              <b>APY</b>
+            </TableCell>          
+            <TableCell style={{textAlign: 'center'}}>
+              <b>Updated At</b>
             </TableCell>
             <TableCell style={{textAlign: 'center'}}>
-              <b>Time</b>
+              <b>Updated By</b>
             </TableCell>
           </TableRow>
         </TableHead>
 
         <TableBody>
-          {eventList.map((event, index) => (
-            <HistoryItem event={event} key={index} />
+          {apyLogs.map((item, index) => (
+            <HistoryItem info={item} key={index} />
           ))}
         </TableBody>
       </Table>

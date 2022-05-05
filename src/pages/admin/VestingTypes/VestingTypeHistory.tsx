@@ -26,14 +26,14 @@ const HistoryItem: React.FC<IHistoryItem> = ({ event }) => {
 
   return (
     <TableRow>
-      <TableCell>{eventTopics[event.topic] || 'Undefined'}</TableCell>
-      <TableCell>{event.data.name}</TableCell>
-      <TableCell>{new Date(event.data.startTime * 1000).toLocaleString()}</TableCell>
-      <TableCell>{new Date(event.data.endTime * 1000).toLocaleString()}</TableCell>
-      <TableCell>{formatTime(event.data.lockupDuration)}</TableCell>
-      <TableCell>{VF_LIST[event.data.vestingFrequencyId].label}</TableCell>
-      <TableCell>{formatEther(BigNumber.from(event.data.maxAmount), undefined, 3, true)}</TableCell>
-      <TableCell>{new Date(event.timestamp * 1000).toLocaleString()}</TableCell>
+      <TableCell style={{textAlign: 'center'}}>{eventTopics[event.topic] || 'Undefined'}</TableCell>
+      <TableCell style={{textAlign: 'center'}}>{event.data.name}</TableCell>
+      <TableCell style={{textAlign: 'center'}}>{new Date(event.data.startTime * 1000).toLocaleString()}</TableCell>
+      <TableCell style={{textAlign: 'center'}}>{new Date(event.data.endTime * 1000).toLocaleString()}</TableCell>
+      <TableCell style={{textAlign: 'center'}}>{formatTime(event.data.lockupDuration)}</TableCell>
+      <TableCell style={{textAlign: 'center'}}>{VF_LIST[event.data.vestingFrequencyId].label}</TableCell>
+      <TableCell style={{textAlign: 'center'}}>{formatEther(BigNumber.from(event.data.maxAmount), undefined, 3, true)}</TableCell>
+      <TableCell style={{textAlign: 'center'}}>{new Date(event.timestamp * 1000).toLocaleString()}</TableCell>
     </TableRow>
   )
 }
@@ -76,28 +76,28 @@ export const VestingTypeHistory: React.FC<IVestingTypeHistory> = ({
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>
+            <TableCell style={{textAlign: 'center'}}>
               <b>Action</b>
             </TableCell>
-            <TableCell>
+            <TableCell style={{textAlign: 'center'}}>
               <b>Name</b>
             </TableCell>
-            <TableCell>
+            <TableCell style={{textAlign: 'center'}}>
               <b>Start Time</b>
             </TableCell>
-            <TableCell>
+            <TableCell style={{textAlign: 'center'}}>
               <b>End Time</b>
             </TableCell>
-            <TableCell>
+            <TableCell style={{textAlign: 'center'}}>
               <b>Lockup Period</b>
             </TableCell>
-            <TableCell>
+            <TableCell style={{textAlign: 'center'}}>
               <b>Vesting Frequency</b>
             </TableCell>
-            <TableCell>
+            <TableCell style={{textAlign: 'center'}}>
               <b>Total</b>
             </TableCell>
-            <TableCell>
+            <TableCell style={{textAlign: 'center'}}>
               <b>Time</b>
             </TableCell>
           </TableRow>

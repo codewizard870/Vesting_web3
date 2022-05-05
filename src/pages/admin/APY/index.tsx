@@ -13,7 +13,7 @@ import { useApy, useSession } from 'contexts'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { PrimaryButtonMD } from 'components/PrimaryButtonMD'
 import { SecondaryButtonMD } from 'components/SecondaryButtonMD'
-import { getUserToken } from 'utils'
+import { ApyHistory } from './History'
 
 interface IApyInfo {
     index: number
@@ -66,14 +66,14 @@ const ApyInfo: React.FC<IApyInfo> = ({
                             variant="outlined"
                             type="number"
                             value={value}
-                            onChange={(e) => setValue(e.target.value !== '' ? Number(e.target.value).toString() : '')}
+                            onChange={(e) => setValue(e.target.value !== '' ? Number(e.target.value) > 0 ? Number(e.target.value).toString() : e.target.value : '')}
                             disabled={isSaving}
                             style={{ width: '120px' }}
                             margin="dense"
                             inputProps={{ style: { fontSize: 24, color: '#3F3F3F', textAlign: 'center' } }} // font size of input text            
                             InputLabelProps={{ style: { fontSize: 24, color: '#3F3F3F', textAlign: 'center' } }}
                             onInput={(e: any) => {
-                                // e.target.value = Math.max(0, Number(e.target.value)).toString().slice(0, 12)
+                                // e.target.value = Math.max(0, Number(e.target.value)).toString().slice(0, 12)                            
                                 if (Number(e.target.value) < 0) e.target.value = -Number(e.target.value)
                             }}
                         />
@@ -124,69 +124,63 @@ export const APY_Edit = () => {
     const [editApyId, setEditApyId] = useState('')
     const [showHistory, setShowHistory] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
-    const [isSaving, setIsSaving] = useState(false)
 
     const handleHistory = (id: string) => {
         setEditApyId(id)
         setShowHistory(true)
     }
 
-    useEffect(() => {
-        if (apyList) {
-            const fetch = async () => {                
-                try {                    
-                    const res = await requestUpdateLogs(apyList[0].id)
-                    console.log(res)                    
-                } catch (err) {                    
-                    console.log(err)
-                }
-            }
-            fetch()
-        }
-    }, [apyList])
-
     return (
         <div className="w-full flex justify-center py-8 md:px-6 lg:px-8 xl:px-16 2xl:px-[124px]">
             <div className='w-full max-w-[1620px] flex flex-col items-center gap-4 rounded-[20px] bg-white shadow-xl py-8 px-6'>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell style={{ textAlign: 'right' }}>
-                                <b>No</b>
-                            </TableCell>
-                            <TableCell style={{ textAlign: 'center' }}>
-                                <b>Pool</b>
-                            </TableCell>
-                            <TableCell style={{ textAlign: 'center' }}>
-                                <b>APY (%)</b>
-                            </TableCell>
-                            <TableCell style={{ textAlign: 'center' }}>
-                                <b>UpdatedAt</b>
-                            </TableCell>
-                            <TableCell style={{ textAlign: 'center' }}>
-                                <b>Actions</b>
-                            </TableCell>
-                        </TableRow>
-                    </TableHead>
-                    {!isLoading &&
-                        <TableBody>
-                            {apyList && apyList
-                                .map((info, index) => (
-                                    <ApyInfo
-                                        index={index}
-                                        info={info}
-                                        key={index}
-                                        handleHistory={() => handleHistory(info._id)}
-                                    />
-                                ))}
-                        </TableBody>
-                    }
-                </Table>
-                {isLoading &&
-                    <div className='m-5 w-full flex justify-center items-center'>
-                        <CircularProgress />
-                    </div>
-                }
+                {showHistory ? (
+                    <ApyHistory
+                        id={editApyId || ''}
+                        onBack={() => setShowHistory(false)}
+                    />
+                ) : (
+                    <>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell style={{ textAlign: 'right' }}>
+                                        <b>No</b>
+                                    </TableCell>
+                                    <TableCell style={{ textAlign: 'center' }}>
+                                        <b>Pool</b>
+                                    </TableCell>
+                                    <TableCell style={{ textAlign: 'center' }}>
+                                        <b>APY (%)</b>
+                                    </TableCell>
+                                    <TableCell style={{ textAlign: 'center' }}>
+                                        <b>UpdatedAt</b>
+                                    </TableCell>
+                                    <TableCell style={{ textAlign: 'center' }}>
+                                        <b>Actions</b>
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            {!isLoading &&
+                                <TableBody>
+                                    {apyList && apyList
+                                        .map((info, index) => (
+                                            <ApyInfo
+                                                index={index}
+                                                info={info}
+                                                key={index}
+                                                handleHistory={() => handleHistory(info._id)}
+                                            />
+                                        ))}
+                                </TableBody>
+                            }
+                        </Table>
+                        {isLoading &&
+                            <div className='m-5 w-full flex justify-center items-center'>
+                                <CircularProgress />
+                            </div>
+                        }
+                    </>
+                )}
             </div>
         </div>
     )
