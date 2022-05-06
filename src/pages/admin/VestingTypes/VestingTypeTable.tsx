@@ -10,7 +10,7 @@ import {
 import { useVesting } from 'contexts'
 import { useHistory } from 'react-router-dom'
 import { VestingType, VF_LIST } from 'types'
-import { formatTime, formatEther } from 'utils'
+import { formatTime, formatEther, getShortDateTimeWithoutSeconds } from 'utils'
 import { AddVestingType } from './AddVestingType'
 import { VestingTypeHistory } from './VestingTypeHistory'
 import { PrimaryButtonMD } from 'components/PrimaryButtonMD'
@@ -24,20 +24,14 @@ interface ITypeItem {
 }
 
 const TypeItem: React.FC<ITypeItem> = ({ index, info, handleEdit, handleHistory }) => {
-  const history = useHistory()
-
-  const getFormatedDateTime = (d: Date):string => {
-    // return d.toLocaleString('en-US',{ year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
-    let res:string=d.toISOString().slice(0, 16)
-    return res.split('T')[0]+'  '+res.split('T')[1]
-  }
+  const history = useHistory()  
 
   return (
     <TableRow key={info.typeId}>
       <TableCell style={{textAlign: 'right'}}>{(index + 1)}</TableCell>
       <TableCell style={{textAlign: 'center'}}>{info.name}</TableCell>
-      <TableCell style={{textAlign: 'center'}}>{getFormatedDateTime(new Date(info.startTime * 1000))}</TableCell>
-      <TableCell style={{textAlign: 'center'}}>{getFormatedDateTime(new Date(info.endTime * 1000))}</TableCell>
+      <TableCell style={{textAlign: 'center'}}>{getShortDateTimeWithoutSeconds(new Date(info.startTime * 1000))}</TableCell>
+      <TableCell style={{textAlign: 'center'}}>{getShortDateTimeWithoutSeconds(new Date(info.endTime * 1000))}</TableCell>
       <TableCell style={{textAlign: 'center'}}>{formatTime(info.lockupDuration)}</TableCell>
       <TableCell style={{textAlign: 'center'}}>{VF_LIST[info.vestingFrequencyId].label}</TableCell>
       <TableCell style={{textAlign: 'center'}}>{formatEther(info.maxAmount, undefined, 3, true)} FLD</TableCell>

@@ -92,11 +92,14 @@ export const StakingProvider = ({ children = null as any }) => {
   }
 
   const updatePendingRewards = async () => {
-    const res = await Promise.all(
-      poolList.map((_, pid) => getPendingRewards(pid))
-    )
-    setRewards(res)
-
+    try {
+      const res = await Promise.all(
+        poolList.map((_, pid) => getPendingRewards(pid))
+      )
+      setRewards(res)
+    } catch (e) {
+      console.error('update pending rewards error:', e)
+    }
     if (rewardTimer.current) {
       clearTimeout(rewardTimer.current)
     }

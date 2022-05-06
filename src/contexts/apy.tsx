@@ -27,15 +27,19 @@ export const ApyProvider = ({ children = null as any }) => {
     }
 
     const updateApyList = async () => {
-        await fetch(
-            process.env.REACT_APP_REST_SERVER + '/apy/apylist', optionsAuthorized('post', )
-        )
-            .then((res) => res.json())
-            .then((res) => {
-                if (!res.errors){
-                    setApyList(res.apylist)
-                }
-            })
+        try {
+            await fetch(
+                process.env.REACT_APP_REST_SERVER + '/apy/apylist', optionsAuthorized('post',)
+            )
+                .then((res) => res.json())
+                .then((res) => {
+                    if (!res.errors) {
+                        setApyList(res.apylist)
+                    }
+                })
+        } catch (err) {
+            console.error(err)            
+        }
     }
 
     useEffect(() => {

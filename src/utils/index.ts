@@ -50,6 +50,12 @@ export const getUserToken = () => {
   return checkAuthentication() ? localStorage.getItem('jwtToken') : ''
 }
 
+export const getShortDateTimeWithoutSeconds = (d: Date):string => {
+  // return d.toLocaleString('en-US',{ year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+  let res:string=d.toISOString().slice(0, 16)
+  return res.split('T')[0]+'  '+res.split('T')[1]
+}
+
 export function formatTime(value: number) {
   const mins = Math.round(value / 60)
   const hours = Math.round(mins / 60)

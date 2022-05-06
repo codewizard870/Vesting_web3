@@ -37,7 +37,7 @@ export const WalletModal = ({ isOpen, /* selectConnector,*/ handleClose }: IWall
                     <div className='px-8 md:px-10 pt-8 md:pt-10'>
                         <div className='flex justify-between gap-6 md:gap-10'>
                             <div className='text-[24px] font-semibold text-[#474747]'>Connect a Wallet</div>
-                            <div className='cursor-pointer' onClick={handleClose}>
+                            <div className='cursor-pointer hidden md:block' onClick={handleClose}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="19.473" height="19.473" viewBox="0 0 19.473 19.473">
                                     <g id="Group_2741" data-name="Group 2741" transform="translate(-348.456 -22.585)">
                                         <path id="Path_1136" data-name="Path 1136" d="M-2163.129,15066l16.643,16.645" transform="translate(2513 -15042)" fill="none" stroke="#b9b9b9" strokeLinecap="round" strokeWidth="2" />

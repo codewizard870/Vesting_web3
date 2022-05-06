@@ -8,6 +8,7 @@ import { formatEther } from 'utils'
 import { BigNumber } from 'ethers'
 import moment from 'moment'
 import { VestingInfo, VestingType } from 'types'
+import { getShortDateTimeWithoutSeconds } from 'utils'
 
 const seriesColor = ['#7AFBFD', '#AFF9FD', '#F3E8FF', '#7AFBFD', '#4f46e5', '#7c3aed', '#db2777', '#e11d48', '#57534e', '#ca8a04']
 const options = {
@@ -26,7 +27,8 @@ const options = {
         enabled: true,
         formatter: function () {
             let t: any = this
-            return moment(t.x * 1000).format("MMMM Do YYYY, h:mm:ss") + '<br /><b>' + t.series.name + ': ' + t.y + '</b>'
+            // return moment(t.x * 1000).format("MMMM Do YYYY, h:mm:ss") + '<br /><b>' + t.series.name + ': ' + t.y + '</b>'
+            return getShortDateTimeWithoutSeconds(new Date(t.x * 1000)) + '<br /><b>' + t.series.name + ': ' + t.y + '</b>'
         }
     },
     plotOptions: {
@@ -44,13 +46,7 @@ const options = {
                     [0.5, 'rgba(134,126,232, 0)'],
                     [1, 'rgba(134,126,232, 0)']
                 ]
-            },
-            // marker: {
-            //     fillColor: 'transparent',
-            //     lineColor: 'transparent',
-            //     lineWidth: 1,
-            //     enabled: false
-            // }
+            },        
         }
     },
     chart: {
@@ -94,8 +90,7 @@ const options = {
                 fontWeight: '300',
             },
             formatter: function (): any {
-                let t: any = this
-                // return t.pos + " FLD"
+                let t: any = this                
                 return t.pos
             }
         },
@@ -129,7 +124,7 @@ const dotLine = {
         formatter: function (): any {
             let t: any = this
             if (t.y > 0) return t.y
-            else return moment(t.x * 1000).format("MMMM Do YYYY, h:mm:ss")
+            else return getShortDateTimeWithoutSeconds(new Date(t.x * 1000))
         }
     }
 }
@@ -254,7 +249,7 @@ export const VestedChart = ({ info }: { info: VestingInfo }) => {
     }, [vestingList, vestingTypes, info])
 
     return (
-        <div className='w-full min-w-[400px]'>
+        <div className='w-full'>
             <HighchartsReact highcharts={Highcharts} options={chartOptions} />
         </div>
     )

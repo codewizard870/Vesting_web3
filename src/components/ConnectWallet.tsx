@@ -6,7 +6,7 @@ import { WalletModal } from './WalletModal'
 export const ConnectWallet = ({width = "227px"}: {width: string}) => {
     const [isOpen, setIsOpen] = useState(false)
 
-    const handleClose = () => {
+    const handleClose = () => {        
         setIsOpen(false)
     }
     return (

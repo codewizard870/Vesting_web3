@@ -11,28 +11,18 @@ import { formatEther, parseEther } from 'utils'
 import { PrimaryButton } from 'components/PrimaryButton'
 import { SecondaryButton } from 'components/SecondaryButton'
 import { ADD_LIQUIDITY_LINK } from 'config'
+import { useTheme } from '@material-ui/styles'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
 
-const useStyles = makeStyles(() => ({
-  root: {
-    width: 500,
-    margin: '1rem',
-    padding: '1rem',
-    boxSizing: 'border-box',
-    border: '1px solid black',
-    borderRadius: 8,
-  },
-  flex: {
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'column',
-  },
-  row: {
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    margin: '0.5rem',
-  },
+const useStyles = makeStyles((theme) => ({
+  button: {
+    [theme.breakpoints.down('sm')]: {
+      width: '280px'
+    },
+    [theme.breakpoints.up('sm')]: {
+      width: '220px'
+    },
+  }
 }))
 
 interface IStakingPool {
@@ -41,9 +31,12 @@ interface IStakingPool {
 }
 
 export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
+  const theme: any = useTheme();
+  // const matches = useMediaQuery(theme.breakpoints.up('sm'));
+  const matches = useMediaQuery('(min-width:450px)');
   const { getUserInfo, rewards, deposit, withdraw, claim } = useStaking()
   const { getTokenBalance, account, updateTokenBalance } = useWallet()
-  const stakeToken = pid === 0 ? 'FLD-ETH' : 'FLD'  
+  const stakeToken = pid === 0 ? 'FLD-ETH' : 'FLD'
   const [userInfo, setUserInfo] = useState<Maybe<UserInfo>>(null)
   const [value, setValue] = useState('')
   const [tokenBalance, setTokenBalance] = useState<BigNumber>(BigNumber.from(0))
@@ -55,7 +48,7 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
   }
 
   const updateDepositTokenBalance = async () => {
-    if (account) {      
+    if (account) {
       const res = await getTokenBalance(account, poolInfo.stakeToken)
       setTokenBalance(res)
     } else {
@@ -117,7 +110,7 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
             variant="outlined"
             type="number"
             value={value}
-            onChange={(e) => setValue(e.target.value !== '' ? Number(e.target.value)>0?Number(e.target.value).toString():e.target.value : '')}
+            onChange={(e) => setValue(e.target.value !== '' ? Number(e.target.value) > 0 ? Number(e.target.value).toString() : e.target.value : '')}
             disabled={loading}
             style={{ width: '100%' }}
             margin="dense"
@@ -128,10 +121,10 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
               if (Number(e.target.value) < 0) e.target.value = -Number(e.target.value)
             }}
           />
-          <div className='flex justify-between gap-6 w-full mt-5 mb-3'>
+          <div className={`flex justify-between items-center gap-6 w-full mt-5 mb-3 ${matches ? 'flex-row' : 'flex-col px-8'}`}>
             <SecondaryButton
               onClick={handleDeposit}
-              width='220px'
+              width={matches ? '220px' : '100%'}
               disabled={
                 loading || !isValueCorrect() || parseEther(Number(value).toString()).gt(tokenBalance)
               }
@@ -141,7 +134,7 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
 
             <PrimaryButton
               onClick={handleWithdraw}
-              width='220px'
+              width={matches ? '220px' : '100%'}
               disabled={
                 loading ||
                 !isValueCorrect() ||
@@ -151,35 +144,37 @@ export const StakingPool: React.FC<IStakingPool> = ({ poolInfo, pid }) => {
               Withdraw
             </PrimaryButton>
           </div>
-          <div className='w-full flex justify-between py-3 border-b border-[#CECECE]'>
-            <div className='text-[14px] md:text-[17px] text-[#0A208F] font-medium uppercase'>Your Balance</div>
-            <div className='text-[16px] md:text-[20px] text-[#676767] font-regular'>
-              {formatEther(tokenBalance || BigNumber.from(0), undefined, 3, true)} {stakeToken}
+          <div className='w-full sm:px-4'>
+            <div className='w-full flex justify-between py-3 border-b border-[#CECECE]'>
+              <div className='text-[14px] md:text-[17px] text-[#0A208F] font-medium uppercase'>Your Balance</div>
+              <div className='text-[16px] md:text-[20px] text-[#676767] font-regular'>
+                {formatEther(tokenBalance || BigNumber.from(0), undefined, 3, true)} {stakeToken}
+              </div>
+            </div>
+            <div className='w-full flex justify-between py-3 border-b border-[#CECECE]'>
+              <div className='text-[14px] md:text-[17px] text-[#0A208F] font-medium uppercase'>Your Staked Amount</div>
+              <div className='text-[16px] md:text-[20px] text-[#676767] font-regular'>
+                {formatEther(userInfo?.amount || BigNumber.from(0), undefined, 3, true)} {stakeToken}
+              </div>
+            </div>
+            <div className='w-full flex justify-between py-3'>
+              <div className='text-[14px] md:text-[17px] text-[#0A208F] font-medium uppercase'>Reward Amount</div>
+              <div className='text-[16px] md:text-[20px] text-[#676767] font-regular'>
+                {formatEther(rewards[pid] || BigNumber.from(0), undefined, 3, true)} FLD
+              </div>
             </div>
           </div>
-          <div className='w-full flex justify-between py-3 border-b border-[#CECECE]'>
-            <div className='text-[14px] md:text-[17px] text-[#0A208F] font-medium uppercase'>Your Staked Amount</div>
-            <div className='text-[16px] md:text-[20px] text-[#676767] font-regular'>
-              {formatEther(userInfo?.amount || BigNumber.from(0), undefined, 3, true)} {stakeToken}
-            </div>
-          </div>
-          <div className='w-full flex justify-between py-3'>
-            <div className='text-[14px] md:text-[17px] text-[#0A208F] font-medium uppercase'>Reward Amount</div>
-            <div className='text-[16px] md:text-[20px] text-[#676767] font-regular'>
-              {formatEther(rewards[pid] || BigNumber.from(0), undefined, 3, true)} FLD
-            </div>
-          </div>
-          <div className='w-full flex flex-col justify-center md:flex-row md:justify-between gap-8 md:gap-0 items-center mt-1 mb-3'>
+          <div className={`w-full flex justify-center ${matches ? 'flex-row' : 'flex-col px-8'} justify-between gap-8 md:gap-0 items-center mt-1 mb-3`}>
             <div>
               {pid === 0 && (
                 <a href={ADD_LIQUIDITY_LINK} target="_blank">
-                  <span className='text-[18px] font-medium text-[#3FBCE9] underline underline-offset-4'>Add Liquidity</span>
+                  <span className='text-[18px] sm:ml-4 font-medium text-[#3FBCE9] underline underline-offset-4'>Add Liquidity</span>
                 </a>
               )}
             </div>
             <SecondaryButton
               onClick={handleHarvest}
-              width='220px'
+              width={matches ? '220px' : '100%'}
               disabled={loading || rewards.length > 0 && rewards[pid].lte(0)}
             >
               Harvest

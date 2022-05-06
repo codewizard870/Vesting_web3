@@ -506,6 +506,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   margin-top: 1.5rem;
 }
 
+.mt-24 {
+  margin-top: 6rem;
+}
+
 .mt-8 {
   margin-top: 2rem;
 }
@@ -606,10 +610,6 @@ Ensure the default browser behavior of the `hidden` attribute.
   width: 154px;
 }
 
-.min-w-\[400px\] {
-  min-width: 400px;
-}
-
 .max-w-\[600px\] {
   max-width: 600px;
 }
@@ -641,6 +641,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.flex-row {
+  flex-direction: row;
 }
 
 .flex-col {
@@ -828,10 +832,6 @@ Ensure the default browser behavior of the `hidden` attribute.
   background-color: rgb(5 0 37 / var(--tw-bg-opacity));
 }
 
-.bg-none {
-  background-image: none;
-}
-
 .bg-\[url\(\'\.\/assets\/images\/signup\/hero_mobile\.png\'\)\] {
   background-image: url('./assets/images/signup/hero_mobile.png');
 }
@@ -908,9 +908,9 @@ Ensure the default browser behavior of the `hidden` attribute.
   padding-right: 2rem;
 }
 
-.py-5 {
-  padding-top: 1.25rem;
-  padding-bottom: 1.25rem;
+.px-10 {
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
 }
 
 .py-6 {
@@ -1388,6 +1388,10 @@ code {
 }
 
 @media (min-width: 768px) {
+  .md\:mt-0 {
+    margin-top: 0px;
+  }
+
   .md\:mt-16 {
     margin-top: 4rem;
   }
@@ -1398,6 +1402,10 @@ code {
 
   .md\:mt-10 {
     margin-top: 2.5rem;
+  }
+
+  .md\:ml-4 {
+    margin-left: 1rem;
   }
 
   .md\:block {
@@ -1434,10 +1442,6 @@ code {
 
   .md\:items-start {
     align-items: flex-start;
-  }
-
-  .md\:justify-between {
-    justify-content: space-between;
   }
 
   .md\:gap-10 {
@@ -1513,6 +1517,11 @@ code {
   .md\:px-0 {
     padding-left: 0px;
     padding-right: 0px;
+  }
+
+  .md\:px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   .md\:pt-8 {

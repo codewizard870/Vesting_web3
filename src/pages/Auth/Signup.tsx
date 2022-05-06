@@ -20,6 +20,7 @@ export const Signup = ({ setIsSignUp, handleSendSignUp }: { setIsSignUp: (isSign
   const [errors, setErrors] = useState<IError>({})
   const [loading, setLoading] = useState(false)
   const [passStrength, setPassStrength] = useState(0)
+  
   const handleValidation = (field: string, value: Maybe<string>) => {
     const error: IError = {}
     error[field] = value ? '' : 'This field is required'
@@ -92,6 +93,7 @@ export const Signup = ({ setIsSignUp, handleSendSignUp }: { setIsSignUp: (isSign
     if (passStrength <= 3) return '#E18B0A'
     return '#0C9434'
   }
+
   return (
     <form className='flex flex-col justify-center items-center gap-6 md:gap-8 mt-8 md:mt-16' onSubmit={handleSubmit}>
       <TextField

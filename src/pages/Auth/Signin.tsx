@@ -9,7 +9,7 @@ interface IError {
   [field: string]: string
 }
 
-export const Signin = ({ setIsSignUp, setLogined }: { setIsSignUp: (isSignUp: boolean) => void, setLogined: (logined: boolean) => void }) => {
+export const Signin = ({ setIsSignUp, setLogined, setNotVerifiedEmail, setUnderProcess }: { setIsSignUp: (isSignUp: boolean) => void, setLogined: (logined: boolean) => void, setNotVerifiedEmail: (notVerified: boolean) => void, setUnderProcess: (underProcess: boolean) => void }) => {
   const { requestUserSignin } = useSession()
   const history = useHistory()
 
@@ -61,10 +61,13 @@ export const Signin = ({ setIsSignUp, setLogined }: { setIsSignUp: (isSignUp: bo
         if (res.errors) {
           setErrors(res.errors)
         } else {          
+          setLogined(true)
           if (res.user?.permit === 1) {
             window.location.reload()
-          } else {
-            setLogined(true)
+          } else if (res.user?.permit !==1 && res.user?.isValid === true) { //email verified and under process
+            setUnderProcess(true)
+          } else if (res.user?.permit === 2) {
+            setNotVerifiedEmail(true)
           }
         }
       } catch (err) {
