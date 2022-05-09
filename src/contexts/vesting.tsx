@@ -61,8 +61,8 @@ export const VestingProvider = ({ children = null as any }) => {
   const { updateTokenBalance } = useWallet()
 
   const eventTopics: { [id: string]: string } = {
-    '0x41e2396a6e9c1acf60ed38dcf04ccf13d4de214df6bb8499fe002b4909865212': 'Add Vesting',
-    '0x165c12094c1f9f8266d89897df9a046ab1a4718d06238f3952ec1f367336851a': 'Update Vesting',
+    '0x41e2396a6e9c1acf60ed38dcf04ccf13d4de214df6bb8499fe002b4909865212': 'Add Amount',
+    '0x165c12094c1f9f8266d89897df9a046ab1a4718d06238f3952ec1f367336851a': 'Update Amount',
     '0xaf27d723038cb53553cb7f48a969ed95217fa6f4fdddc612c06792fb0ea9f0ce': 'Add Vesting Type',
     '0xaf870d609b13b8b808d0daa3d7141d2df9ff51d246b451cd03ecb6cca53df89d': 'Update Vesting Type',
   }

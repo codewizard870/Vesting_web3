@@ -62,7 +62,7 @@ export const VestingHistory: React.FC<IVestingHistory> = ({
   return (
     <div className='w-full'>
       <div className='w-full flex justify-between items-center'>
-        <h3>Vesting History</h3>
+        <h3>Wallet History</h3>
 
         <SecondaryButtonMD
           width='80px'
