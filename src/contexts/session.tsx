@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext } from 'react'
-import { getUserToken } from 'utils'
+import { reqOptionsAuthorized } from 'utils'
 
 export interface ISessionContext {
   requestUserSignin: (email: string, password: string) => Promise<any>
@@ -31,17 +31,6 @@ export const SessionProvider = ({ children = null as any }) => {
     }
   }
 
-  const optionsAuthorized = (method = 'get', data = {}) => {
-    return {
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + getUserToken()
-      }),
-      method: method,
-      body: JSON.stringify(data)
-    }
-  }
-
   const requestUserSignin = (email: string, password: string) => {
     const data = { email, password }
     return fetch(
@@ -62,7 +51,7 @@ export const SessionProvider = ({ children = null as any }) => {
   const requestUserList = () => {
 
     return fetch(
-      process.env.REACT_APP_REST_SERVER + '/auth/userlist', optionsAuthorized('post')
+      process.env.REACT_APP_REST_SERVER + '/auth/userlist', reqOptionsAuthorized('post')
     )
       .then((res) => res.json())
   }
@@ -71,7 +60,7 @@ export const SessionProvider = ({ children = null as any }) => {
     const data = { id, permit }    
     return fetch(
       process.env.REACT_APP_REST_SERVER + '/auth/updatepermit',
-      optionsAuthorized('post', data)
+      reqOptionsAuthorized('post', data)
     ).then((res) => res.json())
   }
 

@@ -8,7 +8,8 @@ import {
   VestingProvider,
   WalletProvider,
   StakingProvider,
-  ApyProvider
+  ApyProvider,
+  VestingLogProvider
 } from 'contexts'
 import { Claim, Staking, Auth, Admin, Lend } from 'pages'
 import { Header } from 'components'
@@ -39,35 +40,37 @@ function App() {
         <WalletProvider>
           <VestingProvider>
             <ApyProvider>
-              <ThemeProvider theme={theme}>
-                <main className={classes.root}>
-                  <div className="w-full bg-no-repeat md:bg-cover bg-center md:bg-[url('./assets/images/signup/hero.png')]" style={{ minHeight: '100vh' }}>
-                    <div className="h-full w-full bg-[#F3F6FA] md:bg-[#FFFFFF]/70" style={{ minHeight: '100vh' }}>
-                      {checkAuthentication() && <Header />}
-                      {checkAuthentication() ? (
-                        <Switch>
-                          <Route path="/admin" component={Admin} />
-                          <Route path="/claiming" component={Claim} />
-                          <Route path="/staking">
-                            <StakingProvider>
-                              <Staking />
-                            </StakingProvider>
-                          </Route>
-                          <Route path="/lend" component={Lend} />
-                          <Redirect to="/staking" />
-                        </Switch>
-                      ) : (
-                        <Switch>
-                          <Route path="/Auth" component={Auth} />
-                          <Route path="/signup" component={Auth} />
-                          <Redirect to="/Auth" />
-                        </Switch>
-                      )}
+              <VestingLogProvider>
+                <ThemeProvider theme={theme}>
+                  <main className={classes.root}>
+                    <div className="w-full bg-no-repeat md:bg-cover bg-center md:bg-[url('./assets/images/signup/hero.png')]" style={{ minHeight: '100vh' }}>
+                      <div className="h-full w-full bg-[#F3F6FA] md:bg-[#FFFFFF]/70" style={{ minHeight: '100vh' }}>
+                        {checkAuthentication() && <Header />}
+                        {checkAuthentication() ? (
+                          <Switch>
+                            <Route path="/admin" component={Admin} />
+                            <Route path="/claiming" component={Claim} />
+                            <Route path="/staking">
+                              <StakingProvider>
+                                <Staking />
+                              </StakingProvider>
+                            </Route>
+                            <Route path="/lend" component={Lend} />
+                            <Redirect to="/staking" />
+                          </Switch>
+                        ) : (
+                          <Switch>
+                            <Route path="/Auth" component={Auth} />
+                            <Route path="/signup" component={Auth} />
+                            <Redirect to="/Auth" />
+                          </Switch>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <ToastContainer />
-                </main>
-              </ThemeProvider>
+                    <ToastContainer />
+                  </main>
+                </ThemeProvider>
+              </VestingLogProvider>
             </ApyProvider>
           </VestingProvider>
         </WalletProvider>

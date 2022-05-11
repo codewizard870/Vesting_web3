@@ -93,7 +93,7 @@ export const VestingTypeTable = () => {
         />
         :
         <div className='w-full'>
-          <div className='w-full flex items-center justify-between'>
+          <div className='w-full flex items-center justify-end'>
             <PrimaryButtonMD          
               onClick={() => {
                 setIsEditType(false)

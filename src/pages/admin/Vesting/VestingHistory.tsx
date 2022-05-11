@@ -12,23 +12,25 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core'
-import { useVesting } from 'contexts'
+import { useVestingLog } from 'contexts'
 import { VestingEvent } from 'types'
-import { formatEther } from 'utils'
 import { SecondaryButtonMD } from 'components/SecondaryButtonMD'
+import { getShortDateTime } from 'utils'
 
 interface IHistoryItem {
   event: VestingEvent
 }
 
 const HistoryItem: React.FC<IHistoryItem> = ({ event }) => {
-  const { eventTopics } = useVesting()
+  const { eventVestingTopics } = useVestingLog()
 
   return (
     <TableRow>
-      <TableCell style={{textAlign: 'center'}}>{eventTopics[event.topic] || 'Undefined'}</TableCell>
-      <TableCell style={{textAlign: 'center'}}>{formatEther(BigNumber.from(event.amount), undefined, 3, true)}</TableCell>
-      <TableCell style={{textAlign: 'center'}}>{new Date(event.timestamp * 1000).toLocaleString()}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{eventVestingTopics[event.action] || 'Undefined'}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{event.typeName}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{event.amount}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{getShortDateTime(new Date(event.updatedAt))}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{event.updatedBy.name}</TableCell>
     </TableRow>
   )
 }
@@ -46,14 +48,18 @@ export const VestingHistory: React.FC<IVestingHistory> = ({
   address,
   onBack,
 }) => {
-  const { getEvents } = useVesting()
+  const { requestVestingAmountLogs } = useVestingLog()
 
   const [eventList, setEventList] = useState<VestingEvent[]>([])
 
   useEffect(() => {
     const updateEventList = async () => {
-      const res = await getEvents(typeId, vestingId, address)      
-      setEventList(res)
+      try {
+        const res = await requestVestingAmountLogs(typeId, address)        
+        setEventList(res.logs)
+      } catch (err) {
+        console.log(err)
+      }
     }
 
     updateEventList()
@@ -75,14 +81,20 @@ export const VestingHistory: React.FC<IVestingHistory> = ({
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell style={{textAlign: 'center'}}>
+            <TableCell style={{ textAlign: 'center' }}>
               <b>Action</b>
             </TableCell>
-            <TableCell style={{textAlign: 'center'}}>
+            <TableCell style={{ textAlign: 'center' }}>
+              <b>Vesting Type</b>
+            </TableCell>
+            <TableCell style={{ textAlign: 'center' }}>
               <b>Amount</b>
             </TableCell>
-            <TableCell style={{textAlign: 'center'}}>
-              <b>Time</b>
+            <TableCell style={{ textAlign: 'center' }}>
+              <b>Updated At</b>
+            </TableCell>
+            <TableCell style={{ textAlign: 'center' }}>
+              <b>Updated By</b>
             </TableCell>
           </TableRow>
         </TableHead>

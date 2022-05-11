@@ -22,6 +22,7 @@ import { useVesting } from 'contexts'
 import { useHistory, useParams } from 'react-router-dom'
 import { VF_LIST } from 'types'
 import { formatEther } from 'utils'
+import { useVestingLog } from 'contexts'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -80,7 +81,7 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
   const classes = useStyles()
   const history = useHistory()
   const { addVestingType, updateVestingType, vestingTypes } = useVesting()
-
+  const { requestSaveTypeLog } = useVestingLog()
   const [name, setName] = useState('')
   const [startTime, setStartTime] = useState(new Date())
   const [endTime, setEndTime] = useState(new Date())
@@ -123,6 +124,8 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
     let res = false
     let timezoneOffset = startTime.getTimezoneOffset() //mins
     timezoneOffset = timezoneOffset * 60 //seconds
+    let action = edit ? 1 : 0
+    let typeId = edit ? Number(id): vestingTypes.length
     if (edit) {
       if (Number(id) >= 0) {
         res = await updateVestingType(
@@ -145,6 +148,23 @@ export const AddVestingType: React.FC<IAddVestingType> = ({ isOpen, handleClose,
         vestingFrequency
       )
     }
+
+    try {
+      const res = await requestSaveTypeLog(action,
+        typeId,
+        name,
+        startTime,
+        endTime,
+        Math.floor(Number(lockupDuration)) * 24 * 60 * 60,
+        vestingFrequency,
+        Number(maxAmount))
+      if (!res.errors) {              
+      } else {        
+      }
+    } catch (err) {
+      console.log(err)
+    }
+
     setLoading(false)
 
     if (res) {

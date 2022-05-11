@@ -50,13 +50,13 @@ export interface VestingId {
   vestingId: number
 }
 
-export interface VestingEvent {
+export interface VestingEventFromBlockLog {
   timestamp: number
   topic: string
   amount: string
 }
 
-export interface VestingTypeEvent {
+export interface VestingTypeEventFromBlockLog {
   timestamp: number
   topic: string
   data: {
@@ -67,6 +67,32 @@ export interface VestingTypeEvent {
     maxAmount: string
     vestingFrequencyId: number
   }
+}
+
+export interface VestingEvent {  
+  action: number
+  typeId: number
+  typeName: string
+  vestingId: number
+  wallet: string
+  amount: number
+  updatedBy: any
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface VestingTypeEvent {  
+  action: number 
+  typeId: number
+  name: string
+  startTime: Date
+  endTime: Date
+  lockupDuration: number
+  amount: number
+  vestingFrequencyId: number  
+  updatedBy: any
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface IWalletList {

@@ -2,7 +2,7 @@
 import { BigNumber } from 'ethers'
 import React, { useEffect, useContext, useState } from 'react'
 import { toast } from 'react-toastify'
-import { VestingEvent, VestingTypeEvent, VestingInfo, VestingType, IWalletList, IUpdateVestingList } from 'types'
+import { VestingEventFromBlockLog, VestingTypeEventFromBlockLog, VestingInfo, VestingType, IWalletList, IUpdateVestingList } from 'types'
 import { useContracts } from './contracts'
 import { useWallet } from './wallets'
 import { parseEther, parseVestingTypeData } from 'utils'
@@ -44,8 +44,8 @@ export interface IVestingContext {
     _addVestingList: IWalletList[],
     _updateVestingList: IUpdateVestingList[]
   ) => Promise<boolean>
-  getEvents: (typeId: number, vestingId: number, address: string) => Promise<VestingEvent[]>
-  getTypeEvents: (typeId: number) => Promise<VestingTypeEvent[]>
+  getEvents: (typeId: number, vestingId: number, address: string) => Promise<VestingEventFromBlockLog[]>
+  getTypeEvents: (typeId: number) => Promise<VestingTypeEventFromBlockLog[]>
   eventTopics: { [id: string]: string }
 }
 
@@ -324,7 +324,7 @@ export const VestingProvider = ({ children = null as any }) => {
   }
 
   const getEvents = async (typeId: number, vestingId: number, address: string) => {
-    let addEvents: VestingEvent[] = [], updateEvents: VestingEvent[] = []
+    let addEvents: VestingEventFromBlockLog[] = [], updateEvents: VestingEventFromBlockLog[] = []
     let typeIdHex = web3.utils.toHex(typeId)
     let vestingIdHex = web3.utils.toHex(vestingId)
     typeIdHex = web3.utils.padLeft(typeIdHex, 64)
@@ -345,7 +345,7 @@ export const VestingProvider = ({ children = null as any }) => {
             timestamp: web3.utils.hexToNumber(item.timeStamp),
             topic: item.topics[0],
             amount: web3.utils.hexToNumberString(item.topics[3])
-          } as VestingEvent)
+          } as VestingEventFromBlockLog)
         )
       }
       // update vesting history
@@ -361,7 +361,7 @@ export const VestingProvider = ({ children = null as any }) => {
             timestamp: web3.utils.hexToNumber(item.timeStamp),
             topic: item.topics[0],
             amount: web3.utils.hexToNumberString(item.topics[3])
-          } as VestingEvent)
+          } as VestingEventFromBlockLog)
         )
       }
     } catch (err) {
@@ -373,7 +373,7 @@ export const VestingProvider = ({ children = null as any }) => {
   }
 
   const getTypeEvents = async (typeId: number) => {
-    let addEvents: VestingTypeEvent[] = [], updateEvents: VestingTypeEvent[] = []
+    let addEvents: VestingTypeEventFromBlockLog[] = [], updateEvents: VestingTypeEventFromBlockLog[] = []
 
     let typeIdHex = web3.utils.toHex(typeId)
     typeIdHex = web3.utils.padLeft(typeIdHex, 64)
@@ -391,7 +391,7 @@ export const VestingProvider = ({ children = null as any }) => {
             timestamp: web3.utils.hexToNumber(item.timeStamp),
             topic: item.topics[0],
             data: parseVestingTypeData(item.data, web3)
-          } as VestingTypeEvent)
+          } as VestingTypeEventFromBlockLog)
         )
       }
 
@@ -409,7 +409,7 @@ export const VestingProvider = ({ children = null as any }) => {
             timestamp: web3.utils.hexToNumber(item.timeStamp),
             topic: item.topics[0],
             data: parseVestingTypeData(item.data, web3)
-          } as VestingTypeEvent)
+          } as VestingTypeEventFromBlockLog)
         )
       }
     } catch (err) {

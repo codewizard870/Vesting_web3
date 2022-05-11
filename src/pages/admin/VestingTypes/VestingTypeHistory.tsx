@@ -2,38 +2,36 @@
 import React, { useEffect, useState } from 'react'
 import { BigNumber } from 'ethers'
 import {
-  Box,
-  Button,
-  Card,
-  makeStyles,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
 } from '@material-ui/core'
-import { useVesting } from 'contexts'
+import { useVestingLog } from 'contexts'
 import { VestingTypeEvent, VF_LIST } from 'types'
-import { formatEther, formatTime } from 'utils'
+import { formatTime } from 'utils'
 import { SecondaryButtonMD } from 'components/SecondaryButtonMD'
+import { getShortDateTime, getShortDateTimeWithoutSeconds } from 'utils'
 
 interface IHistoryItem {
   event: VestingTypeEvent
 }
 
 const HistoryItem: React.FC<IHistoryItem> = ({ event }) => {
-  const { eventTopics } = useVesting()
-
+  const { eventTypeTopics } = useVestingLog()
+  console.log(event)
   return (
     <TableRow>
-      <TableCell style={{textAlign: 'center'}}>{eventTopics[event.topic] || 'Undefined'}</TableCell>
-      <TableCell style={{textAlign: 'center'}}>{event.data.name}</TableCell>
-      <TableCell style={{textAlign: 'center'}}>{new Date(event.data.startTime * 1000).toLocaleString()}</TableCell>
-      <TableCell style={{textAlign: 'center'}}>{new Date(event.data.endTime * 1000).toLocaleString()}</TableCell>
-      <TableCell style={{textAlign: 'center'}}>{formatTime(event.data.lockupDuration)}</TableCell>
-      <TableCell style={{textAlign: 'center'}}>{VF_LIST[event.data.vestingFrequencyId].label}</TableCell>
-      <TableCell style={{textAlign: 'center'}}>{formatEther(BigNumber.from(event.data.maxAmount), undefined, 3, true)}</TableCell>
-      <TableCell style={{textAlign: 'center'}}>{new Date(event.timestamp * 1000).toLocaleString()}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{eventTypeTopics[event.action] || 'Undefined'}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{event.name}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{getShortDateTimeWithoutSeconds(new Date(event.startTime))}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{getShortDateTimeWithoutSeconds(new Date(event.endTime))}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{formatTime(event.lockupDuration)}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{VF_LIST[event.vestingFrequencyId].label}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{event.amount}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{getShortDateTime(new Date(event.updatedAt))}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{event.updatedBy.name}</TableCell>
     </TableRow>
   )
 }
@@ -47,14 +45,18 @@ export const VestingTypeHistory: React.FC<IVestingTypeHistory> = ({
   typeId,
   onBack,
 }) => {
-  const { getTypeEvents } = useVesting()
+  const { requestVestingTypeLogs } = useVestingLog()
 
   const [eventList, setEventList] = useState<VestingTypeEvent[]>([])
 
   useEffect(() => {
     const updateEventList = async () => {
-      const res = await getTypeEvents(typeId)
-      setEventList(res)
+      try {
+        const res = await requestVestingTypeLogs(typeId)
+        setEventList(res.logs)
+      } catch (err) {
+        console.log(err)
+      }
     }
 
     updateEventList()
@@ -76,29 +78,32 @@ export const VestingTypeHistory: React.FC<IVestingTypeHistory> = ({
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell style={{textAlign: 'center'}}>
+            <TableCell style={{ textAlign: 'center' }}>
               <b>Action</b>
             </TableCell>
-            <TableCell style={{textAlign: 'center'}}>
+            <TableCell style={{ textAlign: 'center' }}>
               <b>Name</b>
             </TableCell>
-            <TableCell style={{textAlign: 'center'}}>
+            <TableCell style={{ textAlign: 'center' }}>
               <b>Start Time</b>
             </TableCell>
-            <TableCell style={{textAlign: 'center'}}>
+            <TableCell style={{ textAlign: 'center' }}>
               <b>End Time</b>
             </TableCell>
-            <TableCell style={{textAlign: 'center'}}>
+            <TableCell style={{ textAlign: 'center' }}>
               <b>Lockup Period</b>
             </TableCell>
-            <TableCell style={{textAlign: 'center'}}>
+            <TableCell style={{ textAlign: 'center' }}>
               <b>Vesting Frequency</b>
             </TableCell>
-            <TableCell style={{textAlign: 'center'}}>
+            <TableCell style={{ textAlign: 'center' }}>
               <b>Total</b>
             </TableCell>
-            <TableCell style={{textAlign: 'center'}}>
-              <b>Time</b>
+            <TableCell style={{ textAlign: 'center' }}>
+              <b>Updated At</b>
+            </TableCell>
+            <TableCell style={{ textAlign: 'center' }}>
+              <b>Updated By</b>
             </TableCell>
           </TableRow>
         </TableHead>

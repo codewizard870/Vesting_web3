@@ -13,22 +13,21 @@ import {
   TableRow,
 } from '@material-ui/core'
 import { useApy } from 'contexts'
-import { VestingEvent } from 'types'
-import { formatEther } from 'utils'
 import { SecondaryButtonMD } from 'components/SecondaryButtonMD'
+import { getShortDateTime } from 'utils'
 
 interface IHistoryItem {
   info: any
 }
 
 const HistoryItem: React.FC<IHistoryItem> = ({ info }) => {
-  
+
   return (
     <TableRow>
-      <TableCell style={{textAlign: 'center'}}>{info.apy.pool}</TableCell>
-      <TableCell style={{textAlign: 'center'}}>{info.apyAfter}</TableCell>
-      <TableCell style={{textAlign: 'center'}}>{info.updatedAt}</TableCell>
-      <TableCell style={{textAlign: 'center'}}>{info.updatedBy.name}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{info.apy.pool}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{info.apyAfter}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{getShortDateTime(new Date(info.updatedAt))}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{info.updatedBy.name}</TableCell>
     </TableRow>
   )
 }
@@ -45,17 +44,17 @@ export const ApyHistory: React.FC<IApyHistory> = ({
   const [apyLogs, setApyLogs] = useState<any[]>([])
   const { requestUpdateLogs } = useApy()
   useEffect(() => {
-    
-        const fetch = async () => {                
-            try {                    
-                const res = await requestUpdateLogs(id)      
-                setApyLogs(res.logs)                             
-            } catch (err) {                    
-                console.log(err)
-            }
-        }
-        fetch()
-}, [])
+
+    const fetch = async () => {
+      try {
+        const res = await requestUpdateLogs(id)
+        setApyLogs(res.logs)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    fetch()
+  }, [])
 
   return (
     <div className='w-full'>
@@ -73,16 +72,16 @@ export const ApyHistory: React.FC<IApyHistory> = ({
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell style={{textAlign: 'center'}}>
+            <TableCell style={{ textAlign: 'center' }}>
               <b>Pool</b>
             </TableCell>
-            <TableCell style={{textAlign: 'center'}}>
+            <TableCell style={{ textAlign: 'center' }}>
               <b>APY</b>
-            </TableCell>          
-            <TableCell style={{textAlign: 'center'}}>
+            </TableCell>
+            <TableCell style={{ textAlign: 'center' }}>
               <b>Updated At</b>
             </TableCell>
-            <TableCell style={{textAlign: 'center'}}>
+            <TableCell style={{ textAlign: 'center' }}>
               <b>Updated By</b>
             </TableCell>
           </TableRow>

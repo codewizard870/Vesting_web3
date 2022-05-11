@@ -14,6 +14,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import { PrimaryButtonMD } from 'components/PrimaryButtonMD'
 import { SecondaryButtonMD } from 'components/SecondaryButtonMD'
 import { ApyHistory } from './History'
+import { getShortDateTime } from 'utils'
 
 interface IApyInfo {
     index: number
@@ -81,7 +82,7 @@ const ApyInfo: React.FC<IApyInfo> = ({
                     <>{info.apy}</>
                 }
             </TableCell>
-            <TableCell style={{ textAlign: 'center' }}>{info.updatedAt}</TableCell>
+            <TableCell style={{ textAlign: 'center' }}>{getShortDateTime(new Date(info.updatedAt))}</TableCell>
             <TableCell
                 className='flex items-center gap-4'
                 style={{ textAlign: 'center' }}

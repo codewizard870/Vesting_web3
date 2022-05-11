@@ -18,8 +18,8 @@ import {
 import PaperComponent from 'components/DraggableModalPaper'
 import { useVesting } from 'contexts'
 import { VestingInfo } from 'types'
-import { BigNumber } from 'ethers'
-import {formatEther, parseEther} from 'utils'
+import { formatEther, parseEther } from 'utils'
+import { useVestingLog } from 'contexts'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -57,7 +57,7 @@ interface IAddVesting {
 export const AddVesting: React.FC<IAddVesting> = ({ isOpen, handleClose, edit, info }) => {
   const classes = useStyles()
   const { addVesting, updateVesting, vestingTypes } = useVesting()
-
+  const { requestSaveAmountLog } = useVestingLog()
   const [typeId, setTypeId] = useState(0)
   const [recipient, setRecipient] = useState('')
   const [value, setValue] = useState('')
@@ -82,6 +82,8 @@ export const AddVesting: React.FC<IAddVesting> = ({ isOpen, handleClose, edit, i
   const handleSubmit = async () => {
     setLoading(true)
     let res = false
+    let action = edit ? 1 : 0
+    let id = edit ? info ? info.typeId : 0 : typeId
     if (edit) {
       if (info) {
         res = await updateVesting(info.vestingId, recipient, Number(value))
@@ -89,6 +91,21 @@ export const AddVesting: React.FC<IAddVesting> = ({ isOpen, handleClose, edit, i
     } else {
       res = await addVesting(typeId, recipient, Number(value))
     }
+
+    try {
+      const res = await requestSaveAmountLog(
+        action,
+        id,
+        vestingTypes.length > id ? vestingTypes[id].name : '',
+        recipient,
+        Number(value))
+      if (!res.errors) {
+      } else {
+      }
+    } catch (err) {
+      console.log(err)
+    }
+
     setLoading(false)
 
     if (res) {
@@ -114,7 +131,7 @@ export const AddVesting: React.FC<IAddVesting> = ({ isOpen, handleClose, edit, i
         PaperComponent={PaperComponent}
       >
         <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-        <Typography variant="h5">{edit ? 'Edit' : 'Add'} User Vesting</Typography>
+          <Typography variant="h5">{edit ? 'Edit' : 'Add'} User Vesting</Typography>
         </DialogTitle>
         <DialogContent>
           <Box className={clsx(classes.root, classes.flex)}>
@@ -126,7 +143,7 @@ export const AddVesting: React.FC<IAddVesting> = ({ isOpen, handleClose, edit, i
                 <Typography>
                   Type:{' '}
                   <b>
-                    {vestingTypes.length > typeId ? vestingTypes[typeId].name : ''}
+                    {vestingTypes.length > info.typeId ? vestingTypes[info.typeId].name : ''}
                   </b>
                 </Typography>
               </Box>

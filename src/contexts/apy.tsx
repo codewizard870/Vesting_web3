@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect } from 'react'
-import { getUserToken } from 'utils'
+import { reqOptionsAuthorized } from 'utils'
 
 export interface IApyContext {
     apyList: any[]
@@ -15,21 +15,10 @@ const ApyContext = React.createContext<Maybe<IApyContext>>(null)
 export const ApyProvider = ({ children = null as any }) => {
     const [apyList, setApyList] = useState<any[]>([])
 
-    const optionsAuthorized = (method = 'get', data = {}) => {
-        return {
-            headers: new Headers({
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + getUserToken()
-            }),
-            method: method,
-            body: JSON.stringify(data),
-        }
-    }
-
     const updateApyList = async () => {
         try {
             await fetch(
-                process.env.REACT_APP_REST_SERVER + '/apy/apylist', optionsAuthorized('post',)
+                process.env.REACT_APP_REST_SERVER + '/apy/apylist', reqOptionsAuthorized('post',)
             )
                 .then((res) => res.json())
                 .then((res) => {
@@ -48,14 +37,14 @@ export const ApyProvider = ({ children = null as any }) => {
 
     const requestApyList = () => {
         return fetch(
-            process.env.REACT_APP_REST_SERVER + '/apy/apylist', optionsAuthorized('post')
+            process.env.REACT_APP_REST_SERVER + '/apy/apylist', reqOptionsAuthorized('post')
         ).then((res) => res.json())
     }
 
     const requestUpdateLogs = (id: string) => {
         const data = { id }
         return fetch(
-            process.env.REACT_APP_REST_SERVER + '/apy/log', optionsAuthorized('post', data as any)
+            process.env.REACT_APP_REST_SERVER + '/apy/log', reqOptionsAuthorized('post', data as any)
         ).then((res) => res.json())
     }
 
@@ -63,7 +52,7 @@ export const ApyProvider = ({ children = null as any }) => {
         const data = { id, apy, apyBefore }
         return fetch(
             process.env.REACT_APP_REST_SERVER + '/apy/updateapy',
-            optionsAuthorized('post', data as any)
+            reqOptionsAuthorized('post', data as any)
         ).then((res) => res.json())
     }
 

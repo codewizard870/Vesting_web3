@@ -20,6 +20,7 @@ import {
 import { toast } from 'react-toastify'
 import { useSession } from 'contexts'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import { getShortDateTime } from 'utils'
 
 const useStyles = makeStyles(() => ({
     checkbox: {
@@ -69,7 +70,7 @@ const UserInfo: React.FC<IUserInfo> = ({
             <TableCell style={{textAlign: 'right'}}>{(index + 1)}</TableCell>
             <TableCell style={{textAlign: 'center'}}>{info.name}</TableCell>
             <TableCell style={{textAlign: 'center'}}>{info.email}</TableCell>
-            <TableCell style={{textAlign: 'center'}}>{info.createdAt}</TableCell>
+            <TableCell style={{textAlign: 'center'}}>{getShortDateTime(new Date(info.createdAt))}</TableCell>
             <TableCell className='flex justify-center items-center' style={{textAlign: 'center'}}>
                 <FormControlLabel
                     control={
@@ -119,7 +120,7 @@ export const UserList = () => {
     return (
         <div className="w-full flex justify-center py-8 md:px-6 lg:px-8 xl:px-16 2xl:px-[124px]">
             <div className='w-full max-w-[1620px] flex flex-col items-center gap-4 rounded-[20px] bg-white shadow-xl py-8 px-6'>            
-                <div className='flex justify-center'>
+                <div className='w-full flex justify-start'>
                     <FormControl style={{ width: 200 }}>
                         <InputLabel id="vesting-type-label">Approval Status</InputLabel>
                         <Select
