@@ -29,7 +29,7 @@ const HistoryItem: React.FC<IHistoryItem> = ({ event }) => {
       <TableCell style={{ textAlign: 'center' }}>{getShortDateTimeWithoutSeconds(new Date(event.endTime))}</TableCell>
       <TableCell style={{ textAlign: 'center' }}>{formatTime(event.lockupDuration)}</TableCell>
       <TableCell style={{ textAlign: 'center' }}>{VF_LIST[event.vestingFrequencyId].label}</TableCell>
-      <TableCell style={{ textAlign: 'center' }}>{event.amount}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{event.amount.toLocaleString()}</TableCell>
       <TableCell style={{ textAlign: 'center' }}>{getShortDateTime(new Date(event.updatedAt))}</TableCell>
       <TableCell style={{ textAlign: 'center' }}>{event.updatedBy.name}</TableCell>
     </TableRow>

@@ -23,7 +23,7 @@ export const Indicators = () => {
                         </div>
                         <div className='h-[86px] flex justify-center items-center rounded-b-[24px] bg-gradient-to-r from-[#F3E8FF] to-[#7AFBFD] w-full'>
                             <span className='text-[#050025] text-[22px] font-semibold'>
-                                {'APY for LP'}
+                                {'APR for LP'}
                             </span>
                         </div>
                     </div>
@@ -35,7 +35,7 @@ export const Indicators = () => {
                         </div>
                         <div className='h-[86px] flex justify-center items-center rounded-b-[24px] bg-gradient-to-r from-[#F3E8FF] to-[#7AFBFD] w-full'>
                             <span className='text-[#050025] text-[22px] font-semibold'>
-                                {'APY on FLD staking'}
+                                {'APR on FLD staking'}
                             </span>
                         </div>
                     </div>

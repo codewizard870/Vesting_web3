@@ -28,7 +28,7 @@ const HistoryItem: React.FC<IHistoryItem> = ({ event }) => {
     <TableRow>
       <TableCell style={{ textAlign: 'center' }}>{eventVestingTopics[event.action] || 'Undefined'}</TableCell>
       <TableCell style={{ textAlign: 'center' }}>{event.typeName}</TableCell>
-      <TableCell style={{ textAlign: 'center' }}>{event.amount}</TableCell>
+      <TableCell style={{ textAlign: 'center' }}>{event.amount.toLocaleString()}</TableCell>
       <TableCell style={{ textAlign: 'center' }}>{getShortDateTime(new Date(event.updatedAt))}</TableCell>
       <TableCell style={{ textAlign: 'center' }}>{event.updatedBy.name}</TableCell>
     </TableRow>

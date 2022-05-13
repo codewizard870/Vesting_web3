@@ -65,10 +65,10 @@ export const VestingLogProvider = ({ children = null as any }) => {
         startTime: Date,
         endTime: Date,
         lockupDuration: number,
-        vestingFrequency: number,
+        vestingFrequencyId: number,
         amount: number) => {
 
-        const data = { action: action, typeId: typeId, name: name, startTime: new Date(startTime), endTime: new Date(endTime), lockupDuration: lockupDuration, vestingFrequency: vestingFrequency, amount: amount }
+        const data = { action: action, typeId: typeId, name: name, startTime: new Date(startTime), endTime: new Date(endTime), lockupDuration: lockupDuration, vestingFrequencyId: vestingFrequencyId, amount: amount }
         return fetch(
             process.env.REACT_APP_REST_SERVER + '/vesting/save_typelog', reqOptionsAuthorized('post', data as any)
         ).then((res) => res.json())
